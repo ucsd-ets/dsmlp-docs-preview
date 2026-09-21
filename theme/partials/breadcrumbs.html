@@ -1,0 +1,25 @@
+{#
+  CANVAS. Breadcrumbs sit inside main#main-content in the shipped
+  two-column template, so they are the site's to generate.
+
+  page.ancestors runs immediate-parent-first, so it is reversed here.
+  MkDocs Section objects carry no url of their own; a section links to its
+  first child page rather than rendering as dead text.
+#}
+<div class="container">
+	<div class="row">
+		<ol class="breadcrumb breadcrumbs-list">
+			<li><a href="/">HOME</a></li>
+{%- for anc in page.ancestors|reverse %}
+{%- if anc.is_page and anc.url %}
+			<li><a href="/{{ anc.url }}">{{ anc.title }}</a></li>
+{%- elif anc.children and anc.children[0].url %}
+			<li><a href="/{{ anc.children[0].url }}">{{ anc.title }}</a></li>
+{%- else %}
+			<li>{{ anc.title }}</li>
+{%- endif %}
+{%- endfor %}
+			<li aria-current="page">{{ page.title }}</li>
+		</ol>
+	</div>
+</div>

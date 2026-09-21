@@ -1,0 +1,51 @@
+name: Something in the docs is wrong
+description: A page gives incorrect instructions, contradicts the platform, or has a broken link.
+title: "[docs] "
+labels: ["documentation", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. If you need help with **your own account,
+        course or job** rather than with the documentation, email
+        <datahub@ucsd.edu> instead — we cannot resolve account problems here.
+
+  - type: input
+    id: page
+    attributes:
+      label: Which page?
+      description: Paste the URL, or the page title if you are not sure.
+      placeholder: https://dsmlp-docs.ucsd.edu/gpu-access/reservations/
+    validations:
+      required: true
+
+  - type: textarea
+    id: whats-wrong
+    attributes:
+      label: What does it say, and what is actually true?
+      description: Quote the part that is wrong if you can. If you found out the hard way, tell us what happened.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: Your role
+      description: Helps us judge what a reader in your position already knows.
+      options:
+        - Student in a course
+        - Student working on a project
+        - Instructor or TA
+        - Researcher
+        - Staff
+        - Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: anything-else
+    attributes:
+      label: Anything else?
+      description: Error messages, what you were trying to do, screenshots.
+    validations:
+      required: false

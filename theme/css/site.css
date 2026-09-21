@@ -1,0 +1,359 @@
+/* Site-authored styles for dsmlp-docs.ucsd.edu.
+ *
+ * EVERY rule in here is scoped under the canvas selector, main#main-content.
+ * That scoping is load-bearing, not cosmetic: the Decorator shell and the
+ * canvas share the entire Bootstrap 3 vocabulary (.btn, .container, .row,
+ * .form-control, .input-group), so a bare `.input-group { }` would reach into
+ * the campus drawer search without ever naming a chrome class. The chrome
+ * integrity gate (tier 4) fails the build on an unscoped selector.
+ *
+ * Also: do NOT set a background on html, body, :root, or main#main-content
+ * itself, and do not use full-bleed tricks (box-shadow 0 0 0 100vmax,
+ * clip-path inset(0 -100vmax), width: 100vw, margin: 0 calc(50% - 50vw)).
+ * The white page ground belongs to the Decorator.
+ *
+ * Brand values are from Decorator's own app/styles/partials/_custom-variables.scss.
+ * They are declared on the canvas rather than :root so nothing leaks to the shell.
+ */
+
+main#main-content {
+	--ucsd-blue: #00629b;
+	--ucsd-dark-blue: #182b49;
+	--ucsd-navy-active: #004268;
+	--ucsd-teal: #00c6d7;
+	--ucsd-yellow: #ffcd00;
+	--ucsd-sand: #f5f0e6;
+	--ucsd-gray: #747678;
+	--ucsd-dark-gray: #484949;
+	--docs-rule: #ddd;
+}
+
+/* ---- Code ---------------------------------------------------------- */
+
+main#main-content pre {
+	background: #f7f7f9;
+	border: 1px solid #e1e1e8;
+	border-radius: 0;
+	padding: 12px 16px;
+	font-size: 14px;
+	line-height: 1.5;
+	overflow-x: auto;
+}
+
+main#main-content code {
+	background: var(--ucsd-sand);
+	color: var(--ucsd-dark-blue);
+	border-radius: 0;
+	padding: 2px 5px;
+}
+
+main#main-content pre code {
+	background: transparent;
+	color: inherit;
+	padding: 0;
+}
+
+main#main-content .highlight {
+	margin-bottom: 18px;
+}
+
+main#main-content .highlight pre {
+	margin-bottom: 0;
+}
+
+/* ---- Callouts ------------------------------------------------------ *
+ * Deliberately NOT Bootstrap's .alert-info / .alert-warning / .alert-danger:
+ * Decorator's base.css has zero rules for the -info/-warning/-danger
+ * families, so those render in stock Bootstrap teal/yellow/red on a UC San
+ * Diego page.
+ */
+
+main#main-content .docs-note {
+	border-left: 4px solid var(--ucsd-blue);
+	background: var(--ucsd-sand);
+	padding: 12px 16px;
+	margin: 0 0 18px;
+}
+
+main#main-content .docs-note > :last-child {
+	margin-bottom: 0;
+}
+
+main#main-content .docs-note__label {
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .04em;
+	font-size: 13px;
+	margin-bottom: 4px;
+	color: var(--ucsd-dark-blue);
+}
+
+main#main-content .docs-note--note { border-left-color: var(--ucsd-blue); }
+main#main-content .docs-note--tip { border-left-color: var(--ucsd-teal); }
+main#main-content .docs-note--important { border-left-color: var(--ucsd-dark-blue); }
+main#main-content .docs-note--warning,
+main#main-content .docs-note--caution { border-left-color: var(--ucsd-yellow); }
+
+/* The imported drafts open with a `> **Draft for review.**` blockquote
+ * rather than a GitHub alert, so plain blockquotes get the same treatment. */
+main#main-content blockquote {
+	border-left: 4px solid var(--ucsd-gray);
+	background: #fafafa;
+	padding: 12px 16px;
+	margin: 0 0 18px;
+	font-size: 15px;
+}
+
+main#main-content blockquote > :last-child {
+	margin-bottom: 0;
+}
+
+/* ---- Tables -------------------------------------------------------- *
+ * Python-Markdown emits a bare <table> with no class, so style the element.
+ * .table is included for hand-written Bootstrap markup. Scoping keeps
+ * either off the shell.
+ */
+
+main#main-content table,
+main#main-content .table {
+	width: 100%;
+	margin-bottom: 18px;
+}
+
+main#main-content table th,
+main#main-content table td,
+main#main-content .table th,
+main#main-content .table td {
+	border: 1px solid var(--docs-rule);
+	padding: 8px 12px;
+	text-align: left;
+	vertical-align: top;
+}
+
+main#main-content table th,
+main#main-content .table th {
+	background: var(--ucsd-sand);
+	color: var(--ucsd-dark-blue);
+}
+
+/* ---- Headings ------------------------------------------------------ *
+ * h3-h6 carry no brand typography outside a Decorator module wrapper --
+ * base.css only sets color/weight/line-height for them, so they would
+ * otherwise fall back to Bootstrap's 24px default.
+ */
+
+main#main-content h3 {
+	font-size: 22px;
+	color: var(--ucsd-dark-blue);
+	margin-top: 28px;
+}
+
+main#main-content h4 {
+	font-size: 18px;
+	color: var(--ucsd-dark-gray);
+	margin-top: 22px;
+}
+
+/* ---- Sidebar table of contents ------------------------------------- */
+
+main#main-content .docs-toc__l3 > a {
+	padding-left: 18px;
+	font-size: 14px;
+}
+
+/* ---- Misc ---------------------------------------------------------- */
+
+main#main-content .docs-edit-link {
+	margin-top: 36px;
+	padding-top: 12px;
+	border-top: 1px solid var(--docs-rule);
+	font-size: 14px;
+}
+
+main#main-content img {
+	max-width: 100%;
+	height: auto;
+}
+
+main#main-content hr {
+	border-top: 1px solid var(--docs-rule);
+}
+
+/* ---- Heading permalinks -------------------------------------------- *
+ * The toc extension emits a paragraph-mark anchor after every heading.
+ * Visible at rest it reads as a typo, so reveal it on hover/focus only.
+ * Kept reachable by keyboard.
+ */
+
+main#main-content .headerlink {
+	opacity: 0;
+	margin-left: .35em;
+	font-weight: 400;
+	text-decoration: none;
+	transition: opacity .12s ease-in-out;
+}
+
+main#main-content h1:hover .headerlink,
+main#main-content h2:hover .headerlink,
+main#main-content h3:hover .headerlink,
+main#main-content h4:hover .headerlink,
+main#main-content h5:hover .headerlink,
+main#main-content h6:hover .headerlink,
+main#main-content .headerlink:focus {
+	opacity: .45;
+}
+
+/* ---- Sidebar spacing ----------------------------------------------- *
+ * The section list and the "On this page" list are separate blocks; without
+ * this the second heading butts straight up against the last link.
+ */
+
+main#main-content .main-content-nav h2 {
+	margin-top: 28px;
+}
+
+main#main-content .main-content-nav > h2:first-child {
+	margin-top: 0;
+}
+
+main#main-content .main-content-nav .docs-toc {
+	margin-bottom: 24px;
+}
+
+/* ---- Site-wide draft banner ---------------------------------------- *
+ * Replaces the per-page "Draft for review" notes the importer strips.
+ * UCSD gold rather than Bootstrap's contextual yellow, which Decorator
+ * does not restyle.
+ */
+
+main#main-content .docs-draft-banner {
+	border: 1px solid var(--ucsd-yellow);
+	border-left: 5px solid var(--ucsd-yellow);
+	background: #fffdf2;
+	padding: 12px 16px;
+	margin: 0 15px 22px;
+}
+
+main#main-content .docs-draft-banner > :last-child {
+	margin-bottom: 0;
+}
+
+main#main-content .docs-draft-banner__label {
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .06em;
+	font-size: 12px;
+	margin-bottom: 4px;
+	color: var(--ucsd-dark-blue);
+}
+
+/* ---- Preview-site notice -------------------------------------------- *
+ * Only ever rendered on the preview site; extra.preview_banner is empty in
+ * the published configuration. Solid dark blue rather than the draft
+ * banner's yellow outline, because this one has to be unmissable: it is
+ * telling the reader they are not on the published site.
+ */
+
+main#main-content .docs-preview-banner {
+	background: var(--ucsd-dark-blue);
+	color: #fff;
+	border-left: 5px solid var(--ucsd-teal);
+	padding: 14px 16px;
+	margin: 0 15px 22px;
+}
+
+main#main-content .docs-preview-banner > :last-child {
+	margin-bottom: 0;
+}
+
+main#main-content .docs-preview-banner__label {
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: .06em;
+	font-size: 12px;
+	margin-bottom: 4px;
+	color: var(--ucsd-teal);
+}
+
+main#main-content .docs-preview-banner__link a,
+main#main-content .docs-preview-banner__link a:visited {
+	color: #fff;
+	text-decoration: underline;
+}
+
+main#main-content .docs-preview-banner__link a:hover,
+main#main-content .docs-preview-banner__link a:focus {
+	color: var(--ucsd-yellow);
+}
+
+/* ---- Unpublished figures ------------------------------------------- *
+ * Marks a number that does not exist yet, so a gap reads as a gap rather
+ * than as a blank table cell or a missing word mid-sentence.
+ */
+
+main#main-content .docs-figure {
+	display: inline-block;
+	background: var(--ucsd-sand);
+	border-bottom: 1px dotted var(--ucsd-gray);
+	color: var(--ucsd-dark-gray);
+	font-size: .9em;
+	font-style: italic;
+	padding: 0 4px;
+	cursor: help;
+}
+
+/* ---- Site search ---------------------------------------------------- *
+ * The results UI on /search/. The search INPUT that reaches it now lives in
+ * the Decorator's own search box, which is chrome and carries no styling from
+ * this file -- tier 4 forbids it, and the shell already styles that control.
+ * Everything here is the canvas-side results page.
+ */
+
+main#main-content .docs-search {
+	display: flex;
+	margin-bottom: 18px;
+}
+
+main#main-content .docs-search__input {
+	border-radius: 0;
+	box-shadow: none;
+	height: 38px;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+main#main-content .docs-search__input:focus {
+	border-color: var(--ucsd-blue);
+	box-shadow: 0 0 0 2px rgba(0, 98, 155, .18);
+}
+
+/* On the search page the field is the primary control, so give it room
+ * and drop the button -- submission is live as you type. */
+main#main-content .docs-search--page {
+	margin: 18px 0 24px;
+}
+
+main#main-content .docs-search--page .docs-search__input {
+	height: 46px;
+	font-size: 18px;
+}
+
+main#main-content .docs-search-results article {
+	padding: 14px 0;
+	border-bottom: 1px solid var(--docs-rule);
+}
+
+main#main-content .docs-search-results article:first-child {
+	border-top: 1px solid var(--docs-rule);
+}
+
+main#main-content .docs-search-results h3 {
+	margin: 0 0 4px;
+	font-size: 18px;
+}
+
+main#main-content .docs-search-results p {
+	margin: 0;
+	color: var(--ucsd-dark-gray);
+	font-size: 15px;
+}

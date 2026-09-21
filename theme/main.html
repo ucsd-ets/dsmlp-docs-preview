@@ -1,0 +1,135 @@
+{%- set is_search_page = page and page.file and page.file.src_path in ('search.md', 'search/index.md') -%}
+<!doctype html>
+<html class="no-js" lang="en-US">
+
+<head>
+	<title>{% if page.title and not page.is_homepage %}{{ page.title }} | {% endif %}{{ config.site_name }}</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<meta name="robots" content="index,follow,noarchive">
+	<meta name="ORGANIZATION" content="University of California, San Diego">
+	<meta name="SITE" content="{{ config.site_name }}">
+	<meta name="PAGETITLE" content="{{ page.title|default(config.site_name) }}">
+	<meta name="DESCRIPTION" content="{{ page.meta.description|default(config.site_description) }}">
+	{%- if page.canonical_url %}
+	<link rel="canonical" href="{{ page.canonical_url }}">
+	{%- endif %}
+
+	{#
+	  Decorator CHROME asset stack, <head> half. These MUST stay on
+	  cdn.ucsd.edu -- ucsd-decorator-v5's own dist/css/base.min.css ships
+	  eleven corrupted rgb() declarations that browsers drop, which visibly
+	  breaks the active-nav state. See DECORATOR.md.
+	#}
+	<link rel="stylesheet" href="https://cdn.ucsd.edu/cms/decorator-5/styles/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.ucsd.edu/cms/decorator-5/styles/base.min.css">
+	<script src="https://cdn.ucsd.edu/cms/decorator-5/scripts/modernizr.min.js"></script>
+
+	<!-- Site-specific CSS -->
+	<link rel="stylesheet" href="/css/site.css">
+
+	{%- if is_search_page %}
+	{#
+	  Routes a campus-scoped query straight back out to the hosted search API.
+	  In <head> so it leaves before the page fetches the lunr index.
+	#}
+	<script src="/js/search-scope.js"></script>
+	{%- endif %}
+</head>
+
+<body>
+
+	{% include "partials/chrome-header.html" %}
+
+	<main class="layout-main" id="main-content" role="main">
+		{%- include "partials/preview-banner.html" %}
+
+		{% include "partials/breadcrumbs.html" %}
+
+		{% include "partials/draft-banner.html" %}
+
+		<div class="container">
+			<div class="row">
+				<section class="col-xs-12 col-md-9 main-section pull-right">
+					{{ page.content }}
+
+					{%- if is_search_page %}
+					{#
+					  The search UI. Ids are the plugin's own: main.js reads
+					  #mkdocs-search-query and writes #mkdocs-search-results, and
+					  dereferences BOTH without a null guard -- which is why the
+					  scripts load only here, where both exist.
+					#}
+					<form class="docs-search docs-search--page" role="search" onsubmit="return false;">
+						<label class="sr-only" for="mkdocs-search-query">Search query</label>
+						<input type="search" class="form-control docs-search__input" id="mkdocs-search-query"
+							name="q" placeholder="Search this site&hellip;" autocomplete="off" autofocus>
+					</form>
+					<div id="mkdocs-search-results" class="docs-search-results"
+						data-no-results-text="No results. Try fewer or more general words."></div>
+
+					{#
+					  Searching this site needs JavaScript -- lunr runs in the
+					  browser. The campus scopes do not, but they now route
+					  through this page, so without JS they would stop here
+					  silently. Say so, and give a way out.
+					#}
+					<noscript>
+						<div class="docs-note docs-note--warning">
+							<p class="docs-note__label">JavaScript required</p>
+							<p>Searching this site needs JavaScript, which is turned off in
+								this browser. You can still
+								<a href="https://www.ucsd.edu/search">search all UC San Diego sites</a>,
+								or browse the documentation from the menu above.</p>
+						</div>
+					</noscript>
+					{%- endif %}
+
+					{#-
+					  CANVAS. Routes to the public repo's issue chooser, not to an
+					  edit link: the source lives in a private repository, and a
+					  commit made in the published snapshot is overwritten by the
+					  next publish. See CONTRIBUTING.md in the public repo.
+					-#}
+					{%- if config.repo_url %}
+					<p class="docs-edit-link">
+						<a href="{{ config.repo_url }}/issues/new/choose">Report a problem with this page</a>
+					</p>
+					{%- endif %}
+				</section>
+
+				{% include "partials/sidebar.html" %}
+			</div>
+		</div>
+	</main>
+
+	{% include "partials/chrome-footer.html" %}
+
+	{#
+	  Decorator CHROME asset stack, end-of-body half. Order matters, and the
+	  placement is load-bearing: base.min.js dereferences
+	  $(".navbar-static-top .search-toggle")[0] with no null guard, so it
+	  throws if it runs before the chrome exists.
+	#}
+	<script src="https://cdn.ucsd.edu/cms/decorator-5/scripts/jquery.min.js"></script>
+	<script src="https://cdn.ucsd.edu/cms/decorator-5/scripts/bootstrap.min.js"></script>
+	<script src="https://www.ucsd.edu/common/_emergency-broadcast/message.js"></script>
+	<script src="https://cdn.ucsd.edu/cms/decorator-5/scripts/vendor.min.js"></script>
+	<script src="https://cdn.ucsd.edu/cms/decorator-5/scripts/base.min.js"></script>
+
+	{%- if is_search_page %}
+	{#
+	  Search assets, on /search/ only. MkDocs' own themes load these on every
+	  page; keeping them here means the 816KB index is fetched when somebody
+	  actually searches, not on every page view. main.js needs base_url, and
+	  falls back to jQuery.getScript when Web Workers are unavailable -- jQuery
+	  is already loaded above by the Decorator chrome.
+	#}
+	<script>var base_url = {{ base_url|tojson }};</script>
+	<script src="{{ 'search/main.js'|url }}"></script>
+	{%- endif %}
+
+</body>
+
+</html>

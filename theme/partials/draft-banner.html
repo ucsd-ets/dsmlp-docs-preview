@@ -1,0 +1,26 @@
+{#
+  CANVAS. Site-wide draft notice.
+
+  The imported pages carry no per-page status any more -- tools/import-docs.py
+  strips the upstream "Draft for review" notes, which addressed the writing
+  team rather than readers. This is what replaces them for a reader: one
+  consistent statement, on every page, that the set is not finished.
+
+  Switched off by clearing `extra.draft_banner` in mkdocs.yml when the content
+  is signed off. Deliberately a single config flag, so nobody has to find and
+  remove markup from 48 pages.
+
+  Uses the site's own .docs-note classes, not Bootstrap's .alert-warning:
+  Decorator's base.css has no rules for the -warning family, so that would
+  render in stock Bootstrap yellow on a UC San Diego page.
+#}
+{%- if config.extra.draft_banner %}
+<div class="container">
+	<div class="row">
+		<div class="docs-draft-banner" role="note" aria-label="Documentation status">
+			<p class="docs-draft-banner__label">Draft</p>
+			<p>{{ config.extra.draft_banner }}</p>
+		</div>
+	</div>
+</div>
+{%- endif %}

@@ -1,0 +1,52 @@
+{#
+  CANVAS. Section nav and in-page contents.
+
+  The sidebar search box was removed when the Decorator's own search box was
+  wired to this site's index: two boxes doing the same job, one of them the
+  campus-standard control, is worse than one.
+
+  The nav <article> is only emitted when it would have something in it --
+  on a page with no sibling pages and no subheadings (the search page, for
+  one) Decorator's .main-content-nav still paints its border, so an empty
+  one renders as a stray empty box.
+
+  page.toc's top level is the document's single H1, whose children are the
+  H2s. The H1 is already the page heading, so this walks toc[0].children.
+#}
+{%- set section = namespace(item=none) -%}
+{%- for item in nav -%}
+{%- if item.children and item.active -%}{%- set section.item = item -%}{%- endif -%}
+{%- endfor -%}
+{%- set headings = page.toc|list -%}
+{%- set sub = headings[0].children|list if headings|length == 1 else headings -%}
+<section class="col-xs-12 col-md-3 sidebar-section">
+{%- if section.item or sub %}
+	<article class="main-content-nav" role="navigation">
+{%- if section.item %}
+{#- A section's first child is its README/index page. Linking the <h2> to it
+    and dropping it from the list avoids naming the section twice. -#}
+{%- set index = section.item.children[0] if section.item.children[0].title == section.item.title else none %}
+{%- set entries = section.item.children[1:] if index else section.item.children %}
+		<h2>{% if index %}<a href="/{{ index.url }}">{{ section.item.title }}</a>{% else %}{{ section.item.title }}{% endif %}</h2>
+		<ul class="navbar-list">
+{%- for child in entries %}
+			<li class="{{ 'expanded active' if child.active else 'collapsed' }}">
+				<a href="/{{ child.url }}">{{ child.title }}</a>
+			</li>
+{%- endfor %}
+		</ul>
+{%- endif %}
+{%- if sub %}
+		<h2>On this page</h2>
+		<ul class="navbar-list docs-toc">
+{%- for h in sub %}
+			<li class="collapsed"><a href="{{ h.url }}">{{ h.title }}</a></li>
+{%- for c in h.children %}
+			<li class="collapsed docs-toc__l3"><a href="{{ c.url }}">{{ c.title }}</a></li>
+{%- endfor %}
+{%- endfor %}
+		</ul>
+{%- endif %}
+	</article>
+{%- endif %}
+</section>

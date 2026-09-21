@@ -1,0 +1,50 @@
+name: Something is missing or unclear
+description: A topic is not covered, or a page is correct but hard to follow.
+title: "[docs] "
+labels: ["documentation", "enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks — gaps are harder for us to spot than errors, so this is useful.
+        For help with **your own account, course or job**, email
+        <datahub@ucsd.edu> instead.
+
+  - type: input
+    id: page
+    attributes:
+      label: Which page, if any?
+      description: Leave blank if the topic has no page at all.
+      placeholder: https://dsmlp-docs.ucsd.edu/running-jobs/checkpointing/
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-were-you-doing
+    attributes:
+      label: What were you trying to do?
+      description: The task you were on when the documentation let you down. This tells us more than a topic name does.
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-should-change
+    attributes:
+      label: What should the documentation say?
+      description: A rough sketch is fine. You do not need to write the page.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: role
+    attributes:
+      label: Your role
+      options:
+        - Student in a course
+        - Student working on a project
+        - Instructor or TA
+        - Researcher
+        - Staff
+        - Other
+    validations:
+      required: false

@@ -1,0 +1,179 @@
+{#
+  Decorator 5 CHROME -- header, mobile offcanvas drawer, desktop navbar.
+
+  Markup copied verbatim from ucsd-decorator-v5 dist/templates/two-column.html.
+  NOT ours to restyle or restructure. The only template logic in here is in
+  the two places the chrome contract leaves to the site:
+
+    * the .title-header site name (per-site by definition)
+    * the <li> links inside ul.navmenu-nav and ul.nav.navbar-nav, which
+      contracts/chrome-regions.json marks `ignoreChildrenOf`
+
+  URLs here are ROOT-RELATIVE on purpose. MkDocs' idiomatic `|url` filter
+  emits paths relative to the current page, which makes the chrome differ by
+  directory depth -- 5 tier 1 "cross-page consistency" failures, because the
+  chrome must be byte-identical on every route. Do not "fix" these to |url.
+
+  Deviations from the shipped template, all reviewed and recorded in
+  DECORATOR.md. Two are HTTPS fixes for markup the template ships broken. The
+  rest are in the search blocks, and protected-regions.md lists every one of
+  them as site-specific and expected to differ:
+
+    * `action` -> /search/, because "sites point at their own search index
+      rather than the campus redirector". /search/ routes the campus scopes
+      back out to act.ucsd.edu.
+    * a "This Site" scope option, because "a site index adds its own scope".
+    * ids on the term input and the scope select, which that document lists as
+      safe to rename (only the ul.msearch runtime swap matches them, and this
+      site is the ZIP shape, so that handler never runs here). They are renamed
+      because both search blocks previously carried id="q", so a <label for>
+      could only ever bind to the drawer's copy.
+
+  What is NOT changed, and must not be: the panel id="search" (base.min.css
+  keys the drawer's mobile layout on it), and name="search-term" /
+  name="search-scope" (the hosted search API reads those document-wide).
+
+  The sr-only labels are new. The template ships this form with no label at
+  all; protected-regions.md calls that out as wanting a fix on both shapes.
+#}
+<header class="layout-header">
+		<a class="sr-only" href="#main-content">Skip to main content</a>
+		<div id="uc-emergency"></div>
+		<section class="layout-login">
+			<div class="layout-container"></div>
+		</section>
+
+		<section class="layout-title">
+			<div class="layout-container container">
+				<a href="/" class="title-header title-header-large">{{ config.site_name }}</a>
+				<a href="/" class="title-header title-header-short">{{ config.extra.site_name_short }}</a>
+				<a href="https://www.ucsd.edu" class="title-logo">UC San Diego</a>
+			</div>
+		</section>
+	</header>
+
+	<!-- mobile offcanvas nav -->
+	<div class="navmenu navmenu-default navmenu-fixed-left offcanvas" style="">
+
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				<div class="search">
+					<button class="search-toggle btn-default">
+						<span class="glyphicon glyphicon-search"></span> <span class="caret"></span>
+					</button>
+
+					<div class="search-content" id="search">
+						<form action="/search/" method="get" id="cse-site-search">
+							<label class="sr-only" for="site-search-scope-drawer">Search scope</label>
+							<select class="search-scope" name="search-scope" id="site-search-scope-drawer">
+								<option value="this-site" selected>This Site</option>
+								<option value="default_collection">All UCSD Sites</option>
+								<option value="faculty-staff">Faculty/Staff</option>
+							</select>
+
+							<div class="input-group">
+								<label class="sr-only" for="site-search-term-drawer">Search terms</label>
+								<input placeholder="Search..." type="search" class="form-control search-term"
+									id="site-search-term-drawer" name="search-term">
+							</div>
+						</form>
+					</div>
+				</div>
+			</li>
+		</ul>
+
+
+		<ul class="nav navmenu-nav">
+{%- for item in nav %}
+{%- if item.children %}
+			<li class="dropdown{{ ' active' if item.active }}">
+				<a href="/{{ item.children[0].url }}" class="dropdown-toggle">{{ item.title }} <b class="caret"></b></a>
+				<ul class="dropdown-menu navmenu-nav">
+{%- for child in item.children %}
+					<li><a href="/{{ child.url }}">{{ child.title }}</a></li>
+{%- endfor %}
+				</ul>
+			</li>
+{%- else %}
+			<li class="{{ 'active' if item.active }}"><a href="/{{ item.url }}">{{ item.title }}</a></li>
+{%- endif %}
+{%- endfor %}
+		</ul>
+	</div>
+	<!-- end mobile offcanvas nav -->
+
+	<!-- navbar -->
+	<nav class="navbar navbar-default navbar-static-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".navmenu"
+					data-canvas="body" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+
+					<div class="col-sm-1 mobile-nav-bars">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</div>
+					<div class="col-sm-1 mobile-nav-icon">
+						MENU
+					</div>
+				</button>
+				<div class="col-sm-4 pull-right visible-xs-block">
+					<img src="https://cdn.ucsd.edu/cms/decorator-5/styles/img/ucsd-footer-logo-white.png" alt=""
+						class="img-responsive header-logo" />
+				</div>
+			</div>
+
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+{%- for item in nav %}
+{%- if item.children %}
+					<li class="dropdown{{ ' active' if item.active }}">
+						<a href="/{{ item.children[0].url }}" class="dropdown-toggle" data-hover="dropdown" role="button"
+							aria-haspopup="true" aria-expanded="false">{{ item.title }} <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+{%- for child in item.children %}
+							<li><a href="/{{ child.url }}">{{ child.title }}</a></li>
+{%- endfor %}
+						</ul>
+					</li>
+{%- else %}
+					<li class="{{ 'active' if item.active }}"><a href="/{{ item.url }}">{{ item.title }}</a></li>
+{%- endif %}
+{%- endfor %}
+				</ul>
+
+				<div class="btn-nav"></div>
+
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<div class="search">
+							<button class="search-toggle btn-default">
+								<span class="glyphicon glyphicon-search"></span> <span class="caret"></span>
+							</button>
+
+							<div class="search-content" id="search">
+								<form action="/search/" method="get" id="cse-site-search">
+									<label class="sr-only" for="site-search-scope-navbar">Search scope</label>
+									<select class="search-scope" name="search-scope" id="site-search-scope-navbar">
+										<option value="this-site" selected>This Site</option>
+										<option value="default_collection">All UCSD Sites</option>
+										<option value="faculty-staff">Faculty/Staff</option>
+									</select>
+
+									<div class="input-group">
+										<label class="sr-only" for="site-search-term-navbar">Search terms</label>
+										<input placeholder="Search..." type="search" class="form-control search-term"
+											id="site-search-term-navbar" name="search-term">
+									</div>
+								</form>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<!-- end navbar -->
