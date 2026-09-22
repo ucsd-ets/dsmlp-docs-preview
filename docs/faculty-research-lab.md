@@ -1,272 +1,299 @@
 # Setting Up a Research Lab
 
-------------------------------------------------------------------------
+This page is for faculty arranging Datahub and DSMLP access for a research
+group. It covers platform suitability, the routes to capacity, establishing a
+lab workspace, storage, GPU allocation and borrowing from Fall 2026, the
+researcher-contributed hardware pilot, software, and operating a lab.
+Researchers working on their own are covered in
+[Research on DSMLP](individual-researcher.md), and course setup in
+[Teaching with Datahub and DSMLP](instructor-or-ta.md).
 
-This article is for faculty arranging Datahub/DSMLP access for a research group.
-It covers whether the platform suits a group's work, the three routes to
-capacity, how a lab workspace is established, storage, how GPU allocation and
-borrowing work from Fall 2026, the researcher-contributed hardware pilot, and the
-practices which keep a group out of difficulty.
+## Platform Suitability
 
-Some of what follows is done by the PI or a group manager; some is performed by
-our staff on request.
+### Suitable Workloads
 
-*Researchers working on their own rather than provisioning for others* are
-covered by [Research on DSMLP](individual-researcher.md). *Course setup* is
-covered by [Teaching with Datahub & DSMLP](instructor-or-ta.md).
+The platform suits single-node GPU work at every size from a slice of a GPU to
+a full H100, interactive analysis, long-running batch jobs, and a shared
+software environment that an entire group can rely on. Lab members receive the
+same tooling that students use.
 
-## Deciding Whether the Platform Suits the Work
+### Unsuitable Workloads
 
-------------------------------------------------------------------------
+The platform has no Slurm scheduler, no MPI, and no multi-node parallelism.
+[Research IT](https://research-it.ucsd.edu/computing/index.html) can direct
+workloads of that shape to a more appropriate platform, as described in
+[Platform Selection](reference/getting-help.md#platform-selection).
 
-**Well suited:** single-node GPU work at every size from a 6GB slice to a full
-H100; interactive analysis; long-running batch jobs; and a shared software
-environment an entire group can rely upon. Lab members receive the same tooling
-students use, which makes the barrier for a new rotation student close to nil.
+### Priority of Instruction
 
-**Not suited:** there is no Slurm scheduler, no MPI, and no multi-node
-parallelism. Workloads of that shape belong elsewhere, and
-[Research IT](https://research-it.ucsd.edu/computing/index.html) can direct them
-to a more appropriate platform.
+During 10th and Finals Weeks and at major assignment deadlines, coursework is
+served ahead of research. A lab workspace with its own quota insulates a group
+from most of this effect. A lab working from the shared research pool is
+subject to it.
 
-**Instruction has priority.** During 10th and Finals Weeks and at major
-assignment deadlines, coursework is served ahead of research. A lab workspace
-with its own quota insulates a group from most of this; a lab working out of the
-shared pool experiences it.
+## Routes to Capacity
 
-**Three routes to capacity**, which may be combined:
+A lab may combine the three routes to capacity.
 
 | Route | Provides | Cost |
 |---|---|---|
-| The shared research pool | A baseline allocation, with boosts when capacity frees up — most notably over Summer | None; please request access |
-| A lab workspace with its own quota | Guaranteed access up to the group's quota, date-aware so that it may flex around the group's deadlines | None for compute; storage above 1TB is chargeable |
-| Contributing hardware *(pilot)* | Exclusive reservation rights over the contributed capacity | Purchase of the hardware — see [below](#contributing-hardware-pilot) |
+| The shared research pool | A baseline allocation, with boosts when capacity frees up, most notably over Summer | None. Access is by request. |
+| A lab workspace with its own quota | Guaranteed access up to the group's quota, date-aware so that it can flex around the group's deadlines | None for compute. Storage charges are described in [Cost](#cost). |
+| Contributing hardware (pilot) | Exclusive reservation rights over the contributed capacity | Purchase of the hardware, as described in [Contributing Hardware (Pilot)](#contributing-hardware-pilot) |
 
-**Cost.** Compute is provided at no charge. Storage above 1TB is not. There is no
-compute recharge or chargeback mechanism. *Work sitting within a self-supporting
-program is subject to cost recovery; please contact us to discuss.*
+### Cost
+
+Compute is provided at no charge, and there is no compute recharge or
+chargeback mechanism. Storage charges are set out in
+[Workspace and Personal Quotas](workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
+Cost recovery for work within a self-supporting program is covered in
+[Self-Supporting Programs](reference/policy.md#self-supporting-programs).
 
 ## Establishing a Lab Workspace
 
-------------------------------------------------------------------------
+A workspace anchors a group's roster, storage, container images, GPU access,
+and storage and GPU quotas, as described in
+[What a Workspace Is and What It Controls](workspaces-and-storage/what-a-workspace-is.md).
+Research IT curates lab and research workspaces manually rather than populating
+them from a course roster.
 
-Users are divided into groups called **workspaces**, which anchor all cluster
-configuration: rosters, storage, container images, GPU access, and storage and
-GPU quotas. Lab and research workspaces are manually curated by Research IT
-services rather than auto-populated from a course roster.
-→ [What a Workspace Is](workspaces-and-storage/what-a-workspace-is.md)
+### Requesting a Lab Workspace
 
-**To request one**, please contact
-[Research IT](https://research-it.ucsd.edu/computing/index.html) or
-[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu), with:
+Request a lab workspace from
+[Research IT](https://research-it.ucsd.edu/computing/index.html) or at
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu). Include:
 
-- Who is in the group, and who besides the PI should be able to manage it
-- What the group runs — frameworks, model sizes, and whether GPU memory or GPU
+- The members of the group, and who besides the PI should be able to manage it
+- What the group runs: frameworks, model sizes, and whether GPU memory or GPU
   count is the binding constraint
 - The data: how much, where it currently resides, and its classification
-- Any recurring deadline shapes we should know about
+- Any recurring deadline patterns
 
-**Membership.** People join and depart; a departing postdoc's files do not leave
-with them, and a new arrival should not require a week to become productive.
-→ [Managing a Group](reference/managing-a-group.md)
+### Workspace Manager Permissions
 
-**What a manager may and may not do.** A manager may view the group's calendar,
-book on a member's behalf, and waive a cancellation charge. A manager may **not**
-edit Service Unit budgets or group limits from the application; those are
-administrative actions. *Requesting a change by ticket is the normal and
-sanctioned route.*
-→ [The Six Requests](reference/getting-help.md#the-six-requests)
+A workspace manager may view the group's calendar, book on a member's behalf,
+and waive a cancellation charge. A manager may not edit Service Unit budgets or
+group limits from the application. Those are administrative actions, requested
+by ticket as described in
+[Administrative Requests](reference/getting-help.md#administrative-requests).
+Privilege tiers are described in [Managing a Group](reference/managing-a-group.md).
 
 ## Storage
 
-------------------------------------------------------------------------
+### Home Directories
 
-**Per-member storage.** Research home directories are on the order of 100GB each,
-established at provisioning. Group shared space and external mounts sit alongside
-them. → [Directories, Quotas & Cleaning Up](workspaces-and-storage/your-files-and-quotas.md#where-files-live)
+Each member's research home directory is established at provisioning, alongside
+group shared space and any external mounts. The directories are described in
+[Where Files Live](workspaces-and-storage/your-files-and-quotas.md#where-files-live),
+and home directory sizes in
+[Workspace and Personal Quotas](workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
 
-**Shared lab space**, for datasets everyone works from — the alternative to every
-member holding a personal copy, *which is how a group exhausts its allocation.*
+### Shared Lab Space
 
-**External storage.** SDSC Universal Scale Storage and similar may be mounted
-into a group's containers. Capacity thresholds govern what is mounted where.
-→ [Mounting External Storage](workspaces-and-storage/your-files-and-quotas.md#mounting-external-storage)
+Shared lab space holds the datasets that every member works from, in place of a
+personal copy for each member. Personal copies of a shared dataset exhaust a
+group's allocation, as described in
+[Personal Copies of Shared Datasets](workspaces-and-storage/your-files-and-quotas.md#personal-copies-of-shared-datasets).
 
-**Storage above 1TB is chargeable.**
+### External Storage
 
-**Sharing outward**, to collaborators inside and outside UC San Diego, with group
-permissions and public access.
-→ [Inside the Workspace](workspaces-and-storage/moving-and-sharing-data.md#inside-the-workspace)
+SDSC Universal Scale Storage and similar storage may be mounted into a group's
+containers. Capacity thresholds govern what is mounted where, as described in
+[Mounting External Storage](workspaces-and-storage/your-files-and-quotas.md#mounting-external-storage).
 
-**Data classification is a provisioning question rather than a later one.** **P4**
-— clinical records, export-controlled information — may not be used on DSMLP.
-**P3** may be permitted after review, and vetting may take 4-6 weeks or longer.
-*Please raise either in the first conversation.*
-→ [Policy](reference/policy.md)
+### Sharing with Collaborators
+
+Sharing with collaborators inside and outside UC San Diego, through group
+permissions and public access, is described in
+[Inside the Workspace](workspaces-and-storage/moving-and-sharing-data.md#inside-the-workspace)
+and
+[Sharing with People Who Have No Cluster Account](workspaces-and-storage/moving-and-sharing-data.md#sharing-with-people-who-have-no-cluster-account).
+
+### Data Classification
+
+Data classified P4, such as clinical records or export-controlled information,
+may not be used on DSMLP. Data classified P3 may be permitted after review, as
+described in [Data Classification](reference/policy.md#data-classification),
+which also gives the vetting period. Raise either classification in the initial
+workspace request rather than later.
 
 ## Compute Allocation
 
-------------------------------------------------------------------------
+### GPU Classes
 
-**GPU classes.** Five size classes from approximately 6GB to approximately 96GB.
-Each workspace is given access to one or more classes, matching anticipated work.
-→ [GPU Classes](gpu-access/gpu-classes.md)
+GPUs are allocated in five size classes, described in
+[GPU Classes](gpu-access/gpu-classes.md). Each workspace is given access to one
+or more classes, matching its anticipated work.
 
-**The group quota** sets the maximum number of each GPU class a lab may hold at
-once. Quotas are date-aware: staff can set them week-by-week or even day-by-day,
-so a lab's share may surge for a conference deadline and drop back afterwards
-without a permanent allocation.
-→ [Quotas, Cohorts & Availability](gpu-access/quotas-and-availability.md)
+### Group Quota
 
-**Borrowing beyond the quota.** Quotas are not hard ceilings: last-minute jobs,
-under roughly 12 hours ahead, may use idle capacity beyond their group's quota.
-If GPUs would otherwise sit dark, a group which has exhausted its share may still
-pick them up.
+The group quota sets the maximum number of GPUs of each class that a lab may
+hold at once, as described in
+[What a Quota Is](gpu-access/quotas-and-availability.md#what-a-quota-is).
+Quotas are date-aware and can be set week by week or day by day, so a lab's
+share can rise for a conference deadline and drop back afterward without a
+permanent allocation, as described in
+[Date-Based Quota Changes](gpu-access/quotas-and-availability.md#date-based-quota-changes).
 
-**Borrowing carries a seniority, which matters for hardware contributors.**
-Course workspaces always hold **senior** borrowing rights. **Junior** borrowing —
-which yields first when a senior borrower or a quota-holder requires the capacity
-— is granted to hardware contributors. *Junior capacity is real capacity; it is
-simply the first to be given back.*
+### Borrowing and Seniority
 
-**Service Unit budgets** divide a group's capacity among its members, by the same
-mechanism courses use to divide capacity across a roster. Research budgets
-typically apply on a monthly or quarterly basis. *Budgets are set
-administratively; please request changes by ticket.*
-→ [Service Units & Budgets](gpu-access/service-units-and-budgets.md) ·
-[Budget Windows](gpu-access/service-units-and-budgets.md#budget-windows--cadences)
+Last-minute work may use idle capacity beyond the group's quota, so a group that
+has exhausted its share can still obtain GPUs that would otherwise be idle.
+Borrowing, including how far ahead it applies, is described in
+[Borrowing Beyond Quota](gpu-access/quotas-and-availability.md#borrowing-beyond-quota).
 
-**Cohorts.** A collection of groups may have quotas summing to greater than the
-physical capacity allocated to the cohort, allowing groups to flexibly share
-access to greater peak capacity. *A consequence worth anticipating: availability
-may read zero while a group still has headroom on paper.*
-→ [Cohorts](gpu-access/quotas-and-availability.md#cohorts)
+Borrowing carries a seniority. Course workspaces always hold senior borrowing
+rights. Hardware contributors are granted junior borrowing rights. Junior
+borrowing yields first when a senior borrower or a quota holder requires the
+capacity. Junior capacity is real capacity and is the first to be given back.
 
-**Reports.** Manager reports cover reservations by group, peak simultaneous use
-by class, reserved hours, and effective limits. *Note that some display
-cluster-wide data rather than only the group itself.*
-→ [Managing a Group](reference/managing-a-group.md#what-the-reports-cover)
+### Service Unit Budgets
+
+Service Unit budgets divide a group's capacity among its members by the same
+mechanism that courses use to divide capacity across a roster, as described in
+[Service Units & Budgets](gpu-access/service-units-and-budgets.md). Research
+budgets typically apply on a monthly or quarterly basis, as described in
+[Budget Windows & Cadences](gpu-access/service-units-and-budgets.md#budget-windows--cadences).
+Budgets are set administratively, and changes are requested by ticket, as
+described in
+[Administrative Requests](reference/getting-help.md#administrative-requests).
+
+### Cohorts
+
+A cohort is a collection of groups whose quotas may sum to more than the
+physical capacity allocated to it, so availability can read zero while a group
+still has headroom, as described in
+[Cohorts](gpu-access/quotas-and-availability.md#cohorts).
+
+### Manager Reports
+
+Manager reports cover reservations by group, peak simultaneous use by class,
+reserved hours, and effective limits, as described in
+[What the Reports Cover](reference/managing-a-group.md#what-the-reports-cover).
+Some reports display cluster-wide data rather than data for the group alone.
 
 ## Contributing Hardware (Pilot)
 
-------------------------------------------------------------------------
+A pilot is evaluating the placement of researcher-contributed GPUs or servers
+into the cluster. The pilot is expected to continue through Spring 2027, when
+ITS will determine whether the capability can be made available to a broader
+audience.
 
-*A pilot project is underway to evaluate placement of researcher-contributed GPUs
-and/or servers into the cluster. We expect this pilot to continue through Spring
-2027, at which point we will determine if this capability can be made available
-to a broader audience.*
+### Contributor Entitlements
 
-Under this scheme, contributors receive:
+Contributors receive:
 
-- **Exclusive reservation rights over their contributed capacity** — the lab's
-  group GPU limits match its contribution, and the cohort holding contributor
-  groups is not overcommitted, so reservations mean the lab can always book "its"
-  GPUs ahead, whenever it needs them;
-- **Access to the school-wide shared pool**, like any other research group;
-- **Access to near-term otherwise-idle capacity** across the cluster, via the
-  borrowing facility at junior priority — the route by which a lab reaches beyond
-  its own contribution when GPUs would otherwise sit idle;
-- The ability to temporarily **loan** capacity and privileges to other groups.
+- Exclusive reservation rights over their contributed capacity. The lab's group
+  GPU limits match its contribution, and the cohort holding contributor groups
+  is not overcommitted, so the lab can always book its own GPUs ahead whenever
+  it needs them.
+- Access to the school-wide shared pool, like any other research group.
+- Access to near-term, otherwise idle capacity across the cluster through
+  junior borrowing, as described in
+  [Borrowing and Seniority](#borrowing-and-seniority). Borrowing is the route
+  by which a lab reaches beyond its own contribution when GPUs would otherwise
+  be idle.
+- The ability to loan capacity and privileges to other groups temporarily.
 
-When the contributed GPUs sit idle, they become available for last-minute and
-on-demand use by others — so contributed hardware never sits dark — but the
-reservation system guarantees the contributing lab retains first claim on its own
-capacity.
+### Idle Contributed Capacity
 
-**What it requires of a contributor.** Hardware conforming to the cluster's
-supported configurations, and a conversation well before purchase. *Please speak
-with us at the specification stage rather than after delivery.*
+Contributed GPUs that are idle become available to other groups for last-minute
+and on-demand use. The reservation system guarantees the contributing lab first
+claim on its own capacity.
+
+### Requirements for Contributors
+
+Contributed hardware must conform to the cluster's supported configurations.
+Discuss a planned contribution with ITS at the specification stage, well before
+purchase and not after delivery.
 
 ## Software & Environments
 
-------------------------------------------------------------------------
+### Standard Images
 
-**Standard Software Images** suffice for most groups: `datascience-notebook`,
-`scipy-ml-notebook` (CUDA, PyTorch, TensorFlow), and `rstudio-notebook`.
-→ [Standard Images](environments/standard-images.md)
+The standard software images suffice for most groups. They are described in
+[Standard Images](environments/standard-images.md#standard-images).
 
-**A lab image.** A lab may bake in its environment so that every member receives
-the same stack and a new arrival is productive on their first day. *Please derive
-from a Standard Image where possible; that is the supported path.*
-→ [Building & Publishing a Custom Image](environments/building-a-custom-image.md)
+### Lab Images
 
-**Pinning.** A workspace may pin an image so that members are not moved by a
-quarterly update partway through a project.
-→ [Pinning a Workspace](environments/standard-images.md#pinning-a-workspace)
+A lab may build its environment into a custom image so that every member,
+including a new arrival, receives the same stack. Derive a lab image from a
+standard image where possible, which is the supported path, as described in
+[Building & Publishing a Custom Image](environments/building-a-custom-image.md).
 
-**Containers run unprivileged**, under each user's own UID, with no root or sudo
-inside the container. *This shapes how dependencies are installed.*
-→ [The Hard Boundary](environments/customizing-your-environment.md#the-hard-boundary)
+### Image Pinning
+
+A workspace may pin an image so that members are not moved by a quarterly
+update partway through a project, as described in
+[Pinning a Workspace](environments/standard-images.md#pinning-a-workspace).
+
+### Unprivileged Containers
+
+Containers run unprivileged, under each user's own UID, with no root or sudo
+inside the container, which constrains how dependencies are installed, as
+described in
+[Root Access and System Packages](environments/customizing-your-environment.md#root-access-and-system-packages).
 
 ## Operating a Lab
 
-------------------------------------------------------------------------
+### Onboarding
 
-**Onboarding.** Please direct new members to
-[Research on DSMLP](individual-researcher.md), which assumes a shell and covers
-launching, storage, and the GPU model. Three things come from the lab rather than
-from the documentation: the group's storage conventions, which GPU class its work
-actually requires, and that an idle GPU session is reclaimed.
+Direct new members to [Research on DSMLP](individual-researcher.md), which
+assumes a shell and covers launching, storage, and the GPU model. Brief new
+members on three points: the group's storage conventions, the GPU class its work
+requires, and the reclaiming of an idle GPU session, described in
+[What Counts as Idle](gpu-access/what-ends-a-session.md#what-counts-as-idle).
 
-**Practices which keep a group out of difficulty:**
+### Recommended Practices
 
-- **Checkpoint anything long-running.** Runtime limits, idle culling, and
-  preemption all end containers for reasons unrelated to the code they run.
-  → [Checkpointing](running-jobs/checkpointing.md)
-- **Book the smallest class which fits.** A larger class is not faster for a
-  model which fits in a smaller one; it is scarcer and more expensive.
-- **Shut down what nobody is using.** An idle container continues to hold its
-  CPU, memory and GPU against the group's quota.
-- **Cancel unused windows.** Cancelling in advance carries no penalty; a no-show
-  is charged at up to 50% of the booking.
-  → [The Cancellation Penalty](gpu-access/service-units-and-budgets.md#the-cancellation-penalty)
+- Checkpoint long-running work. Runtime limits, idle culling, and preemption all
+  end containers for reasons unrelated to the code they run, as described in
+  [Checkpointing & Logging Long Runs](running-jobs/checkpointing.md).
+- Book the smallest class that fits. A larger class is not faster for a model
+  that fits in a smaller one. It is scarcer and more expensive.
+- Shut down containers that nobody is using. An idle container continues to
+  hold its CPU, memory, and GPU against the group's quota.
+- Cancel unused windows. Canceling in advance carries no penalty. A missed
+  booking is charged, as described in
+  [The Cancellation Penalty](gpu-access/service-units-and-budgets.md#the-cancellation-penalty).
 
-**Off-peak discounts** make work which can run at midday or overnight both
-cheaper and faster to obtain.
-→ [Off-Peak Discounts & Rates](gpu-access/service-units-and-budgets.md#peak--off-peak-hours)
+### Off-Peak Discounts
 
-**Scheduled Maintenance.** On the instruction side, Datahub may be unavailable
-Tuesdays, 6-8AM for time-sensitive updates or security patches; *this work is
-generally limited to a subset of worker nodes, in which case running jobs are
-unaffected.*
+Off-peak discounts make work that can run at midday or overnight both cheaper
+and faster to obtain, as described in
+[Peak & Off-Peak Hours](gpu-access/service-units-and-budgets.md#peak--off-peak-hours).
 
-**The Research Cluster window is less frequent and considerably more
-disruptive.** Rather than a weekly slot it runs **quarterly, at the break between
-terms**, with approximately **7 days' notice — and all running jobs are
-terminated.** Anything long-running must be checkpointed or completed before that
-window.
-→ [Maintenance Closures](gpu-access/what-ends-a-session.md#maintenance-closures)
+### Scheduled Maintenance
 
-**Lifecycle.** Members arrive and depart, and access has an end. *Please
-establish what becomes of a departing member's files.*
-→ [When Access Starts & Ends](access/when-access-starts-and-ends.md)
+Datahub may be unavailable during scheduled instructional maintenance for
+time-sensitive updates or security patches. Research Cluster maintenance
+terminates all running jobs, and long-running work must be checkpointed or
+completed before that window. Both schedules are given in
+[Scheduled Maintenance](reference/policy.md#scheduled-maintenance), and the
+effect on sessions in
+[Maintenance Closures](gpu-access/what-ends-a-session.md#maintenance-closures).
 
-## Caveats & Limitations
+### Membership Changes
 
-------------------------------------------------------------------------
+Members join and leave a lab, and access has an end. Files do not leave with a
+departing member. Establish what becomes of a departing member's files. The end
+of access is described in
+[When Access Starts & Ends](access/when-access-starts-and-ends.md).
 
-**No Sensitive Data:** as above — P4 may not be used; P3 may be permitted after
-review, with vetting of 4-6 weeks or longer.
+## Policy
 
-**Availability and Reliability:** Datahub and DSMLP were designed with student
-workloads in mind, deliberately trading some of the costly redundancy typical of
-financial or health settings for additional capacity and capability. As such,
-they should not be used to host externally-available services or applications
-except as required for coursework or projects. *(This caveat applies primarily to
-the compute nodes executing user jobs; critical components such as networking,
-file storage, and backups are maintained to Enterprise IT standards.)*
+Conditions of use, including data classification, appropriate use, hosting of
+externally available services, and availability and reliability, are set out in
+[Policy](reference/policy.md).
 
-**Appropriate Use:** The campus-wide
-[IT Acceptable Use Policy](https://adminrecords.ucsd.edu/ppm/docs/135-9.html)
-applies to use of Datahub and DSMLP.
+## Support
 
-------------------------------------------------------------------------
+| Service | Contact |
+|---|---|
+| Research IT and the Research Cluster | [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu), [research-it.ucsd.edu](https://research-it.ucsd.edu/computing/index.html) |
+| Datahub and DSMLP | [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| IT Service Desk | [support.ucsd.edu](https://support.ucsd.edu/) |
 
-- **Research IT / Research Cluster:**
-  [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) ·
-  [research-it.ucsd.edu](https://research-it.ucsd.edu/computing/index.html)
-- **Datahub / DSMLP platform:** [datahub@ucsd.edu](mailto:datahub@ucsd.edu)
-- **IT Service Desk:** [support.ucsd.edu](https://support.ucsd.edu/)
-
-We aim to resolve individual user issues within 1-2 business days.
-→ [Getting Help](reference/getting-help.md)
+ITS response targets are given in
+[Response Targets](reference/getting-help.md#response-targets), and all support
+routes in [Getting Help](reference/getting-help.md).

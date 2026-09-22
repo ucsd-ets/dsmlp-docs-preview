@@ -39,8 +39,8 @@ extra:
   draft_banner: >-
     This documentation is in draft and under active review. Figures for the
     Fall 2026 GPU reservation system are not yet published, and some pages
-    describe behaviour that has not been verified against a primary source.
-    Check with us before relying on anything here.
+    describe behavior that has not been verified against a primary source.
+    Confirm any figure with datahub@ucsd.edu before relying on it.
 
 # In-site search. The Decorator chrome already owns #search, #q and
 # #search-scope and points them at the campus-wide redirect, so this cannot

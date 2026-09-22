@@ -1,73 +1,76 @@
 # Customizing an Environment
 
-**Packages can be added to a standard image without building a custom one.**
-Anything that installs into a member's own home directory is available to that
-member: Python packages, an R library, a private Jupyter kernel. Anything that
-installs into the operating system is not.
+Packages can be added to a standard image without building a custom one.
+Anything installed into a member's own home directory, such as Python packages,
+an R library, or a private Jupyter kernel, is available to that member; anything
+that installs into the operating system requires a custom image.
 
 ## What Can Be Installed
 
-------------------------------------------------------------------------
-
-| Change | Possible without a custom image? |
+| Change | Possible without a custom image |
 |---|---|
-| Add a Python package for personal use | **Yes** — into a virtual environment with its own kernel |
-| Add an R package for personal use | **Yes** — into a personal R library |
-| Add a Jupyter kernel | **Yes** — `ipython kernel install --user` |
-| Add a system package (`apt-get`, a compiler, a system utility) | **No** — this needs a custom image |
-| Change the image for a whole course | **No** — this is a custom image, or a different standard one |
+| Add a Python package for personal use | Yes, into a virtual environment with its own kernel |
+| Add an R package for personal use | Yes, into a personal R library |
+| Add a Jupyter kernel | Yes, with `ipython kernel install --user` |
+| Add a system package (`apt-get`, a compiler, a system utility) | No. A custom image is required. |
+| Change the image for a whole course | No. This requires a custom image or a different standard image. |
+
+### Storage Quota
+
+Personal installs are written to the member's home directory, which is per-user
+and per-workspace and is not large. They count against the quota described in
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
 
 ## Installing Python Packages Into a Private Kernel
 
-------------------------------------------------------------------------
+Install Python packages into a virtual environment with its own Jupyter kernel,
+not into the environment the course ships. Installing into the course
+environment can break it. ITS fully supports the `venv` method. Support for
+conda environments as a customization method is not yet determined.
 
-**Install into a virtual environment rather than over the top of the course
-environment.** Installing into the environment the course ships is how people
-break it.
+1. Open a terminal from the notebook interface (**File → New → Terminal**).
 
-Open a terminal from the notebook interface (**File → New → Terminal**), then:
+2. Create and activate a virtual environment, then install `ipython` and
+   `ipykernel` into it:
 
-```bash
-# create a directory and a virtual environment inside it
-mkdir mykernel
-python3 -m venv mykernel
+    ```bash
+    # create a directory and a virtual environment inside it
+    mkdir mykernel
+    python3 -m venv mykernel
 
-# activate it; pip now refers to the virtual environment's pip
-source mykernel/bin/activate
-which pip
+    # activate it; pip now refers to the virtual environment's pip
+    source mykernel/bin/activate
+    which pip
 
-pip install ipython ipykernel
-```
+    pip install ipython ipykernel
+    ```
 
-Install the packages themselves:
+3. Install the packages into the virtual environment:
 
-```bash
-pip install scrapy
-```
+    ```bash
+    pip install scrapy
+    ```
 
-Then register the environment as a Jupyter kernel and leave:
+4. Register the environment as a Jupyter kernel, then deactivate it:
 
-```bash
-# confirm ipython is the virtual environment's copy before registering
-which ipython
+    ```bash
+    # confirm ipython is the virtual environment's copy before registering
+    which ipython
 
-ipython kernel install --user --name=mykernel
-deactivate
-```
+    ipython kernel install --user --name=mykernel
+    deactivate
+    ```
 
-Refresh the notebook interface. **`mykernel` now appears in the launcher**, and
-a notebook created with it can import whatever was installed into it.
+5. Refresh the notebook interface. `mykernel` appears in the launcher, and a
+   notebook created with it can import the packages installed into it.
 
-*Libraries installed this way are available only to notebooks using that
-kernel.* A notebook on the course kernel is unaffected by anything installed
-into a private one.
+Libraries installed this way are available only to notebooks using that kernel.
+A notebook on the course kernel is unaffected by anything installed into a
+private one.
 
 ## Installing R Packages
 
-------------------------------------------------------------------------
-
-**A personal library is created on first use of RStudio**, from the RStudio
-Console:
+On first use of RStudio, create a personal library from the RStudio Console:
 
 ```r
 dir.create("~/R")
@@ -75,89 +78,82 @@ dir.create("~/R/library")
 .libPaths("~/R/library")
 ```
 
-`install.packages()` then writes there rather than attempting the system
+`install.packages()` then writes to the personal library instead of the system
 library, which is not writable.
 
-## The Hard Boundary
+## Root Access and System Packages
 
-------------------------------------------------------------------------
-
-**There is no root and no `sudo`.** Containers run unprivileged, under the
-member's own UID, in a per-user Kubernetes namespace, on a node shared with other
-people's containers. `sudo apt-get install ...` fails by design rather than
+Containers run unprivileged, under the member's own UID, in a per-user
+Kubernetes namespace, on a node shared with other users' containers. Root access
+and `sudo` are not available. `sudo apt-get install ...` fails by design, not
 through misconfiguration.
 
-**The container and the login node share a filesystem.** A file written in one is
-visible in the other. Root inside a container would reach across that shared
-filesystem to files belonging to other people — which is why there is none.
+### Unavailable Operations and Alternatives
 
-| Not available | What works instead |
+| Unavailable operation | Alternative |
 |---|---|
-| `sudo` anything | Nothing needs `sudo`; work happens in the member's own home directory |
-| `apt-get install` a system package | Put it in a custom image, where root *is* available at build time |
-| Write to system directories | Install into a virtual environment or a personal R library |
-| Reach another user's container or namespace | Share through the workspace's `public/` or `teams/` areas |
+| Any `sudo` command | Work in the member's own home directory, which requires no `sudo` |
+| `apt-get install` a system package | Install it in a custom image, where root is available at build time |
+| Writing to system directories | Install into a virtual environment or a personal R library |
+| Reaching another user's container or namespace | Share through the workspace's `public/` or `teams/` areas |
 
-**Members keep full control of their own space.** Installing Python packages,
+### Operations Available Without Root
+
+Members keep full control of their own space. Installing Python packages,
 creating a Jupyter kernel, creating an R library, reading and writing anywhere
-they own, and managing their own pods with `kubectl` all work normally.
-→ [Kubernetes](../running-jobs/kubernetes.md)
+the member owns, and managing the member's own pods with `kubectl` all work
+normally. Direct `kubectl` use is covered in
+[Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md).
 
-**A system-level package therefore means a custom image.** Root is available
-inside a Dockerfile at build time — that is where `USER root` and `apt-get`
-belong — and the resulting image still runs as the member, not as root.
-**Build time and run time are different moments:** root is available while the
-image is being built, somewhere that is not our cluster; when that image is later
-launched here, it runs unprivileged, under the member's own UID, exactly like a
-standard image.
+### System Packages and Custom Images
 
-*On this platform, "I need a system package" and "I need a custom image" are the
-same sentence.*
-→ [Building & Publishing a Custom Image](building-a-custom-image.md)
+A system-level package requires a custom image. Root is available inside a
+Dockerfile at build time, which is where `USER root` and `apt-get` belong. The
+image is built outside the cluster. When the image is later launched on the
+cluster, it runs unprivileged under the member's own UID, the same as a standard
+image. Building and publishing an image is covered in
+[Building & Publishing a Custom Image](building-a-custom-image.md).
 
-**Course-wide needs are not per-user customizations.** A package the whole class
-needs belongs in the course image rather than in 200 individual installations.
+### Course-Wide Packages
 
-## When It Breaks
+A package that a whole course needs belongs in the course image, not in
+individual per-user installations.
 
-------------------------------------------------------------------------
+## Recovering a Broken Environment
 
-*Installing packages with pip or conda can break a local environment.* Two
-recoveries, in increasing order of severity:
+Installing packages with pip or conda can break a local environment. Two
+recoveries apply, in increasing order of severity: a clean kernel and the manual
+resetter.
 
-**A clean notebook.** Start a notebook on the **Python3 (clean)** kernel, which
-ignores everything in `.local`. If that fixes the symptom, `.local` is the
-cause: moving or deleting `.local/lib` resolves many cases, and occasionally
-`.local/jupyter` as well.
+### Clean Kernel
 
-**The manual resetter.** At [datahub.ucsd.edu](https://datahub.ucsd.edu), open
-the services dropdown and choose **manual-resetter**. It stops running servers,
-signs the account out and resets its profile, *leaving files intact*.
-→ [Sign-In & Session Problems](../access/sign-in-and-session-problems.md)
+Start a notebook on the **Python3 (clean)** kernel, which ignores everything in
+`.local`. If the clean kernel resolves the symptom, the cause is in `.local`.
+Moving or deleting `.local/lib` resolves many cases. Occasionally `.local/jupyter`
+must be moved or deleted as well.
 
-**Neither recovery applies to the shared course grader account.** A TA follows
-up in the course support ticket instead — the grader account carries the
-course's nbgrader state, and clearing its `.local` by hand can take grading with
-it. → [Common Grading Failures & Recovery](../grading/grading-failures.md)
+### Manual Resetter
 
-## Caveats & Limitations
+The manual resetter, described in
+["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed), stops
+the account's running servers, signs the account out, and resets its profile
+while leaving files intact.
 
-------------------------------------------------------------------------
+### Course Grader Account
 
-**Conda is unsettled:** see the draft note above. Until it is resolved, the
-`venv` route documented here is the one we can support without qualification.
+Neither recovery applies to the shared course grader account. For that account,
+a TA follows up in the course support ticket instead.
 
-**Personal installs count against the quota:** everything above lands in the
-member's home directory, which is per-user and per-workspace and is not large.
-→ [Directories, Quotas & Cleaning Up](../workspaces-and-storage/your-files-and-quotas.md#two-quotas-not-one)
+> [!WARNING]
+> The grader account carries the course's nbgrader state. Clearing its `.local`
+> by hand can destroy that state.
 
-**Support for per-individual customization is limited:** minor customizations
-within a standard image are a supported feature, but ITS staff cannot debug an
-arbitrary package tree. Instructors and TPOCs can bring these to a 1:1
-Consultation. → [Getting Help](../reference/getting-help.md)
+Grader account failures are covered in
+[Common Grading Failures & Recovery](../grading/grading-failures.md).
 
-------------------------------------------------------------------------
+### Support for Personal Customizations
 
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+Minor customizations within a standard image are a supported feature. ITS staff
+cannot debug an arbitrary package tree. Instructors and Technical Points of
+Contact (TPOCs) can bring such problems to a 1:1 Consultation, described in
+[Getting Help](../reference/getting-help.md).

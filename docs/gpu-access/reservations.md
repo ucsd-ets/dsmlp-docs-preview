@@ -1,364 +1,273 @@
 # Reservations
 
-**From Fall 2026, every GPU session on DSMLP sits on a reservation.** There are
-two ways to come by one: book a window ahead of time, or launch and have one
-created on the spot. **Both draw on a member's Service Unit budget.** The
-difference between them is certainty, not cost.
+From Fall 2026, every GPU session on DSMLP runs on a reservation, either booked
+ahead of time or created when the session launches. This page covers the
+reservation types, the claim window, length caps, best-effort reservations, and
+team mode.
 
-**Contents**
+## Reservation Types
 
-- [The Three Ways a Session Gets a GPU](#the-three-ways-a-session-gets-a-gpu)
-- [Booking Ahead](#booking-ahead)
-- [Launching Without a Booking](#launching-without-a-booking)
-- [Which One to Use](#which-one-to-use)
-- [What a Booking Names](#what-a-booking-names)
-- [The Timings That Are Fixed](#the-timings-that-are-fixed)
-- [The Claim Window](#the-claim-window)
-- [Reservation Length Caps](#reservation-length-caps)
-- [Length Is Not Runtime](#length-is-not-runtime)
-- [The Booking Horizon](#the-booking-horizon)
-- [Planning a Long Window](#planning-a-long-window)
-- [Best-Effort Reservations](#best-effort-reservations)
-- [Team Mode](#team-mode)
-- [Continue, Extend & Adopt](#continue-extend--adopt)
-- [Routes to More Time](#routes-to-more-time)
-- [What Governs How Much Is Held](#what-governs-how-much-is-held)
-
-## The Three Ways a Session Gets a GPU
-
-------------------------------------------------------------------------
-
-| | When it starts | What it costs | What protects it |
+| Type | When it starts | What it costs | What protects it |
 |---|---|---|---|
-| **A booked window** | At the reserved window, claimed within 15 minutes | Service Units, computed up front | A runtime guarantee for the length of the window |
-| **An on-demand lease** | Now, if capacity is idle | Service Units, exactly as a booked window would | It is a real reservation, and is treated as one |
-| **Best-effort** | Now | Free <!-- FIGURE: what "free" means here --> | Nothing |
+| Booked window | At the booked window; see [The Claim Window](#the-claim-window) | Service Units, computed up front | A runtime guarantee for the length of the window |
+| On-demand lease | At launch, if capacity is idle | Service Units, as for a booked window | It is a reservation and is treated as one |
+| Best-effort | At launch | Free; the Service Unit treatment is not yet published | Nothing |
 
 ## Booking Ahead
 
-------------------------------------------------------------------------
+A **reservation** is a booking of a GPU class for a window of time. During the
+window the capacity is held, and a session launched into it is admitted ahead
+of the walk-up queue.
 
-**A reservation is a booking of a GPU class for a window of time** — for example,
-*"Tuesday 9am-7pm: 4× extra-large"*. During that window the capacity is held, and
-a session launched into it is admitted ahead of the walk-up queue.
-
-**A reservation is a guarantee of access, not a running job.** Nothing starts by
-itself at 9am. A notebook, a shell session or a batch job is launched exactly as
-it would be otherwise, and it lands on the capacity being held.
-→ [From Reservation to Running Session](gpu-classes.md#from-reservation-to-running-session)
-
-*This is the part readers most often get wrong.* A booked window with no launch
-in it is a window nobody used, and it is charged — see
-[The Claim Window](#the-claim-window), which is the expensive version of the same
-mistake.
+A reservation guarantees access, not a running job. Nothing starts
+automatically when the window opens. A notebook, a shell session, or a batch
+job is launched in the usual way and lands on the held capacity, as described
+in [From Reservation to Running Session](gpu-classes.md#from-reservation-to-running-session).
+A booked window in which no session is launched is charged, as described in
+[The Claim Window](#the-claim-window).
 
 ## Launching Without a Booking
 
-------------------------------------------------------------------------
+> [!WARNING]
+> Launching an eligible GPU session without a booking creates an on-demand
+> lease and charges the member's Service Unit budget as a booked window would;
+> there is no free exploratory launch. See
+> [On-Demand Lease Charges](service-units-and-budgets.md#on-demand-lease-charges).
 
-**Launching a GPU session with no reservation creates one.** It draws from
-whatever capacity is idle at that moment, and it charges the member's budget
-exactly as a booked window would. *Launching an eligible session is what
-authorizes that spend; there is no free exploratory launch.*
-→ [On-Demand Leases Charge Budget](service-units-and-budgets.md#on-demand-leases-charge-budget)
+An on-demand lease draws on whatever capacity is idle at the moment of launch.
+Off-peak, the lease is granted close to instantaneously, and it is the usual
+route for day-to-day work.
 
-**Off-peak, this is close to instantaneous** and it is how most day-to-day work
-gets done. **On a busy deadline evening it is the weaker position**: reserved
-users are admitted first, and an on-demand request may wait or be refused. A
-session that never started because the lease was denied reports itself as
-`OnDemandLeaseDenied`.
-→ [When the Cluster Is Full](quotas-and-availability.md#when-the-cluster-is-full) ·
-[Kubernetes Events](../running-jobs/kubernetes.md#reservation-events)
+### Availability and Denied Leases
 
-**The first 2 hours of an on-demand lease are penalty-free on cancellation.** A
-lease started and stopped inside that window is charged for the time used and
+On a busy deadline evening, reserved users are admitted first, and an
+on-demand request may wait or be refused
+([When the Cluster Is Full](quotas-and-availability.md#when-the-cluster-is-full)).
+A session that did not start because its lease was denied reports the
+`OnDemandLeaseDenied` event, listed under
+[Reservation Events](../running-jobs/kubernetes.md#reservation-events).
+
+### Cancelling an On-Demand Lease
+
+The first 2 hours of an on-demand lease are penalty-free on cancellation
+([The Cancellation Penalty](service-units-and-budgets.md#the-cancellation-penalty)).
+A lease started and stopped within that period is charged for the time used and
 nothing more.
-→ [The Cancellation Penalty](service-units-and-budgets.md#the-cancellation-penalty)
 
-## Which One to Use
+## Choosing Between Booking and Launching
 
-------------------------------------------------------------------------
-
-| Situation | Please |
+| Situation | Route |
 |---|---|
-| A GPU is needed on Thursday evening | Book it. Evening capacity during a deadline week is what the calendar exists to allocate |
-| A twenty-minute experiment, now, at 11am | Launch. Daytime capacity is generally idle, and the first 2 hours carry no cancellation penalty |
-| A run that will take two days | Book it, and check the length caps first → [Reservation Length Caps](#reservation-length-caps) |
-| Work whose answer is not needed today, done cheaply | Move the work off-peak → [Off-Peak Discounts](service-units-and-budgets.md#peak--off-peak-hours) |
-| Work that can start now and accept being interrupted | Consider a best-effort reservation → [Best-Effort Reservations](#best-effort-reservations) |
+| A GPU is needed on Thursday evening | Book a window |
+| A twenty-minute experiment, now, at 11am | Launch without a booking. Daytime capacity is generally idle |
+| A run that will take two days | Book a window after checking [Reservation Length Caps](#reservation-length-caps) |
+| Work whose answer is not needed today, done cheaply | Run it off-peak; see [Peak & Off-Peak Hours](service-units-and-budgets.md#peak--off-peak-hours) |
+| Work that can start now and accept being interrupted | Use a best-effort reservation; see [Best-Effort Reservations](#best-effort-reservations) |
 
 ## What a Booking Names
 
-------------------------------------------------------------------------
-
-**A booking names a GPU class, a number of GPUs, and a window of time** — for
-example, *"Tuesday 9am-7pm: 4× `extra-large`"*. It is made through the
-reservation web interface, and it holds that capacity until the window ends.
-→ [GPU Classes](gpu-classes.md)
-
-**Until the conventions listed in the note above are settled, the booking form is
-the authority.** It refuses a window it cannot accept. *Please report any of its
-rules that this page does not cover.*
-
-## The Timings That Are Fixed
-
-------------------------------------------------------------------------
-
-These belong to the reservation model rather than to the calendar's form, and
-they are confirmed.
-
-| Timing | What it governs |
-|---|---|
-| **15 minutes** | The claim window. Launch inside it or the reservation is cancelled as a no-show → [The Claim Window](#the-claim-window) |
-| **First 2 hours** | Of an on-demand lease, penalty-free on cancellation → [The Cancellation Penalty](service-units-and-budgets.md#the-cancellation-penalty) |
-| **Roughly 12 hours ahead** | The boundary below which work may borrow idle capacity beyond its workspace's quota → [Borrowing Beyond Quota](quotas-and-availability.md#borrowing-beyond-quota) |
-| **48 hours / 168 hours** | The member cap on one reservation, and the absolute ceiling nobody exceeds → [Reservation Length Caps](#reservation-length-caps) |
-
-*The 15-minute claim window is not a lead time.* It is measured at the start of a
-window already held, and it has nothing to do with how far ahead a booking may be
-made.
+A booking names a GPU class, a number of GPUs, and a window of time, for
+example "Tuesday 9am-7pm: 4× `extra-large`". It is made through the reservation
+web interface and holds that capacity until the window ends. The booking form
+is the authority on booking conventions and refuses a window it cannot accept.
+The classes are described in
+[GPU Classes](gpu-classes.md).
 
 ## The Claim Window
 
-------------------------------------------------------------------------
+A booked window must be claimed within 15 minutes of its start. Claiming a
+reservation means starting a session on its capacity.
 
-**A booked window must be claimed within 15 minutes of its start.** A reservation
-holds capacity; claiming it means actually starting a session on that capacity.
-If nothing launches inside those 15 minutes, the reservation is treated as a
-no-show: it is cancelled, the capacity returns to the pool, and the window is
-gone for the rest of its length.
+> [!WARNING]
+> If no session launches inside the claim window, the reservation is treated as
+> a no-show. It is cancelled, the capacity returns to the pool, and the window is
+> lost for the rest of its length. A no-show is also charged, as described in
+> [The Cancellation Penalty](service-units-and-budgets.md#the-cancellation-penalty)
+> and [Having a Charge Waived](service-units-and-budgets.md#having-a-charge-waived).
 
-**Claiming is launching.** There is no separate confirmation step: a notebook, a
-shell session or a batch job starts in the usual way, and the reservation is
-claimed by the session landing on it.
+The claim window is measured from the start of a window already held. It does
+not govern how far ahead a booking may be made.
 
-*The clock runs during the launch itself.* Pulling a large custom image, or a
-first launch of the term, is not instant. A window cannot be claimed before it
-starts.
+### Claiming a Window
 
-**A no-show is charged.** What it costs, and how to have the charge waived, is
-documented with the other charges.
-→ [The Cancellation Penalty](service-units-and-budgets.md#the-cancellation-penalty)
+Claiming is launching. There is no separate confirmation step. A notebook, a
+shell session, or a batch job starts in the usual way, and the session landing
+on the reservation claims it.
+
+The claim window runs during the launch itself. Pulling a large custom image,
+or the first launch of a term, is not instant. A window cannot be claimed
+before it starts.
 
 ## Reservation Length Caps
 
-------------------------------------------------------------------------
-
-**Two ceilings apply to how long one reservation may be.**
+Two ceilings apply to the length of one reservation.
 
 | Cap | Applies to |
 |---|---|
-| **48 hours** | An ordinary member's reservation |
-| **168 hours** | An absolute ceiling. Nobody exceeds it, administrators included |
+| 48 hours | An ordinary member's reservation |
+| 168 hours | Every reservation. No one exceeds it, administrators included |
 
-**A workspace's own cap may be shorter than either.** Each workspace sets one,
-matched to the work it was provisioned for: course workspaces use short caps,
-while research workspaces can permit multi-day windows well beyond them. A
-booking refused for its length has met a workspace setting rather than a platform
-limit, and the PI or instructor is the person to ask.
-→ [What a Workspace Is](../workspaces-and-storage/what-a-workspace-is.md)
+### Workspace Length Caps
 
-## Length Is Not Runtime
+A workspace's own cap may be shorter than either ceiling. Each workspace sets
+one, matched to the work it was provisioned for: course workspaces use short
+caps, and research workspaces can permit multi-day windows well beyond them. A
+booking refused for its length has met a workspace setting rather than a
+platform limit. Requests about the workspace cap go to the PI or instructor.
 
-------------------------------------------------------------------------
+See also: [What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md)
 
-**A reservation's length and a session's runtime are different limits**, and a
-long booking does not by itself grant a long-running pod.
+## Reservation Length and Session Runtime
 
-- **A reservation** holds GPU capacity for a window of time. A 48-hour booking
-  means the hardware is held across those 48 hours.
-- **A session** — the pod a launch creates — runs for **6 hours** by default,
-  and **up to 12 hours** where that is set at launch. Beyond 12 hours, please
-  write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
-  → [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit)
+A reservation's length and a session's runtime are separate limits. A long
+booking does not by itself grant a long-running session.
 
-**Checkpointing is what makes a long booking usable.** A run that writes its
-progress somewhere durable at affordable intervals can be picked up again; a
-single uninterruptible process cannot.
-→ [Checkpointing & Logging](../running-jobs/checkpointing.md)
+A reservation holds GPU capacity for a window of time: a 48-hour booking holds
+the hardware across those 48 hours. A session, the pod a launch creates, runs
+for 6 hours by default and up to 12 hours where that is set at launch, as
+described in
+[The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit);
+runs beyond 12 hours are requested from
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu).
 
-**A session is also subject to idle culling for the whole of its life**, however
-long the window behind it. A reserved GPU that stops being used is reclaimed like
-any other. → [What Ends a Session](what-ends-a-session.md)
+A run that writes its progress to durable storage at intervals can be picked up
+again; a single uninterruptible process cannot
+([Checkpointing & Logging Long Runs](../running-jobs/checkpointing.md)).
+
+Idle culling applies to a session for its whole life, however long the
+reservation behind it, and a reserved GPU that stops being used is reclaimed
+like any other
+([What Counts as Idle](what-ends-a-session.md#what-counts-as-idle)).
 
 ## The Booking Horizon
 
-------------------------------------------------------------------------
+Bookings are accepted within a rolling window that has a minimum and a maximum
+distance ahead and moves forward with the date. Neither bound is yet published.
+The booking form is the authority on how far ahead a window may be placed.
 
-**Bookings are accepted inside a rolling window, not arbitrarily far ahead.**
-The calendar takes bookings no nearer than some minimum and no further than some
-maximum, and that window moves forward with the date.
-<!-- FIGURE: the minimum and maximum days ahead a member may book -->
-
-*Neither bound is published, and this page will state them once they are.* Until
-then, the booking form is the authority on how far out a window may be placed.
-
-**One horizon is confirmed.** Work starting within roughly the next **12 hours**
-may borrow idle capacity beyond its workspace's quota — so a last-minute job has
-a route to hardware that a booking made a week out does not. Course workspaces
-always borrow senior.
-→ [Borrowing Beyond Quota](quotas-and-availability.md#borrowing-beyond-quota)
+See also: [Borrowing Beyond Quota](quotas-and-availability.md#borrowing-beyond-quota)
 
 ## Planning a Long Window
 
-------------------------------------------------------------------------
+Book the GPU class the work needs rather than the largest one available. Class
+selection is covered in [GPU Classes](gpu-classes.md),
+and booking costs in [Service Units & Budgets](service-units-and-budgets.md).
 
-**Please book the class the work needs rather than the largest one available.**
-A 48-hour `extra-large` booking is a substantial draw on a budget and a
-substantial hold on scarce hardware.
-→ [GPU Classes](gpu-classes.md) ·
-[Service Units & Budgets](service-units-and-budgets.md)
-
-**Unused time can be handed back.** Releasing the tail of a finished booking
-carries no cancellation penalty — the charge is for the time actually used, and
-the rest returns to the pool.
-→ [Cancelling in Advance](service-units-and-budgets.md#cancelling-in-advance)
+Unused time can be released. Releasing the remainder of a booking after the
+work finishes carries no cancellation penalty: the charge is for the time
+actually used, and the remainder returns to the pool
+([Cancelling in Advance](service-units-and-budgets.md#cancelling-in-advance)).
 
 ## Best-Effort Reservations
 
-------------------------------------------------------------------------
+A best-effort reservation starts immediately and carries no guarantee. An
+ordinary reservation holds capacity and protects the session for the length of
+the window. A best-effort reservation holds nothing: it runs on spare capacity
+and releases that capacity as soon as a session with a claim on it arrives.
 
-**A best-effort reservation trades the guarantee for an immediate start.** An
-ordinary reservation holds capacity and protects the session for the length of the
-window. A best-effort one holds nothing: it runs on capacity that is genuinely
-spare, and hands that capacity back the moment somebody with a claim on it turns
-up.
+Best-effort is a deliberate choice to run without the guarantee. It differs
+from the default on-demand lease described in
+[Launching Without a Booking](#launching-without-a-booking).
 
-**Launching without a booking is not the same as launching best-effort.** An
-ordinary on-demand launch creates a reservation on the member's behalf and spends
-that member's budget on it; that is the default behaviour. Best-effort is a
-deliberate choice to run without the guarantee.
+Idle culling, the runtime limit, and the workspace's GPU class grants apply to
+a best-effort session as they do to any other. Best-effort is not a route
+around a Service Unit budget. The options for a member whose budget is
+insufficient are in
+[When a Budget Runs Out](service-units-and-budgets.md#when-a-budget-runs-out).
 
-**A best-effort session can end at any point in its life, including immediately.**
-There is no protected initial period and no point after which the session is safe.
-A best-effort session that has been running for four hours is exactly as liable to
-be reclaimed as one that started a minute ago.
+### Preemption
 
-**Saved work survives; unsaved work does not.** A preemption arrives without a
-signal the running code can catch and without an opportunity to write state out on
-the way past. Everything that matters has to be on disk already.
-→ [Checkpointing & Logging](../running-jobs/checkpointing.md)
+> [!WARNING]
+> A best-effort session can be preempted at any point in its life, including
+> immediately after it starts, and the preemption may arrive without a signal
+> the running code can catch. Only work already saved to disk survives.
 
-The session records the ending as a `Preempted` Kubernetes event, which
-distinguishes the cluster taking the card back from a program that crashed.
-→ [Kubernetes Events](../running-jobs/kubernetes.md#reservation-events)
+There is no protected initial period and no point after which a best-effort
+session is safe from preemption. The session records the ending as a
+`Preempted` Kubernetes event, which distinguishes a preemption from a program
+crash ([Reservation Events](../running-jobs/kubernetes.md#reservation-events)).
 
-**What best-effort is good for:**
+### Suitable Uses
 
-- **Work that checkpoints.** A training run that resumes from disk loses minutes
-  to a preemption rather than hours.
-- **Attended work.** Debugging, a first pass over a dataset, checking that a model
-  builds and a batch runs — short interactive work where losing the container
-  costs a re-launch and nothing else.
-- **Capacity that would otherwise go unused.** Capacity that is spare at eleven in
-  the morning is capacity nobody has booked.
+- Work that checkpoints. A training run that resumes from disk loses minutes to
+  a preemption rather than hours
+  ([Checkpointing & Logging Long Runs](../running-jobs/checkpointing.md)).
+- Attended work: debugging, a first pass over a dataset, or checking that a
+  model builds and a batch runs. Losing the container costs a re-launch.
+- Spare capacity that nobody has booked, such as capacity at eleven in the
+  morning.
 
-What it is not good for is anything with a deadline attached to it. *A reservation
-is the only thing on this platform that promises a GPU at a particular time.*
-
-**Best-effort is not a route around a budget.** Where a member's Service Unit
-budget is not enough for the work, a workspace manager — an instructor, TA or
-PI — can book on that member's behalf without drawing the member's budget, and can
-request an increase.
-→ [When a Budget Runs Out](service-units-and-budgets.md#when-a-budget-runs-out)
-
-*Idle culling, the runtime limit and the workspace's GPU class grants all apply to
-a best-effort session exactly as they do to any other.*
+Best-effort is unsuitable for work with a deadline. A reservation is the only
+mechanism on the platform that guarantees a GPU at a particular time.
 
 ## Team Mode
 
-------------------------------------------------------------------------
+Team mode lets members of a team act on one another's reservations. A teammate
+can cancel another member's booking, and the penalty for that cancellation
+cannot be waived
+([Having a Charge Waived](service-units-and-budgets.md#having-a-charge-waived)).
 
-**Team mode lets members of a team act on one another's reservations.** That is
-very nearly the whole of what we can confirm about it, and this section is short
-for that reason.
+Other team mode mechanics are not yet documented. Contact
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu) before planning work that depends
+on team mode.
 
-**A teammate can cancel another member's booking, and that penalty cannot be
-waived.** *This is the only cancellation charge in the system with no route of
-appeal.* Elsewhere, a workspace manager may waive a charge where it is warranted
-and an administrator may pardon one outright; here, neither applies.
-→ [Having a Charge Waived](service-units-and-budgets.md#having-a-charge-waived)
+### Team Data and the `-G` Flag
 
-**Everything else about team mode is unsettled** at the time of writing. *Please
-write to us at [datahub@ucsd.edu](mailto:datahub@ucsd.edu) before planning work
-that depends on it.*
+The `launch.sh -G` flag controls which team data is visible, not reservations.
+`-G list` prints the teams an account belongs to, and `-G <teamid>` launches
+with that team's data visible under `teams/`. No connection between this flag
+and team mode in the reservation system is documented. Team data is described
+in
+[Sections, Teams and Group Data](../workspaces-and-storage/what-a-workspace-is.md#sections-teams-and-group-data).
 
-**`launch.sh -G` is about data, not reservations.** `-G list` prints the teams an
-account belongs to and `-G <teamid>` launches with that team's data visible under
-`teams/`. That mechanism scopes which files are visible. It is not known to be
-connected to team mode in the reservation system.
-→ [Sections, Teams and Group Data](../workspaces-and-storage/what-a-workspace-is.md#sections-teams-and-group-data)
-
-*Note also that `-g` and `-G` are different flags entirely: `-g 1` asks for one
-GPU, `-G 1` does not.*
+> [!NOTE]
+> `-g` is the GPU count and `-G` is the group flag: `-g 1` asks for one GPU,
+> and `-G 1` does not. See
+> [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags).
 
 ## Continue, Extend & Adopt
 
-------------------------------------------------------------------------
+Continue, Extend, and Adopt are operations in the reservation system's
+vocabulary that act on a reservation already held. Their mechanics are not yet
+documented.
 
-**Continue, Extend and Adopt belong to the reservation system's own vocabulary.**
-They name operations on a reservation already held, and members will meet the
-three words before this page can define them. Their mechanics are undocumented in
-every source available to this project, and this page states that rather than
-guessing at which is which.
-
-**The rules that bound every reservation bound these too.** Whatever the three
-turn out to do, none of them escapes the following, all of which are confirmed:
-
-- **No reservation exceeds 168 hours.** That ceiling is absolute. Ordinary
-  members cap at 48 hours per reservation.
-- **GPU time draws Service Units.** There is no free route to more hours; a longer
-  booking is a larger charge, however the extra time is arranged.
-- **Cancelling in advance carries no penalty.** The charge is for the time
-  actually used, and the remainder returns to the pool.
-- **In team mode, a teammate can cancel another member's booking**, and that
-  particular penalty cannot be waived. If Adopt turns out to be a team operation,
-  this is the neighbourhood it lives in.
+No reservation exceeds the absolute ceiling in
+[Reservation Length Caps](#reservation-length-caps). GPU time draws Service
+Units, and a longer booking is a larger charge, however the extra time is
+arranged.
 
 ## Routes to More Time
 
-------------------------------------------------------------------------
+Book the full time the work requires at the outset. Time released early is
+charged only for the hours used, as described in
+[Planning a Long Window](#planning-a-long-window). A run that checkpoints can
+resume from disk after a window ends, as described in
+[Checkpointing & Logging Long Runs](../running-jobs/checkpointing.md).
 
-Until the three operations above are documented, these are the routes we can
-describe honestly.
+### Running Past the Window
 
-**Booking the required time up front.** A window released early costs nothing
-beyond the hours actually used.
+There is no hard kill when a window closes, and an in-session countdown runs.
+Past the window the time is no longer guaranteed, the session has no protection
+once the capacity is wanted, and overstay has a cost
+([Overstay](what-ends-a-session.md#overstay)). The cost of overstay is not yet
+published.
 
-**Running past the window.** There is no hard kill when a window closes, and
-there is an in-session countdown — but the time is no longer guaranteed, the
-session has no protection once the capacity is wanted, and overstay has a cost we
-cannot yet state.
-→ [Overstay](what-ends-a-session.md#overstay)
+### Bookings by a Workspace Manager
 
-**A booking made by a group manager.** An instructor, TA or PI can book on a
-member's behalf, and that booking does not draw the member's budget. For a project
-that has genuinely outgrown its budget, a manager can request a change by ticket.
-→ [Managing a Group](../reference/managing-a-group.md)
-
-**Checkpointing.** A run that resumes from disk turns a window that ended into an
-inconvenience rather than a lost day.
-→ [Checkpointing & Logging](../running-jobs/checkpointing.md)
+An instructor, TA, or PI can book on a member's behalf, and that booking does
+not draw the member's budget. For a project that has outgrown its budget, a
+workspace manager can request a change by ticket
+([Managing a Group](../reference/managing-a-group.md)).
 
 ## What Governs How Much Is Held
 
-------------------------------------------------------------------------
+A workspace has a quota per GPU class, the most of that class the whole
+workspace may hold at once
+([Quotas, Cohorts & Availability](quotas-and-availability.md)). Separately,
+each member has a Service Unit budget that meters the member's own share
+([Service Units & Budgets](service-units-and-budgets.md)).
 
-**A workspace has a quota per GPU class** — the most of that class the whole
-workspace may hold at once — and, separately, **each member has a Service Unit
-budget** which meters their own share of it. The quota is about capacity; the
-budget is about fairness within the workspace.
-→ [Quotas, Cohorts & Availability](quotas-and-availability.md) ·
-[Service Units & Budgets](service-units-and-budgets.md)
-
-*Quotas are not hard ceilings.* Work starting within roughly the next 12 hours
-may borrow idle capacity beyond the workspace's quota, and course workspaces
-always borrow senior. *Availability can also read zero while a workspace still
-has headroom on paper* — that is the cohort mechanism.
-→ [Cohorts](quotas-and-availability.md#cohorts)
-
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+A workspace quota is not a hard ceiling; the conditions for exceeding it are in
+[Borrowing Beyond Quota](quotas-and-availability.md#borrowing-beyond-quota).
+Availability can also read zero while a workspace still has headroom under its
+quota, as described in [Cohorts](quotas-and-availability.md#cohorts).

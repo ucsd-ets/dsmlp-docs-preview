@@ -1,190 +1,183 @@
 # Projects & Independent Study
 
-------------------------------------------------------------------------
-
-This article describes access to Datahub/DSMLP for work undertaken outside a
-scheduled course: eligibility and how to request access, how project access
-differs from course access, and where the technical detail is documented.
-
-**This article assumes familiarity with a shell.** Nobody configures a project
-environment on the student's behalf and there is no course menu to select from;
-what runs, and how, is the project's own decision.
-
-*Enrollment in a course that uses Datahub* is separate access under different
-rules — see [Using Datahub in a Course](student-in-a-course.md) or
+This page covers access to Datahub and DSMLP for work outside a scheduled
+course, and assumes familiarity with a shell. Access through an enrolled course
+is separate, follows different rules, and is covered in
+[Using Datahub in a Course](student-in-a-course.md) and
 [Working from the Command Line](working-from-the-command-line.md).
-
-**The mechanics here are the same as on the course pages.** Most of what may be
-obtained for a course may be obtained for a project. Rather than repeat that
-material, this article covers what *differs* — eligibility, priority, support,
-and how long access lasts — and links to the course pages for how things
-actually work.
 
 ## Eligibility & Requesting Access
 
-------------------------------------------------------------------------
-
-This path covers for-credit and campus-sponsored work outside a scheduled
+Project access covers for-credit and campus-sponsored work outside a scheduled
 course:
 
-- **Designated independent study courses** — 198/199, 293/298/299
-- **Independent thesis or dissertation research**
-- **State-supported capstone projects**
-- **Campus-sponsored co-curricular activities** — projects, workshops, clubs,
-  teams
+- Designated independent study courses: 198/199, 293/298/299
+- Independent thesis or dissertation research
+- State-supported capstone projects
+- Campus-sponsored co-curricular activities, such as projects, workshops,
+  clubs, and teams
 
-Please request access via the
-[Independent Study Request](https://go.ucsd.edu/2wc5gH0) form. *Non-credit
-personal projects may be approved on a case-by-case basis as resources are
-available.*
+Non-credit personal projects may be approved on a case-by-case basis as
+resources are available. The programs described in
+[Self-Supporting Programs](reference/policy.md#self-supporting-programs) are
+eligible, subject to the cost recovery set out there.
 
-**What a request states.** Who is sponsoring the work; what will be run; the
-resources required; and for how long. *A request naming a faculty sponsor and a
-concrete workload is provisioned considerably faster than one describing "a
-machine learning project".*
-
-*For non-students, and for research that is not for credit*,
-[Research IT](https://research-it.ucsd.edu/computing/index.html) can help connect
-faculty, staff, and student researchers with compute platforms — see also
+For non-students, and for research that is not for credit,
+[Research IT](https://research-it.ucsd.edu/computing/index.html) can help
+connect faculty, staff, and student researchers with compute platforms.
+Individual research on the cluster is covered in
 [Research on DSMLP](individual-researcher.md).
 
-*Self-supporting programs* are welcome here, but UC policy requires us to recover
-associated direct and indirect costs. Please contact us to discuss before
-planning around it.
+### Submitting a Request
+
+Request access through the
+[Independent Study Request](https://go.ucsd.edu/2wc5gH0) form. A request states
+who is sponsoring the work, what will be run, the resources required, and for
+how long. A request that names a faculty sponsor and a concrete workload is
+provisioned considerably faster than one that describes the work only in general
+terms.
 
 ## How Project Access Differs from Course Access
 
-------------------------------------------------------------------------
+Most of what may be obtained for a course may be obtained for a project, and the
+mechanics are the same. Project access differs in priority, support, duration,
+and environment configuration.
 
-**Priority relative to coursework.** Instruction comes first. When the cluster is
-busy — 10th and Finals Weeks, and at major assignment deadlines — coursework is
-served ahead of project work. *Demand is generally lower during the day than in
-the evening.*
+### Priority Relative to Coursework
 
-**Support.** We aim to resolve individual user issues within 1-2 business days,
-as for any other user. Project work has no instructor or TA as a first tier:
-nothing sits between the project and the Service Desk, and nobody there knows the
-project. [Error Messages](reference/error-messages.md) and
-[Getting Help](reference/getting-help.md) are the places to start.
+Instruction has priority. When the cluster is busy, during 10th and Finals Weeks
+and at major assignment deadlines, coursework is served ahead of project work.
+Demand is generally lower during the day than in the evening.
 
-**Duration.** Project access is granted for a defined period rather than tied to
-an instructional term. *Please submit an extension request before access lapses
-rather than afterwards.* → [When Access Starts & Ends](access/when-access-starts-and-ends.md)
+### Support Tier
 
-**No environment is configured in advance.** A course receives an image selected
-and tested by its instructor; a project receives the standard images and whatever
-is built upon them. → [Environments](environments/README.md)
+Project work has no instructor or TA as a first tier of support. Support
+questions go directly to the ITS Service Desk, whose staff have no prior
+knowledge of the project. Project issues carry the same response target as any
+other individual user issue, as given in
+[Response Targets](reference/getting-help.md#response-targets). Contacts are
+listed in [Support](#support).
+
+### Duration of Access
+
+Project access is granted for a defined period rather than tied to an
+instructional term. Submit an extension request before access lapses rather
+than afterwards. Access periods are covered in
+[When Access Starts & Ends](access/when-access-starts-and-ends.md).
+
+### Environment Configuration
+
+No environment is configured on the student's behalf, and no course menu of
+environments is offered. A course receives an image selected and tested by its
+instructor. A project receives the standard images and whatever is built upon
+them, and the project decides what runs and how. Images are covered in
+[Environments](environments/README.md).
 
 ## Getting Set Up
 
-------------------------------------------------------------------------
+1. Sign in at [datahub.ucsd.edu](https://datahub.ucsd.edu) for the browser
+   route, or `ssh` to the login node for a terminal. Duo applies, and the VPN is
+   not required for either route, as described in
+   [Connecting over SSH](access/the-login-node.md#connecting-over-ssh). The
+   routes are described in [Access](access/README.md).
+2. Locate the project workspace. Project access is provisioned as its own
+   workspace, with its own home directory, separate from any course the student
+   is enrolled in. Where both exist, select the workspace deliberately at launch,
+   as described in
+   [Belonging to Several Workspaces](workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces).
+3. Launch a container with `launch-scipy-ml.sh` for the GPU-capable image, or
+   `launch-datascience.sh` for the CPU image. Launching is covered in
+   [Running Jobs](running-jobs/README.md).
+4. Place large inputs in shared or external storage rather than in a per-user
+   copy. A project home directory is not large. Storage is covered in
+   [Workspaces & Storage](workspaces-and-storage/README.md).
 
-1. **Sign in.** Use [datahub.ucsd.edu](https://datahub.ucsd.edu) for the browser
-   route, or `ssh` to the login node for a terminal. Duo applies, once every
-   8 hours; *the VPN is not required for either route.* → [Access](access/README.md)
-2. **Locate the workspace.** Project access is provisioned as its own workspace,
-   separate from any course the student is enrolled in, with its own home
-   directory. Where both exist, the workspace is selected deliberately at launch.
-   → [Belonging to Several Workspaces](workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces)
-3. **Launch something.** `launch-scipy-ml.sh` for the GPU-capable image,
-   `launch-datascience.sh` for the CPU image. → [Running Jobs](running-jobs/README.md)
-4. **Place data sensibly.** A project home directory is not large. Large inputs
-   belong in shared or external storage rather than a per-user copy.
-   → [Workspaces & Storage](workspaces-and-storage/README.md)
-
-**The login node is not where work runs.** It exists to launch jobs and move
-files. → [The Login Node](access/the-login-node.md)
+The login node is for launching jobs and moving files, not for running work, as
+described in
+[What the Login Node Is For](access/the-login-node.md#what-the-login-node-is-for).
 
 ## Doing the Work
 
-------------------------------------------------------------------------
+Project work uses the same procedures as course work, documented on these pages.
 
-The procedures are documented on the course pages; what follows is the routing.
-
-| To | Please see |
+| Task | Documented in |
 |---|---|
 | Request CPU, memory, or a GPU | [`launch.sh` Reference](running-jobs/launch-sh-reference.md) |
-| Run work that outlives the terminal | [Interactive, Background & Batch Modes](running-jobs/job-modes-and-limits.md#the-three-modes) |
-| Use `sbatch` and related commands | [Coming from HPC](reference/coming-from-hpc.md#there-is-no-slurm-here) |
+| Run work that outlives the terminal | [Job Modes](running-jobs/job-modes-and-limits.md#job-modes) |
+| Use `sbatch` and related commands | [Slurm Compatibility Wrappers](reference/coming-from-hpc.md#slurm-compatibility-wrappers) |
 | Edit in Visual Studio Code | [Remote Editor Setup](access/remote-editor-setup.md) |
 | Install packages, or build an image | [Environments](environments/README.md) |
 | Move data in and out | [Moving & Sharing Data](workspaces-and-storage/moving-and-sharing-data.md) |
 | Share results with collaborators | [Inside the Workspace](workspaces-and-storage/moving-and-sharing-data.md#inside-the-workspace) |
 
-**Launching a GPU session draws on the project's Service Unit budget**, whether
-or not the reservation calendar is ever opened; launching an eligible session is
-what authorizes that spend. *No TA observes a project's consumption, and there is
-no natural point at which anyone remarks that the budget is nearly exhausted.*
-→ [On-Demand Leases Charge Budget](gpu-access/service-units-and-budgets.md#on-demand-leases-charge-budget) ·
-[Reading Your Balance](gpu-access/service-units-and-budgets.md#reading-your-balance)
+### Service Unit Budget
 
-Two further matters apply to a first long run:
+> [!WARNING]
+> Launching an eligible GPU session draws on the project's Service Unit budget,
+> whether or not the reservation calendar is used, as described in
+> [On-Demand Lease Charges](gpu-access/service-units-and-budgets.md#on-demand-lease-charges).
 
-- **An idle GPU session is reclaimed** after roughly 30 minutes of the card doing
-  nothing, up to 6 hours when the cluster is quiet, and never within the
-  session's first 45 minutes. → [Idle Culling](gpu-access/what-ends-a-session.md#what-counts-as-idle)
-- **A booked window that is missed is charged**, at up to 50% of the booking. A
-  waiver is possible — it is a workspace-manager action — but no TA is watching a
-  project calendar to notice and offer one. Cancelling in advance carries no
-  penalty beyond the time actually used.
-  → [The Claim Window](gpu-access/reservations.md#the-claim-window)
+No TA observes a project's consumption or remarks when the budget is nearly
+exhausted. The balance is covered in
+[Remaining Balance](gpu-access/service-units-and-budgets.md#remaining-balance).
 
-**Please checkpoint anything long-running.**
-→ [Checkpointing](running-jobs/checkpointing.md)
+### Idle GPU Sessions
 
-## When Things Go Wrong
+A GPU session that stops using its GPU is reclaimed, as described in
+[What Counts as Idle](gpu-access/what-ends-a-session.md#what-counts-as-idle).
 
-------------------------------------------------------------------------
+### Missed Reservations
 
-This audience has the least support around it: no instructor, no TA, no lab.
+A booked window that is missed is charged, as described in
+[The Claim Window](gpu-access/reservations.md#the-claim-window) and
+[The Cancellation Penalty](gpu-access/service-units-and-budgets.md#the-cancellation-penalty).
+A waiver is a workspace-manager action, and no TA watches a project calendar to
+offer one. Canceling in advance carries no penalty beyond the time actually
+used.
 
-| Symptom | Please start at |
+### Checkpointing
+
+Checkpoint long-running work, as described in
+[Checkpointing & Logging Long Runs](running-jobs/checkpointing.md).
+
+## Troubleshooting
+
+Error messages are listed in [Error Messages](reference/error-messages.md).
+Common symptoms in project work are documented on these pages.
+
+| Symptom | Documented in |
 |---|---|
-| `OOMKilled` | [`launch.sh` Reference](running-jobs/launch-sh-reference.md) — note that requests are half of limits |
+| `OOMKilled` | [Resource Requests and Limits](running-jobs/launch-sh-reference.md#resource-requests-and-limits) |
 | `DeadlineExceeded` | [The Runtime Limit](running-jobs/job-modes-and-limits.md#the-runtime-limit) |
-| `0/5 nodes available` | Usually a `gpu-class` label problem → [From Reservation to Running Session](gpu-access/gpu-classes.md#from-reservation-to-running-session) |
-| The session ended unexpectedly | [Idle Culling](gpu-access/what-ends-a-session.md#what-counts-as-idle), or [What Ends a Session](gpu-access/what-ends-a-session.md#the-end-of-a-window-is-not-a-kill) |
-| Reservation-related events in a pod | [Kubernetes Events](running-jobs/kubernetes.md#reservation-events) |
-
-In a ticket to [datahub@ucsd.edu](mailto:datahub@ucsd.edu), *please include what
-was run, the full error, and the workspace name.*
-→ [Getting Help](reference/getting-help.md)
+| `0/5 nodes available` | Usually a `gpu-class` label problem, as described in [Missing or Misspelled Class Label](gpu-access/gpu-classes.md#missing-or-misspelled-class-label) |
+| The session ended unexpectedly | [What Counts as Idle](gpu-access/what-ends-a-session.md#what-counts-as-idle), or [End of a Reservation Window](gpu-access/what-ends-a-session.md#end-of-a-reservation-window) |
+| Reservation-related events in a pod | [Reservation Events](running-jobs/kubernetes.md#reservation-events) |
 
 ## Outgrowing Project Access
 
-------------------------------------------------------------------------
+Work has outgrown project access when it needs capacity beyond what a project
+allocation carries, has become a lab's work rather than one person's, needs
+multi-day reservations, or needs storage measured in terabytes.
 
-The indications: capacity is needed beyond what a project allocation carries; the
-work has become a lab's rather than one person's; multi-day reservations are
-needed; or storage is measured in terabytes.
+| Situation | Route |
+|---|---|
+| Independent work on an ongoing basis | [Research on DSMLP](individual-researcher.md) |
+| Provisioning for a group | Provisioning belongs with a PI. Refer the PI to [Setting Up a Research Lab](faculty-research-lab.md). |
+| Work beyond this cluster | [Research IT](https://research-it.ucsd.edu/computing/index.html) can discuss other platforms. |
 
-- Working independently, on an ongoing basis →
-  [Research on DSMLP](individual-researcher.md)
-- Provisioning for the group belongs with a PI → please refer them to
-  [Setting Up a Research Lab](faculty-research-lab.md)
-- Genuinely beyond this cluster →
-  [Research IT](https://research-it.ucsd.edu/computing/index.html) can discuss
-  other platforms
+## Policy
 
-## Caveats & Limitations
+Highly sensitive data (P4), such as clinical records or export-controlled
+information, must not be used on DSMLP, and legally or contractually protected
+information (P3) may be permitted after review, as described in
+[Data Classification](reference/policy.md#data-classification). Appropriate use,
+the sharing of compute resources, and the other conditions of use are set out in
+[Policy](reference/policy.md).
 
-------------------------------------------------------------------------
+## Support
 
-**No Sensitive Data:** DSMLP is not engineered to protect highly-sensitive data
-such as clinical records or export-controlled information ("P4") and must not be
-used for such purposes. Legally- or contractually-protected information ("P3")
-may be permitted after review; note that vetting may take 4-6 weeks or longer.
-→ [Policy](reference/policy.md)
-
-**Shared Compute Resources:** resources are shared among all courses and
-projects, and instruction has priority. See above.
-
-**Appropriate Use:** The campus-wide
-[IT Acceptable Use Policy](https://adminrecords.ucsd.edu/ppm/docs/135-9.html)
-applies, including prohibitions on commercial or political activity.
-
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+Questions and tickets go to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) or the
+[ITS Service Desk](https://support.ucsd.edu/). A ticket includes what was run,
+the full error, and the workspace name. Ticket contents are described further in
+[Contents of a Support Ticket](reference/getting-help.md#contents-of-a-support-ticket),
+and other routes in [Getting Help](reference/getting-help.md).

@@ -1,13 +1,11 @@
-# GPU Classes & Getting One Attached
+# GPU Classes
 
-**A GPU class is a size band, not a hardware model.** A request names the amount
-of GPU memory the work needs, and the platform decides which physical card
-provides it. This page covers the five classes, choosing between them, asking for
-one, and confirming what was actually attached.
+A **GPU class** is a size band of GPU memory rather than a hardware model: a
+request names the amount of GPU memory the work needs, and the platform selects
+the physical card that provides it. This page covers the five classes, choosing
+and requesting a class, and confirming what was allocated.
 
-## The Five Classes
-
-------------------------------------------------------------------------
+## GPU Class Sizes
 
 | Class | Memory | Typically backed by |
 |---|---|---|
@@ -17,188 +15,166 @@ one, and confirming what was actually attached.
 | `large` | ~48 GB | L40S, or a slice of an H100 or RTX 6000 |
 | `extra-large` | ~96 GB | A full H100 or RTX PRO 6000 Blackwell |
 
-**The memory column is the one to plan against**, and the hardware column is
-context. *Both are approximate and both change.* A class is a promise about
-roughly how much GPU memory a session has, not a promise about which card it
-lands on — two sessions in the same class on the same afternoon may sit on
-different hardware.
-
-**Each workspace is granted access to one or more classes**, chosen when the
-workspace was provisioned to match the work it was expected to do. An
-introductory course may see `small` or `medium`; a lab fine-tuning large models
-may see `extra-large`. *A class the workspace was not granted is refused* — that
-is a request for the instructor or PI to make, not a fault to report.
-→ [What a Workspace Is](../workspaces-and-storage/what-a-workspace-is.md)
+Plan against the memory column. The hardware column is context. Both columns
+are approximate and subject to change. A class specifies roughly how much GPU
+memory a session has, not which card it runs on, and two sessions in the same
+class on the same afternoon may run on different hardware.
 
 ## Choosing a Class
 
-------------------------------------------------------------------------
+Request the smallest class the work fits within. A larger class is not faster
+for a model that already fits in a smaller one. A larger class is scarcer, so
+the wait for it is longer, and it draws more heavily on the Service Unit budget
+for every hour it is held, as described in
+[Service Units & Budgets](service-units-and-budgets.md).
 
-**Please request the smallest class the work fits within.** A larger class is
-not faster for a model that already fits in a smaller one. It is scarcer, so the
-wait for it is longer, and it draws more heavily on the Service Unit budget for
-every hour it is held.
-→ [Service Units & Budgets](service-units-and-budgets.md)
+GPU memory, not speed, determines the class. A model's parameters, its
+optimizer state, and the activations for one batch must all fit on the card at
+once. A run that fails with a CUDA out-of-memory error has two usual remedies,
+applied in this order: a smaller batch size, then the next class up.
 
-*The figure that decides the class is memory, not speed.* A model's parameters,
-its optimizer state, and the activations for one batch all have to sit on the
-card at once. A run that fails with a CUDA out-of-memory error has two usual
-remedies, a smaller batch size or the next class up, in that order — a smaller
-batch costs nothing and is available immediately.
+### Multiple GPUs
 
-**One GPU is the normal case.** Single-GPU work is mostly a matter of moving a
-model and its batches onto the device; using several GPUs at once is a code
-change rather than a launch flag, and a substantial one — in PyTorch,
+One GPU is the normal case. Single-GPU work mostly consists of moving a model
+and its batches onto the device. Using several GPUs at once is a substantial
+code change rather than a launch flag. In PyTorch, this means
 `nn.parallel.DistributedDataParallel` or a library such as Hugging Face
 Accelerate.
 
-**The defaults are one GPU per pod and one GPU across a namespace at any one
-time.** More than that is available by arrangement; please write to us and say
-what the work is.
-→ [Defaults & The Three Resource Tiers](../running-jobs/launch-sh-reference.md#defaults--the-three-resource-tiers)
+The default GPU limits per pod and per namespace are listed under
+[Defaults and Resource Tiers](../running-jobs/launch-sh-reference.md#defaults-and-resource-tiers).
+More than the default is available by arrangement. Requests go to
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu) and state what the work is.
 
 ## Requesting a Class
 
-------------------------------------------------------------------------
-
-A GPU session asks for two things: how many GPUs, and which class of GPU.
+A GPU launch requests two things: the number of GPUs and the class.
 
 ```bash
 launch-scipy-ml.sh -g 1 -l gpu-class=medium
 ```
 
-**`-g` is the count and `-l gpu-class=` is the size band.** The five literal
-values are `extra-small`, `small`, `medium`, `large` and `extra-large`.
+`-g` sets the GPU count and `-l gpu-class=` sets the class. The five values are
+`extra-small`, `small`, `medium`, `large`, and `extra-large`. Always pass the
+class label on a GPU request. A GPU request without it cannot be scheduled, as
+described under
+[Missing or Misspelled Class Label](#missing-or-misspelled-class-label).
 
-**Always pass the class label on a GPU request.** Medium and above sit behind
-`NoSchedule` taints, so a pod that asks for a GPU without naming a class has
-nowhere to be scheduled.
+> [!NOTE]
+> `-g` is the GPU count and `-G` is the group flag. Typing `-G` in place of
+> `-g` produces an error that does not clearly indicate the capitalization
+> mistake. See [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags).
 
-**The workspace is what grants class access.** Each workspace is given one or
-more classes matching the work it was provisioned for, and a class the workspace
-was not granted is refused however idle the hardware is. For a member who belongs
-to several workspaces, `-W` chooses which one the launch goes into — and it is
-the workspace that carries the class grant and the Service Unit budget.
-→ [Belonging to Several Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces)
+### Service Unit Charges at Launch
 
-**`-g` is GPU and `-G` is group.** The lower-case flag asks for a card. The
-upper-case one does something else entirely, and the error that follows is not
-obviously about capitalization.
-→ [`launch.sh` Reference](../running-jobs/launch-sh-reference.md)
+> [!WARNING]
+> Launching a GPU session without a booking creates a reservation on the
+> member's behalf and draws Service Units in the same way as a booked window.
+> There is no free exploratory launch. See
+> [On-Demand Lease Charges](service-units-and-budgets.md#on-demand-lease-charges).
 
-**`-v` is a different mechanism at a different layer.** It names a specific GPU
-model rather than a size band. Both work; workspace grants, reservations and
-quotas are all expressed in classes, so `-l gpu-class=` is the usual form and
-`-v` is for pinning the hardware.
+The runtime requested is the runtime charged. Request the time the work needs
+rather than the maximum permitted under
+[The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit).
+A session must be stopped explicitly. Logging out does not stop it, as
+described under
+[Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session).
 
-**For Slurm users**, `--partition` is not a scheduling partition here — it is
-forwarded as a `gpu-class` label, so `--partition medium` asks for the `medium`
-class.
-→ [Coming from HPC](../reference/coming-from-hpc.md#option-mapping)
+### Workspace Class Grants
 
-## On Datahub, the Class Is Preset
+Each workspace is granted access to one or more classes, chosen when the
+workspace was provisioned to match the work it was expected to do. An
+introductory course may see `small` or `medium`. A lab fine-tuning large models
+may see `extra-large`. A request for a class the workspace was not granted is
+refused, however idle the hardware is. Access to a further class is requested
+by the instructor or PI. The grant is part of the workspace, described in
+[What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md).
 
-------------------------------------------------------------------------
+A member who belongs to several workspaces selects the one a launch goes into
+with `-W`, as described under
+[Belonging to Several Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces).
+The launch uses that workspace's class grant and Service Unit budget.
 
-**From the browser there is no GPU class to choose.** The class is set on the
-environment a workspace publishes, so it arrives baked into whichever profile is
-selected from the spawn menu. There is no control to change it and nothing to
-type.
+### Selecting a Specific GPU Model
 
-**Which means the menu is the decision.** Where a course offers both a CPU option
-and a GPU option, choosing the GPU option is choosing its class as well. Work that
-needs a different class from the one a course publishes is a conversation with the
-instructor or TA, not a setting.
+`-v` is a different mechanism. It names a specific GPU model instead of a size
+band. Both forms work. Workspace grants, reservations, and quotas are all
+expressed in classes, so `-l gpu-class=` is the usual form and `-v` is for
+pinning the hardware.
 
-*Where a course does not publish a GPU environment at all, the command line is the
-same access used differently.*
-→ [Working from the Command Line](../working-from-the-command-line.md)
+### Slurm Partition Mapping
 
-## When the Label Is Missing
+`--partition` is not a scheduling partition on this platform. It is forwarded
+as a `gpu-class` label, so `--partition medium` requests the `medium` class.
+The mapping of Slurm options is under
+[Option Mapping](../reference/coming-from-hpc.md#option-mapping).
 
-------------------------------------------------------------------------
+## Preset Classes on Datahub
 
-**`medium` and above sit behind `NoSchedule` taints.** A GPU request with no
-`gpu-class` label, or with the label misspelled, has nowhere to land: the pod
+A browser session has no GPU class to choose. The class is set on the
+environment a workspace publishes and is fixed in whichever profile is selected
+from the spawn menu. There is no control to change it.
+
+Where a course offers both a CPU option and a GPU option, selecting the GPU
+option also selects its class. Work that needs a different class from the one a
+course publishes is arranged with the instructor or TA. Where a course does not
+publish a GPU environment, the same access can be used from the command line,
+as described in [Working from the Command Line](../working-from-the-command-line.md).
+
+## Missing or Misspelled Class Label
+
+`medium` and above carry `NoSchedule` taints. A GPU request with no
+`gpu-class` label, or with a misspelled label, cannot be scheduled. The pod
 stays pending and eventually fails with `0/5 nodes available`.
 
-*This is the single commonest GPU launch failure, and the message does not
-mention the label.* The spelling of `gpu-class` and of the class name is the
-first thing to check against it, ahead of concluding that the cluster is full.
-→ [When the Cluster Is Full](quotas-and-availability.md#when-the-cluster-is-full) ·
-[Error Messages](../reference/error-messages.md)
+This is the most common GPU launch failure, and the message does not mention
+the label. Check the spelling of `gpu-class` and of the class name before
+concluding that the cluster is full. A full cluster is covered under
+[When the Cluster Is Full](quotas-and-availability.md#when-the-cluster-is-full),
+and the message is also listed in
+[Error Messages](../reference/error-messages.md).
 
 ## Confirming the Allocation
 
-------------------------------------------------------------------------
-
-Inside the running container, two commands settle what was actually allocated:
+Two commands, run inside the running container, confirm what was allocated.
 
 ```bash
 python -c "import torch; print(torch.cuda.get_device_name(0));"
 nvidia-smi
 ```
 
-**The first is the one to run when code reports no device found**, which is
-much more often an environment problem than a scheduling one — an image without
-CUDA tooling, for instance, cannot see a card that is genuinely attached. The
-`rstudio-notebook` image derives from the CPU image and is not GPU-enabled at all.
-→ [Standard Images](../environments/standard-images.md)
+Run the first command when code reports that no device was found. That symptom
+is more often an environment problem than a scheduling one. For example, an
+image without CUDA tooling cannot see a card that is attached. The
+`rstudio-notebook` image derives from the CPU image and is not GPU-enabled, as
+listed under
+[Standard Images](../environments/standard-images.md#standard-images).
 
-**The second names the model and how much memory it has**, which is how a session
-is confirmed to be on the expected class rather than one adjacent to it. It also
-reports what is currently using the card — the practical way to tell whether a
-training run is actually on the GPU rather than quietly on the CPU.
+The second command, `nvidia-smi`, names the GPU model and how much memory it
+has. This confirms that the session is on the expected class rather than an
+adjacent one.
 
-*Please check this once at the start of a long run.* A job that never touches the
-GPU is also a job the idle culler will reclaim the card from.
-→ [What Ends a Session](what-ends-a-session.md#what-counts-as-idle)
+The GPU models present on each node, and how many are free, are listed on the
+page described under [The Status Page](quotas-and-availability.md#the-status-page).
 
-**To see what the cluster currently holds**, the status page lists the GPU models
-present on each node and how many are free.
-→ [The Status Page](quotas-and-availability.md#the-status-page)
+### Checking GPU Utilization
+
+`nvidia-smi` also reports what is currently using the card. This shows whether
+a training run is on the GPU or running on the CPU instead. Check it once at
+the start of a long run. A GPU that is not in use is reclaimed by idle culling,
+which applies to every class, with or without a reservation. The criteria are
+under [What Counts as Idle](what-ends-a-session.md#what-counts-as-idle).
 
 ## From Reservation to Running Session
 
-------------------------------------------------------------------------
+A reservation guarantees access, not a running job. Booking a window does not
+start anything. When the window opens, a session is launched the usual way. The
+booking ensures that the capacity is available and that the session is
+admitted ahead of the walk-up queue.
 
-**A reservation is a guarantee of access, not a running job.** Booking a window
-does not start anything. When the window opens, a session is launched the usual
-way, and what the booking buys is that the capacity is there and that the session
-is admitted ahead of the walk-up queue.
+A booked window that is not claimed in time is cancelled. The deadline is under
+[The Claim Window](reservations.md#the-claim-window).
 
-**The claim window is 15 minutes.** A window that is not claimed inside it is
-cancelled, the capacity returns to the pool, and the window is gone for the rest
-of its length.
-→ [The Claim Window](reservations.md#the-claim-window)
-
-**How a booked window is selected on the Datahub spawn form is not documented
-anywhere.** We are stating that plainly rather than describing a plausible
-interface. *A member who has booked a window and cannot see how to use it has met
-this gap rather than made a mistake.* Please
-[write to us](mailto:datahub@ucsd.edu) and we will walk through it — and the
-answer will be published here.
-
-## Caveats & Limitations
-
-------------------------------------------------------------------------
-
-**Launching without a booking is not free.** It creates a reservation on the
-member's behalf and draws Service Units, exactly as a booked window would. There
-is no exploratory launch.
-→ [On-Demand Leases Charge Budget](service-units-and-budgets.md#on-demand-leases-charge-budget)
-
-**The runtime asked for is the runtime charged.** Please request the time the work
-needs rather than the maximum permitted. A session must be stopped explicitly;
-logging out does not stop it.
-→ [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit)
-
-**A GPU that is not in use is reclaimed.** Idle culling applies to every class,
-reservation or no reservation.
-→ [What Ends a Session](what-ends-a-session.md)
-
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+The procedure for selecting a booked window on the Datahub spawn form is not
+yet published; [datahub@ucsd.edu](mailto:datahub@ucsd.edu) assists members who
+have booked a window.

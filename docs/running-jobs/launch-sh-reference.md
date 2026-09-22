@@ -1,87 +1,101 @@
 # `launch.sh` Reference
 
-This is the authoritative list of what `launch.sh` accepts, what it provides by
-default, and what the numbers passed to it mean. Work that outlives a terminal
-session is covered in [Interactive, Background & Batch Modes](job-modes-and-limits.md#the-three-modes); how long a container may run, in
-[The Runtime Limit](job-modes-and-limits.md#the-runtime-limit).
+This page lists the options `launch.sh` accepts, the resources it provides by
+default, and how the resource values passed to it are applied. Work that
+continues after a terminal session ends is covered in
+[Job Modes](job-modes-and-limits.md#job-modes), and how long a
+container may run in [The Runtime Limit](job-modes-and-limits.md#the-runtime-limit).
 
-## Where It Lives & How to Call It
+## Location and Invocation
 
-------------------------------------------------------------------------
+`launch.sh` is on the path once a connection to the login node is established.
+Its absolute path is `/opt/launch-sh/bin/launch.sh`. Containers run unprivileged
+under the member's own UID, and no flag grants root or sudo
+([Root Access and System Packages](../environments/customizing-your-environment.md#root-access-and-system-packages)).
 
-`launch.sh` is on the path once a connection to the login node is established,
-and its absolute path is `/opt/launch-sh/bin/launch.sh`.
+### Wrapper Scripts
 
-**Most work goes through a wrapper.** `launch-scipy-ml.sh` starts the GPU-capable
-image and `launch-datascience.sh` the CPU one. Each sets environment variables and
-then hands off to `launch.sh`, so every flag below behaves identically through a
-wrapper. → [Standard Images](../environments/standard-images.md)
+Most work goes through a wrapper. `launch-scipy-ml.sh` starts the GPU-capable
+image and `launch-datascience.sh` starts the CPU image. The images are described
+in [Standard Images, Tags, and Pinning](../environments/standard-images.md). Each
+wrapper sets environment variables and then hands off to `launch.sh`, so every
+`launch.sh` flag behaves identically through a wrapper.
 
-**The absolute path is what makes non-interactive submission work.** `ssh` runs a
-non-login shell, in which the launcher is not necessarily on the path, so a job
-submitted in one line from a personal machine names the launcher in full:
+Every flag also has an environment-variable equivalent, which is the mechanism
+the wrappers use. The equivalents are covered in
+[Configuring Without Flags](job-modes-and-limits.md#configuring-without-flags).
+
+### Non-Interactive Submission
+
+A job submitted in one line from a personal machine names the launcher by its
+absolute path, because `ssh` runs a non-login shell in which the launcher is not
+necessarily on the path.
 
 ```bash
 ssh <user>@dsmlp-login.ucsd.edu /opt/launch-sh/bin/launch.sh -c 8 -m 16 -g 1 \
     -i <image> -f ${HOME}/myproject/run-commands.sh
 ```
 
-*This is also the form the VS Code `ProxyCommand` uses.*
-→ [Remote Editor Setup](../access/remote-editor-setup.md)
+The VS Code `ProxyCommand` described in
+[Remote Editor Setup](../access/remote-editor-setup.md) uses the same form.
 
-## Defaults & The Three Resource Tiers
+## Defaults and Resource Tiers
 
-------------------------------------------------------------------------
+### Default Resources
 
-**Bare `launch.sh` and the wrappers do not produce the same container.**
+Bare `launch.sh` and the wrappers start containers with different defaults.
 
 | Invocation | CPU | RAM | GPU | Image |
 |---|---|---|---|---|
 | `launch.sh` | 1 | 1 GB | 0 | `ghcr.io/ucsd-ets/scipy-ml-notebook:stable` |
 | `launch-scipy-ml.sh`, `launch-datascience.sh` | 2 | 8 GB | 0 | the wrapper's own image |
 
-*Switching from a wrapper to `launch.sh` directly halves the CPU and leaves an
-eighth of the memory, and the symptom is usually a process that dies rather than
-an error that explains itself.* **A browser session begins at 2 CPU / 4 GB**,
-which is neither figure above — that is a course's spawn configuration rather than
-a command-line default. The three numbers describe three different things and all
-three are correct.
+Calling `launch.sh` directly instead of a wrapper halves the CPU and leaves one
+eighth of the memory. The usual symptom is a process that dies without an error
+that explains the cause.
 
-Limits then apply at three tiers, and confusing them is the usual cause of a job
-that will not schedule:
+A browser session starts at 2 CPU / 4 GB. That figure is a course's spawn
+configuration, not a command-line default, and is described in
+[The Browser Session](../access/datahub-in-the-browser.md#the-browser-session).
+The three sets of figures describe three different things.
+
+### Resource Tiers
+
+Limits apply at three tiers. Confusing the tiers is the usual cause of a job
+that does not schedule.
 
 | Tier | Default | Meaning |
 |---|---|---|
 | A single pod | 8 CPU / 32 GB / 1 GPU | The most any one container receives |
 | A namespace, in total | 8 CPU / 64 GB / 1 GPU | Across everything running at once |
-| Available on request | up to 32 CPU / 128 GB | Please ask, and say what for |
+| Available on request | up to 32 CPU / 128 GB | On request, with the purpose stated |
 
-*`-m 64` is therefore not a valid single-container request even though 64 GB is
-the namespace total — that allowance may be spent across several containers, not
-in one.* Where an older article or a course README describes 8 CPU / 64 GB / 1 GPU,
-or 8 CPU / 16 GB / 1 GPU, as the platform "maximum", it is describing a default,
-and in the second case an out-of-date one.
-→ [The Six Requests](../reference/getting-help.md#the-six-requests)
+`-m 64` is not a valid request for a single container, although 64 GB is the
+namespace total. The namespace allowance may be spent across several
+containers, not in one. Requests for the third tier are made as described in
+[Administrative Requests](../reference/getting-help.md#administrative-requests).
 
-## Requests Are Half of Limits
+An older article or course README that describes 8 CPU / 64 GB / 1 GPU or
+8 CPU / 16 GB / 1 GPU as the platform maximum is describing a default. The
+8 CPU / 16 GB / 1 GPU figure is out of date.
 
-------------------------------------------------------------------------
+## Resource Requests and Limits
 
-**The number passed is the ceiling, not the reservation.** `launch.sh` sets the
-Kubernetes *request* — what the scheduler reserves, and what is actually
-guaranteed — to half the *limit* named. `-m 32` reserves 16 GB and permits 32 GB;
-the second 16 GB is available only if the node the pod landed on has it spare. The
-same halving applies to CPU.
+The value passed to `-c` or `-m` is the **limit**, the most the container may
+use. `launch.sh` sets the Kubernetes **request**, the amount the scheduler
+reserves and the only amount guaranteed, to half the limit. `-m 32` reserves
+16 GB and permits 32 GB. The second 16 GB is available only if the node the pod
+runs on has it spare. The same halving applies to CPU.
 
-*This is the cause of a whole class of `OOMKilled` reports, and of the case where a
-job that ran yesterday fails today on a busier node with no change to the code
-that runs in it.* Sizing for the guarantee rather than the ceiling means asking for
-32 where a model needs 16 GB to be safe. GPUs are not halved — a GPU is assigned
-to one container exclusively, so its request and limit are the same number.
+The halving causes many `OOMKilled` (out-of-memory) reports. It also explains a
+job that succeeds on one run and fails on a later run, on a busier node, with no
+change to its code. Size a job for the guarantee, not the limit: to guarantee a
+model 16 GB, launch it with `-m 32`.
 
-## Flags: Resources & GPU Selection
+GPUs are not halved. A GPU is assigned to one container exclusively, so its
+request and limit are the same number.
 
-------------------------------------------------------------------------
+## Resource and GPU Selection Flags
 
 | Flag | Effect | Example |
 |---|---|---|
@@ -91,17 +105,29 @@ to one container exclusively, so its request and limit are the same number.
 | `-v <model>` | Specific GPU model: `1080`, `1080ti`, `2080ti`, `a30`, `a5000`, `a100`, `h100`, `rtxtitan`, `l40s` | `-v l40s` |
 | `-l <key=value>` | Apply a pod label. Repeatable | `-l gpu-class=medium` |
 
-`-l gpu-class=<class>` requests a GPU size band rather than a named model, which
-is the usual way to ask for a GPU. Medium and above sit behind `NoSchedule`
-taints, so a GPU request that omits the label has nowhere to land and fails with
-`0/5 nodes available` after a wait. *`-v` and `gpu-class` are two mechanisms at
-two layers — `-v` names hardware, `gpu-class` names a size band. Both work; please
-use one or the other, not both at once.*
-→ [GPU Classes](../gpu-access/gpu-classes.md)
+> [!WARNING]
+> Launching a GPU session draws on the workspace's Service Unit budget whether
+> or not the session was booked ahead, and there is no free exploratory launch.
+> See [On-Demand Lease Charges](../gpu-access/service-units-and-budgets.md#on-demand-lease-charges).
 
-**`-g` is GPU, `-G` is group.** This is the single most common typo on the
-platform: `-g 1` requests a GPU, `-G 1` does not, and the failure that follows is
-not obviously about capitalization.
+### GPU Class and GPU Model
+
+`-l gpu-class=<class>` requests a GPU size band instead of a named model and is
+the usual way to request a GPU. The classes are described in
+[GPU Classes](../gpu-access/gpu-classes.md). `-v` names
+hardware; `gpu-class` names a size band. Both work. Use one or the other, not
+both at once.
+
+Classes medium and above carry `NoSchedule` taints, so a GPU request that omits
+the `gpu-class` label has no node to run on and fails with `0/5 nodes available`
+after a wait ([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)).
+
+### Team Selection
+
+> [!NOTE]
+> `-g` is the GPU count and `-G` is the group flag. `-g 1` requests a GPU and
+> `-G 1` does not, and the failure that follows does not point to the
+> capitalization.
 
 | Flag | Effect |
 |---|---|
@@ -114,13 +140,12 @@ launch-scipy-ml.sh -W DSC180A_FA25_A00 -G list       # find the team ID
 launch-scipy-ml.sh -W DSC180A_FA25_A00 -G <teamid>   # then launch with it
 ```
 
-*`-G list` is the only way to discover a team ID*, and team directory names often
-contain brackets, which need quoting in a `cd`. → [Belonging to Several
-Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces)
+`-G list` is the only way to discover a team ID. Team directory names often
+contain brackets, which must be quoted in a `cd` command.
 
-## Flags: Image, Workspace & Placement
+See also: [Belonging to Several Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces)
 
-------------------------------------------------------------------------
+## Image, Workspace, and Placement Flags
 
 | Flag | Effect | Example |
 |---|---|---|
@@ -136,25 +161,36 @@ Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-severa
 | `-t <toleration>` | Apply a `NoSchedule` toleration. Repeatable | |
 | `-A <key=value>` | Apply a pod annotation. Repeatable | |
 
-`-i <image> -P Always` is the pair for developing an image: without it, a node
-already holding that tag keeps using its copy. *`-x` is for use only at our
-request*, and please describe the data to us before reaching for `-M` or `-F`.
-→ [Building a Custom Image](../environments/building-a-custom-image.md)
+### Image Pull Policy
 
-**`-n` takes a bare number.** `-n 30`, not `-n n30` — the leading `n` on the
-[status page](../gpu-access/quotas-and-availability.md#the-status-page) is not part of the value. Pinning a
-node is rarely useful: a pod whose named node is full waits for that node rather
-than taking an equivalent GPU elsewhere. `-l gpu-class=` or `-v` is the flag for
-choosing hardware.
+For an image under development, as described in
+[Building & Publishing a Custom Image](../environments/building-a-custom-image.md),
+pass `-i <image> -P Always`. Without `-P Always`, a node already holding that
+tag keeps using its copy.
 
-The launch output names the node the pod landed on, in a line reading
-`INFO pod assigned to node: its-dsmlp-n04.ucsd.edu`; please include it in a problem
-report. `-N` gives the pod a name it can be deleted by later, which is what
-anything left running unattended needs.
+### Mounts and Package Cache
 
-## Flags: How the Job Runs
+`-x` is used only at the request of ITS. Describe the data to ITS before using
+`-M` or `-F`.
 
-------------------------------------------------------------------------
+### Node Selection
+
+`-n` takes a bare number: `-n 30`, not `-n n30`. The leading `n` shown on
+[The Status Page](../gpu-access/quotas-and-availability.md#the-status-page) is
+not part of the value. A pod whose named node is full waits for that node and
+does not take an equivalent GPU elsewhere. To choose hardware, use
+`-l gpu-class=` or `-v`.
+
+The launch output names the node the pod was assigned to, in a line such as
+`INFO pod assigned to node: its-dsmlp-n04.ucsd.edu`. Include that line in a
+problem report.
+
+### Pod Names
+
+`-N` gives the pod a name by which it can be deleted later. Give a name to any
+pod left running unattended.
+
+## Job Execution Flags
 
 | Flag | Effect |
 |---|---|
@@ -171,46 +207,26 @@ anything left running unattended needs.
 | `-h` | Flag summary |
 | `--` | End of launcher options |
 
-→ [Interactive, Background & Batch Modes](job-modes-and-limits.md#the-three-modes) explains when each of `-b`, `-B` and `-f` is right.
-*`-d` reports what was actually requested*: it prints the specification the cluster
-would have received, and consumes nothing.
+[Job Modes](job-modes-and-limits.md#job-modes) describes when to use
+each of `-b`, `-B`, and `-f`. `-d` prints the specification the cluster would
+have received and consumes nothing. Its output shows what a set of flags
+actually requests.
 
-**`--` separates the launcher's options from the command's own.** Everything after
+### Option Separator
+
+`--` separates the launcher's options from the command's own. Everything after
 it is passed into the container untouched.
 
 ```bash
 launch-scipy-ml.sh -g 1 -B -- python train.py --epochs 50 --lr 0.01
 ```
 
-Without the separator, `launch.sh` reads `--epochs` as one of its own options and
-fails, with a message about a launcher flag rather than about the program being
-run.
+Without the separator, `launch.sh` reads `--epochs` as one of its own options
+and fails with a message about a launcher flag, not about the program being run.
 
-## Caveats & Limitations
+### Help Output and Undocumented Options
 
-------------------------------------------------------------------------
-
-**`-h` and this page do not list quite the same flags.** The help output is
-generated from comments in the launcher's own source, and a few options appear
-there which we do not document — some legacy, some interacting with scheduling in
-ways that need a conversation first. Please ask us about an undocumented option
-rather than experimenting with it on a deadline.
-
-**No root, no sudo, and no flag that grants either.** Containers run unprivileged,
-under the member's own UID.
-→ [The Hard Boundary](../environments/customizing-your-environment.md#the-hard-boundary)
-
-Flags are not the only way to configure a launch. Every one has an
-environment-variable equivalent — the mechanism the wrappers use, and the
-alternative to retyping eight flags a day.
-→ [Configuring Without Flags](job-modes-and-limits.md#configuring-without-flags)
-
-**Launching a GPU session draws on the workspace's Service Unit budget**, booked
-ahead or not. There is no free exploratory launch.
-→ [On-Demand Leases Charge Budget](../gpu-access/service-units-and-budgets.md#on-demand-leases-charge-budget)
-
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+The `-h` summary is generated from comments in the launcher's source and does
+not list exactly the same flags as this page. It includes options that are not
+documented on this page: some are legacy, and some interact with scheduling.
+Consult ITS before using an undocumented option.

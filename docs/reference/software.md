@@ -1,25 +1,31 @@
-# Software: R, RStudio, MATLAB, Stata & Licensed Software
+# Software
 
-**Most software questions are answered by the standard images**, which cover the
-great majority of courses and projects and receive priority support. What is on
-this page is the rest: the things that are here but are not simply *in* an image,
-and the things people ask for that we cannot yet answer.
-→ [Standard Images and What Is in Them](../environments/standard-images.md)
+This page covers software beyond the contents of the standard images: R and
+RStudio, MATLAB and GNU Octave, Stata, other licensed software, capabilities
+that ITS classes as complex or experimental, and software that members install
+themselves. The standard images cover most courses and projects, receive
+priority support, and are described in
+[Standard Images, Tags, and Pinning](../environments/standard-images.md).
 
 ## R and RStudio
 
-------------------------------------------------------------------------
+R is included in every standard image, alongside Python and Julia, and runs as a
+Jupyter kernel. Entering `?command_name` in a cell displays the documentation for
+a function.
 
-**R comes in every standard image**, alongside Python and Julia, and works as a
-Jupyter kernel like any other. `?command_name` in a cell brings up the
-documentation for a function.
+### Opening RStudio
 
-**RStudio is a click, not a separate sign-in.** Start the course environment that
-includes RStudio, wait for the JupyterLab launcher to load, and click the RStudio
-shortcut; it opens in a new tab.
+RStudio does not require a separate sign-in.
 
-**The first RStudio session in a new account needs a personal package library
-before `install.packages()` will work.** Run this once, in the RStudio Console:
+1. Start the course environment that includes RStudio.
+2. Wait for the JupyterLab launcher to load.
+3. Click the RStudio shortcut. RStudio opens in a new tab.
+
+### Personal R Package Library
+
+In a new account, `install.packages()` does not work until a personal package
+library exists. Create the library once, in the RStudio Console, during the
+first RStudio session:
 
 ```r
 dir.create("~/R")
@@ -27,124 +33,132 @@ dir.create("~/R/library")
 .libPaths("~/R/library")
 ```
 
-*That directory lives in the home directory and counts against its quota like
-anything else.* → [Customizing an Environment](../environments/customizing-your-environment.md)
+The library is stored in the home directory and counts against its quota, as
+described in
+[Storage Quota](../environments/customizing-your-environment.md#storage-quota).
 
-**`rstudio-notebook` is not GPU-enabled.** It derives from
-`datascience-notebook`, the CPU image, rather than from `scipy-ml-notebook`. A
-course that needs both RStudio and a GPU needs a custom image or a second
-environment. → [Getting Help](getting-help.md)
+### RStudio and GPUs
+
+`rstudio-notebook` derives from `datascience-notebook`, the CPU image, rather
+than from `scipy-ml-notebook`, and is therefore not GPU-enabled, as described in
+[Standard Images](../environments/standard-images.md#standard-images).
+A course that needs both RStudio and a GPU requires a custom image or a second
+environment.
+
+See also: [Getting Help](getting-help.md)
 
 ## MATLAB, Octave & Other Complex Applications
 
-------------------------------------------------------------------------
+MATLAB can be used on the platform but is not a standard feature. The ITS scope
+of support classes MATLAB, as Jupyter kernels or as the Web UI, and GNU Octave
+among the capabilities listed in
+[Complex & Experimental Capabilities](#complex--experimental-capabilities).
+These capabilities are regularly used on the platform but fall outside the
+normal bounds of ITS support, and their use in a course is led by the instructor
+or the Technical Point of Contact (TPOC).
 
-**MATLAB is possible here and is not a standard feature.** Our published scope of
-support classes MATLAB — as Jupyter kernels or as the Web UI — together with GNU
-Octave among *complex or experimental* capabilities: regularly used on the
-platform, outside ITS' normal bounds of support, and requiring the instructor or
-TPOC to lead rather than to be led.
+### MATLAB on the Research Cluster
 
-**On the Research Cluster, the documented pattern is a licence-file environment
-variable and a shell script.** Research IT's guidance has users write a small
-script that exports `MLM_LICENSE_FILE`, points at a MATLAB installation held on
-the cluster, and runs MATLAB headless — `-nojvm -nodisplay -nosplash` for
-interactive use, with `-batch` for a script.
+On the Research Cluster, Research IT documents running MATLAB from a small shell
+script that sets a license-file environment variable. The script exports
+`MLM_LICENSE_FILE`, points to a MATLAB installation held on the cluster, and runs
+MATLAB headless: with `-nojvm -nodisplay -nosplash` for interactive use, and
+with `-batch` for a script.
 
-**Two things in that guidance carry over whatever the details turn out to be.**
-*MATLAB runs from inside a job, never on the login node* — the login node is a
-jumpbox and computing on it is prohibited. And scripts are made executable with
-`chmod` before they are run.
-→ [The Login Node](../access/the-login-node.md)
+MATLAB runs inside a job and never on the login node, where running computation
+is prohibited, as described in
+[What the Login Node Is For](../access/the-login-node.md#what-the-login-node-is-for).
+Scripts are made executable with `chmod` before they are run.
 
-**Please confirm the current paths with Research IT before building a course
-around them.** Write to [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu); the
-release, the installation directory and the licence file are held by the people
-who maintain them rather than by this page.
+Research IT maintains the MATLAB release, the installation directory, and the
+license file. Confirm the current paths with Research IT at
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) before building a course
+around them.
 
 ## Stata
 
-------------------------------------------------------------------------
+Stata runs in the `scipy-ml` container for users with provisioned licensing.
+Research IT Services installs Stata into the member's home directory, and the
+member then runs it from inside a container as `~/stata-se`.
 
-**Stata runs in the `scipy-ml` container, for users with provisioned licensing.**
-Research IT Services installs it into the member's home directory, and it is then
-run from inside a container as `~/stata-se`.
+The platform does not provide Stata licenses, and a license is required before
+installation. A holder of a Stata license through a department or project
+arranges the installation by writing to
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
 
-*Licensing comes first and is not something the platform provides.* Holders of a
-Stata licence through a department or project write to
-[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) to arrange the installation.
+## Licensed Software
 
-## Licensed Software Generally
+Installing licensed software is permitted. Purchasing the license is the
+responsibility of the user or the user's sponsoring department. Research IT
+Services can assist with the installation. Some versions of some products are
+not compatible with a containerized cluster environment.
 
-------------------------------------------------------------------------
+Before purchasing a license, confirm the following with the relevant contact:
 
-**Installing licensed software is permitted, and buying it is not our part.** The
-purchase of a licence is the responsibility of the user or their sponsoring
-department; Research IT Services can assist with the installation, and some
-versions of some products are simply not compatible with a containerized cluster
-environment.
+- whether the product can run unprivileged in a container
+- whether its license permits that use
+- whether a network license server is reachable from the cluster
 
-**Ask before the purchase, not after.** Whether a given product can run
-unprivileged in a container, whether its licence permits it, and whether a
-network licence server is reachable from the cluster are all questions with real
-answers. Write to
-[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) for research use, or
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) for a course.
+For research use, the contact is
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu). For a course, the contact
+is [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
 
-*Licensed **data** is a separate matter with separate rules.*
-→ [Restricted & Licensed Datasets](../workspaces-and-storage/datasets.md#restricted--licensed-datasets)
+Licensed data is subject to separate rules, described in
+[Restricted & Licensed Datasets](../workspaces-and-storage/datasets.md#restricted--licensed-datasets).
 
 ## Complex & Experimental Capabilities
 
-------------------------------------------------------------------------
+The ITS scope of support names the following capabilities as available on the
+cluster but outside normal support.
 
-The cluster can host a good deal more than the standard images, and our scope of
-support names these explicitly as available but outside normal support:
-
-| Capability | What we can point to |
+| Capability | Documentation |
 |---|---|
-| MATLAB (Jupyter kernels or Web UI), GNU Octave | The section above |
-| Spark clusters | Nothing published by us. A DSC 102 assignment is the only description anywhere of a multi-node Spark topology on this platform, and it is course material rather than documentation |
-| ArcGIS integration | Nothing published by us |
-| Postgres and other persistent services | Launched from Kubernetes manifests and reached by in-cluster service name → [Kubernetes](../running-jobs/kubernetes.md) |
-| Background batch processing and analysis pipelines | → [Interactive, Background & Batch Modes](../running-jobs/job-modes-and-limits.md#the-three-modes) |
-| Visual Studio Code integration | → [Remote Editor Setup](../access/remote-editor-setup.md) |
-| Containers not derived from a standard image, and student-built containers | → [Building & Publishing a Custom Image](../environments/building-a-custom-image.md) |
+| MATLAB (Jupyter kernels or Web UI), GNU Octave | [MATLAB, Octave & Other Complex Applications](#matlab-octave--other-complex-applications) |
+| Spark clusters | ITS publishes no documentation. The only description of a multi-node Spark topology on this platform is a DSC 102 assignment, which is course material rather than documentation. |
+| ArcGIS integration | ITS publishes no documentation. |
+| Postgres and other persistent services | Launched from Kubernetes manifests and reached by in-cluster service name, as described in [Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md). |
+| Background batch processing and analysis pipelines | [Job Modes](../running-jobs/job-modes-and-limits.md#job-modes) |
+| Visual Studio Code integration | [Remote Editor Setup](../access/remote-editor-setup.md) |
+| Containers not derived from a standard image, and student-built containers | [Building & Publishing a Custom Image](../environments/building-a-custom-image.md) |
 
-**"Complex or experimental" is a statement about support, not about capability.**
-These things work and courses use them. What changes is who does the work:
-incorporating one requires the instructor or TPOC to become independently familiar
-with the underlying technology and then to serve as primary support for their
-students' use of it. *We are glad to give technical guidance; without an advance
-agreement we cannot take on implementation or front-line support.*
+### Support Responsibilities
 
-**Please book a 1:1 Consultation at least one full quarter ahead** of any planned
-use, to discuss feasibility.
-→ [1:1 Consultation](https://ucsd-datahub.youcanbook.me/) ·
-[Teaching with Datahub & DSMLP](../instructor-or-ta.md)
+The complex or experimental classification concerns support, not capability.
+These capabilities work, and courses use them. Incorporating one into a course
+requires the instructor or TPOC to become independently familiar with the
+underlying technology and then to serve as primary support for students' use of
+it. ITS gives technical guidance but, without an advance agreement, does not
+take on implementation or front-line support. The scope of support is published
+in
+[Complex Customizations & Experimental Features](../instructor-or-ta.md#complex-customizations--experimental-features).
+
+### Feasibility Consultation
+
+Book a 1:1 Consultation at least one full quarter before any planned use of one
+of these capabilities, to discuss feasibility. Consultations are described in
+[Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation).
 
 ## Adding Software Without a Ticket
 
-------------------------------------------------------------------------
+### Home Directory Installations
 
-**Anything that installs into a member's own home directory, that member can
-install.** Python packages into a virtual environment with its own Jupyter
-kernel, R packages into a personal library, a custom kernel.
-→ [Customizing an Environment](../environments/customizing-your-environment.md)
+A member can install anything that installs into the member's own home
+directory: Python packages into a virtual environment with its own Jupyter
+kernel, R packages into a personal library, and a custom kernel. The procedures
+are in
+[Customizing an Environment](../environments/customizing-your-environment.md).
 
-**Anything that installs into the operating system needs a custom image.** There
-is no `sudo` in a container and no flag that grants one; root is available at
-image *build* time instead, which is a different moment and a different machine.
-→ [The Hard Boundary](../environments/customizing-your-environment.md#the-hard-boundary) ·
-[Building & Publishing a Custom Image](../environments/building-a-custom-image.md)
+### Operating System Packages
 
-**We do not publish package lists in this documentation.** They change with every
-quarterly image build. The current contents are published from the image
-repository itself.
-→ [Standard Images](../environments/standard-images.md)
+Software that installs into the operating system requires a custom image. A
+container has no `sudo` and no flag that grants it, and root is available at
+image build time instead, on a different machine, as described in
+[Root Access and System Packages](../environments/customizing-your-environment.md#root-access-and-system-packages).
+Building an image is covered in
+[Building & Publishing a Custom Image](../environments/building-a-custom-image.md).
 
-------------------------------------------------------------------------
+### Package Lists
 
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+Package lists change with every quarterly image build. The current contents of
+each image are published from the image repository, as described in
+[Finding the Package List](../environments/standard-images.md#finding-the-package-list).

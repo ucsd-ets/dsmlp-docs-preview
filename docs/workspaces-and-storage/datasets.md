@@ -1,111 +1,115 @@
-# Datasets: Shared, Restricted & Licensed
+# Datasets
 
-Large data belongs in one place that everyone reads, not in a copy per person.
-The cluster provides two such places, and which of them holds a dataset
-determines what its size counts against. Two further restrictions land on the
-same shelf and are separate questions: **classification** is about what the data
-*is* — whether the University's protection level permits it here at all — and
-**licensing** is about what may be *done* with data the campus has already
-acquired.
+This page covers where shared datasets are stored on Datahub and DSMLP, how to
+request that a dataset be staged, and the restrictions that apply to protected
+and licensed data.
 
 ## Where Shared Data Lives
 
-------------------------------------------------------------------------
+Shared datasets are stored in one of two locations. The location determines
+what a dataset's size counts against.
 
-**`/datasets` is the cluster-wide tree.** It is present in the container and on
-the login node, and holds common training corpora — MNIST, CIFAR-10,
-Tiny-ImageNet, ImageNet, Caltech256, ShapeNet and others — alongside data staged
-for particular courses. Data is placed there by us, on request, and it sits
-outside both the workspace and personal quotas.
+### The `/datasets` Tree
 
-**`public/` is the workspace's own shared area.** Course datasets most often
-live here, staged by the instructor or the course grader account, readable by
-every member of the workspace.
-→ [The Shared Workspace Area](your-files-and-quotas.md#the-shared-workspace-area)
+`/datasets` is the cluster-wide dataset tree. It is present in the container
+and on the login node. It holds common training corpora, including MNIST,
+CIFAR-10, Tiny-ImageNet, ImageNet, Caltech256, and ShapeNet, alongside data
+staged for particular courses. ITS places data there on request. Data under
+`/datasets` sits outside both the workspace and personal quotas.
 
-*Which of the two a course uses is the instructor's choice.* Data that several
-courses want, or that is too large to sit in a workspace, tends to be staged
-under `/datasets`; data specific to one course tends to sit in `public/`.
+### The Workspace `public/` Area
+
+`public/` is the workspace's own shared area and the most common location for
+course datasets. The instructor or the course grader account stages data there,
+and every member of the workspace can read it. The area is described in
+[The Shared Workspace Area](your-files-and-quotas.md#the-shared-workspace-area).
+
+### Choice of Location
+
+The instructor chooses which of the two locations a course uses. Data that
+several courses use, or that is too large for a workspace, is usually staged
+under `/datasets`. Data specific to one course usually sits in `public/`.
 
 ## Finding What Is Available
 
-------------------------------------------------------------------------
-
 The catalog of cluster-wide datasets is published at
-[datahub.ucsd.edu/hub/datasets](https://datahub.ucsd.edu/hub/datasets). From a
-running environment or from the login node, the tree itself is browsable:
+[datahub.ucsd.edu/hub/datasets](https://datahub.ucsd.edu/hub/datasets). The
+tree itself can be browsed from a running environment or from the login node:
 
 ```bash
 cd /datasets
 ls
 ```
 
-Course data staged under `/datasets` follows the workspace ID —
-`/datasets/<workspace-id>-public/` — so a course's own material is findable
-without a catalog entry.
+Course data staged under `/datasets` is placed in a directory named for the
+workspace ID, `/datasets/<workspace-id>-public/`, and can be located without a
+catalog entry.
 
-## Read It Where It Is
+## Reading Shared Data in Place
 
-------------------------------------------------------------------------
+Do not copy a shared dataset into a home directory. Copying a shared dataset is
+the fastest way to exhaust a quota, and the copy is no closer to the job than
+the original, because the same filesystem is visible from the container and
+from the login node. Common causes of a full quota are listed in
+[Common Causes of a Full Quota](your-files-and-quotas.md#common-causes-of-a-full-quota).
 
-**Please do not copy a shared dataset into a home directory.** It is the fastest
-way to exhaust a quota, and the copy is no closer to the job than the original:
-the same filesystem is visible from the container and from the login node.
-→ [What Usually Fills a Quota](your-files-and-quotas.md#what-usually-fills-a-quota)
+Point code at the shared path instead. A notebook written against a local
+machine usually needs one change, to the dataset path, and no other.
 
-**Code points at the shared path instead.** Notebooks written against a local
-machine usually need one edit — the dataset path — and nothing else.
-
-Where a run genuinely needs a derived subset, the subset — not the source
-corpus — is what belongs in a home directory.
+Where a run needs a derived subset, store the subset in the home directory, not
+the source corpus.
 
 ## Asking for a Dataset to Be Staged
 
-------------------------------------------------------------------------
+Request staging for a large dataset that several people need, rather than
+downloading it into each home directory. Email
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu) with what the data is, its
+approximate size, and who needs to read it.
 
-**Where a dataset is large and several people need it, please ask us to stage
-it** rather than downloading it into each home directory. Email
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) with what the data is, roughly how
-large it is, and who needs to read it.
+Course dataset distribution of up to 500 GB is accommodated as a matter of
+course. Larger corpora are accepted on a space-available basis.
 
-- **Course dataset distribution up to 500 GB** is accommodated as a matter of
-  course; larger corpora are accepted on a space-available basis.
-- **Datasets may be published cluster-wide or scoped to one course.** Say which
-  in the request.
-- **Research datasets** are handled by Research IT, at
-  [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
+A dataset may be published cluster-wide or scoped to one course. State which in
+the request.
 
-*Please raise anything confidential, licensed, or subject to a data use agreement
-before it is uploaded*, not after.
+Research datasets are handled by Research IT at
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
 
-**Small downloads need no request.** `wget` and `curl` are available on the
-login node and in the container; for anything substantial, please see
+> [!NOTE]
+> Raise confidential or licensed data, and data subject to a data use
+> agreement, before it is uploaded. The restrictions are described in
+> [Restricted & Licensed Datasets](#restricted--licensed-datasets).
+
+### Small Downloads
+
+Small downloads need no request. `wget` and `curl` are available on the login
+node and in the container. Larger transfers are covered in
 [Moving & Sharing Data](moving-and-sharing-data.md).
 
 ## Restricted & Licensed Datasets
 
-------------------------------------------------------------------------
+Two separate restrictions apply to datasets. Data classification determines
+whether data may be placed on the cluster at all. License terms govern what may
+be done with data the campus has already acquired.
 
-**P4 data is prohibited on Datahub and DSMLP** — highly-sensitive information
-such as clinical records or export-controlled material. There is no review path
-and no exception.
+### P3 and P4 Data
 
-**P3 data may be permitted after review.** Legally or contractually protected
-information is not categorically excluded; it requires a conversation before any
-of it reaches the cluster. *Vetting may take 4-6 weeks or longer.*
+P3 and P4 are protection levels in the University's data classification. P4
+data, such as clinical records or export-controlled material, is prohibited on
+Datahub and DSMLP without review or exception, and P3 data may be permitted
+after review, as stated in
+[Data Classification](../reference/policy.md#data-classification).
 
-**Where either may apply, please raise it with us early.** For instruction and
-coursework, email [datahub@ucsd.edu](mailto:datahub@ucsd.edu); for research,
-Research IT at [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
-→ [Policy](../reference/policy.md#data-classification)
+Where either level may apply, raise the dataset before any of it reaches the
+cluster. For instruction and coursework, email
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu). For research, email Research IT at
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
 
-## What Falls into These Categories
-
-------------------------------------------------------------------------
+### Examples of Restricted Data
 
 The University's [classification
 levels](https://security.ucop.edu/policies/institutional-information-and-it-resource-classification.html)
-are the authority. The examples our own documentation gives are:
+are the authority. ITS documentation gives these examples:
 
 | Kind of data | Examples |
 |---|---|
@@ -114,54 +118,50 @@ are the authority. The examples our own documentation gives are:
 | Student records | Other students' grades or academic records (FERPA) |
 | Contractually protected | Information subject to certain Data Use Agreements |
 
-**The student-records line catches more people than it looks like it will.** A TA
-or grader working with identifiable grades is handling protected data, and the
-grading tools are built to hold that material.
-→ [Grading](../grading/README.md)
+A TA or grader working with identifiable grades is handling protected data. The
+grading tools are built to hold that material and are described in
+[Grading](../grading/README.md).
 
-## Licensed and Subscription Data
+### Licensed and Subscription Data
 
-------------------------------------------------------------------------
+Some data on the cluster is licensed rather than open. It was acquired under
+terms that limit who may read it and what may be done with the results.
+Licensed corpora are staged read-only and released to an authorized group
+rather than to all users. The Nielsen subscription datasets held for the
+Chicago Booth Kilts Center are an example. They are mounted read-only outside
+the general `/datasets` tree, as described in
+[Mounting External Storage](your-files-and-quotas.md#mounting-external-storage).
 
-**Some data on the cluster is licensed rather than open**, acquired under terms
-that limit who may read it and what may be done with the results. Such corpora
-are staged read-only and released to an authorized group rather than to everyone
-— the Nielsen subscription datasets held for the Chicago Booth Kilts Center are
-the standing example, mounted read-only outside the general `/datasets` tree.
-→ [Mounting External Storage](your-files-and-quotas.md#mounting-external-storage)
+License terms usually impose the following conditions:
 
-For licensed data, the terms usually mean:
+- Read the data in place. A copy in a home directory is a second copy under the
+  same terms, and it consumes quota.
+- Do not pass the data on. Access is granted to an individual, not to that
+  person's collaborators. Moving the data into a shared or outward-facing
+  location is a licensing decision, not a file operation. Sharing outside the
+  cluster is covered in
+  [Sharing with People Who Have No Cluster Account](moving-and-sharing-data.md#sharing-with-people-who-have-no-cluster-account).
+- Delete derived subsets and intermediate files that are no longer needed. They
+  inherit the terms of their source.
 
-- **Read it in place.** Duplicating it into a home directory makes a second copy
-  under the same terms, and consumes quota.
-- **Do not pass it on.** Access is granted to an individual, not to that
-  person's collaborators, and moving the data into a shared or outward-facing
-  location is a licensing decision, not a file operation.
-  → [Sharing with People Who Have No Cluster Account](moving-and-sharing-data.md#sharing-with-people-who-have-no-cluster-account)
-- **Delete what is no longer needed.** Derived subsets and intermediate files
-  accumulate, and they inherit the terms of their source.
+Where a course or lab has acquired data under license terms, state so in the
+request described in
+[Asking for a Dataset to Be Staged](#asking-for-a-dataset-to-be-staged), so that
+the data is scoped correctly from the start.
 
-**Datasets may be published cluster-wide or scoped to a single course.** Where a
-course or lab has acquired data under terms, please say so in the request to have
-it staged, so that it is scoped correctly from the start rather than moved
-afterwards.
+### Publishing Restricted Data Externally
 
-## Two Practical Consequences
+Datahub and DSMLP are not for publishing restricted data outward. The platform
+is not for externally available services or applications except as required for
+coursework or projects, and the limit applies in particular to data held under
+license terms. The hosting rule is stated in
+[Hosting Externally Available Services](../reference/policy.md#hosting-externally-available-services).
 
-------------------------------------------------------------------------
+## Dataset Retention After a Course
 
-**Restricted data does not travel to the end of the course by default.** Large
-datasets cannot be archived when a course environment is purged; a corpus that
-has to be kept is a conversation to have before the term ends.
-→ [Archiving on Request](../access/when-access-starts-and-ends.md#archiving-on-request)
+> [!WARNING]
+> Large datasets cannot be archived when a course environment is purged.
 
-**Datahub and DSMLP are not a place to publish restricted data outward.** The
-platform is not for externally-available services or applications except as
-required for coursework or projects, and that limit applies with particular force
-to anything held under terms.
-
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+Raise the retention of any corpus that must be kept before the term ends.
+Archiving is described in
+[Archiving on Request](../access/when-access-starts-and-ends.md#archiving-on-request).

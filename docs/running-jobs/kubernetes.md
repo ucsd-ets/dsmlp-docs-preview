@@ -1,52 +1,58 @@
-# Kubernetes: Direct Use & the Events a Session Emits
+# Direct Kubernetes Use and Session Events
 
-`launch.sh` is a front end to Kubernetes, and Kubernetes is available underneath
-it. This page covers the cases the launcher does not — chiefly running more than
-one pod at a time, and running something that is not a notebook — and the events a
-session emits along the way.
+This page covers direct use of the Kubernetes cluster beneath `launch.sh` for
+cases the launcher does not handle, chiefly running more than one pod at a time
+and running something other than a notebook, and the events a session emits.
+It assumes working knowledge of Kubernetes.
 
-**This is not the supported path for ordinary work.** Where `launch.sh` can do the
-job, please use it: it sets up the home directory, the workspace, group membership
-and resource limits correctly, and a hand-written manifest does none of that.
+## Scope of Support
 
-*This page assumes more Kubernetes than the rest of this documentation set.*
-Readers who arrive from a search asking why a session ended will find
-[Error Messages](../reference/error-messages.md) the friendlier page.
+`launch.sh` is the supported path for ordinary work. It sets up the home
+directory, the workspace, group membership, and resource limits correctly. A
+hand-written manifest does none of this. Use `launch.sh` wherever it can do the
+job.
+
+ITS supports the platform, not arbitrary Kubernetes. Before substantial work on
+a set of hand-written manifests begins, describe to ITS what the manifests are
+meant to do. A supported route often exists. Requests to ITS are described in
+[Administrative Requests](../reference/getting-help.md#administrative-requests).
 
 ## The Namespace & `kubectl`
 
-------------------------------------------------------------------------
-
-**Each account has its own Kubernetes namespace**, and `kubectl` on the login node
-operates inside it. It can see and change that namespace's pods and nothing else.
+Each account has its own Kubernetes namespace. `kubectl` on the login node
+operates inside that namespace and can see and change its pods and nothing else.
 
 ```bash
-kubectl get pods                    # pods in the namespace
-kubectl describe pod <pod-name>     # why one is Pending, or what killed it
-kubectl logs <pod-name>             # its output
-kubectl logs <pod-name> -f          # follow it
-kubectl get events                  # what the cluster has been doing to them
-kubectl delete pod <pod-name>       # stop one
-kubesh <pod-name>                   # a shell inside one
+kubectl get pods                    # list the pods in the namespace
+kubectl describe pod <pod-name>     # show why a pod is Pending, or what stopped it
+kubectl logs <pod-name>             # print a pod's output
+kubectl logs <pod-name> -f          # follow a pod's output
+kubectl get events                  # list what the cluster has done to the pods
+kubectl delete pod <pod-name>       # stop a pod
+kubesh <pod-name>                   # open a shell inside a pod
 ```
 
-**`kubectl describe pod` is the first thing to run when a launch misbehaves.** It
-carries the scheduling messages — including the `0/5 nodes available` that usually
-means a missing `gpu-class` label — that the launcher's own output summarizes away.
+### Diagnosing a Launch
 
-`kubectl exec -it <pod-name> bash` is the general form of `kubesh`, and the form
-for a pod that `launch.sh` did not create.
+`kubectl describe pod` is the first command to run when a launch misbehaves.
+Its output carries the scheduling messages that the launcher's own output
+summarizes away. Among them, `0/5 nodes available` after a GPU request usually
+indicates a missing `gpu-class` label, as described in
+[Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label).
+
+### Shell Access to a Pod
+
+`kubectl exec -it <pod-name> bash` is the general form of `kubesh`. It is the
+form to use for a pod that `launch.sh` did not create.
 
 ## Running a Service From a Manifest
 
-------------------------------------------------------------------------
+Some coursework requires a database rather than a notebook. The database is
+launched from a manifest on the login node and reached from a notebook by
+service name. The notebook and the service are separate pods in one namespace
+and reach each other over the cluster network.
 
-**Some coursework needs a database rather than a notebook.** These are launched
-from manifests on the login node and then reached *from* a notebook by service
-name — the notebook and the service are separate pods in one namespace, and they
-find each other over the cluster network.
-
-The pattern is the same for each:
+The pattern is the same for each service. For Redis:
 
 ```bash
 kubectl create -f launch/redis.yaml   # start it
@@ -54,7 +60,9 @@ kubectl get pods                      # wait for READY
 kubectl delete -f launch/redis.yaml   # stop it when the work is done
 ```
 
-Then, from a notebook spawned in the usual way, connect by service name:
+### Service Addresses
+
+From a notebook spawned in the usual way, connect to the service by name.
 
 | Service | Reached at |
 |---|---|
@@ -62,49 +70,80 @@ Then, from a notebook spawned in the usual way, connect by service name:
 | PostgreSQL | `my-postgres` |
 | Neo4j | `bolt://my-neo4j:7687` |
 | MongoDB | `mongodb://my-mongo` |
-| Cassandra | A 3-pod StatefulSet; **5-10 minutes** to reach `3/3` ready |
+| Cassandra | A 3-pod StatefulSet that takes 5-10 minutes to reach `3/3` ready |
+
+A Redis connection from Python:
 
 ```python
 import redis
 r = redis.Redis(host='my-redis', port=6379, db=0)
 ```
 
-A pod that exists is not a pod that is serving, so connections are made after
-`READY` rather than a few seconds after `kubectl create`. Cassandra in particular
-takes several minutes; `kubectl get statefulset` and `kubectl logs cassandra-0 -f`
+### Service Readiness
+
+A pod can exist before it is serving. Connect after the pod reports `READY`,
+not a few seconds after `kubectl create`. Cassandra takes several minutes to
+become ready, and `kubectl get statefulset` and `kubectl logs cassandra-0 -f`
 report its progress.
 
-**Please do not modify the launch templates without checking with us first.** The
-manifests are maintained by us for the courses that use them, and a locally edited
-copy is the usual reason a service that works for the rest of the class fails for
-one member.
+### Stopping a Service
+
+> [!WARNING]
+> Nothing created with `kubectl create` is cleaned up on logout. Anything
+> started by hand must be stopped by hand.
+
+`kubectl delete -f <manifest>` removes what a manifest created. Run
+`kubectl get pods` at the end of a session to see what is still running.
+
+### Resource Limits for Manifest Pods
+
+Pods created from a manifest draw on the same limits as every other pod in the
+namespace. The namespace's totals cover everything running at once, so a
+database pod and a notebook pod share one allowance. A shared allowance is the
+usual reason the second pod does not schedule. Limits on concurrent pods are
+described in
+[Running Several Jobs at Once](job-modes-and-limits.md#running-several-jobs-at-once).
+
+### Privileges in Manifest Pods
+
+Containers started from a manifest are unprivileged, like every other container
+on the platform, so a manifest that expects to run as root or to mount a host
+path does not work
+([Root Access and System Packages](../environments/customizing-your-environment.md#root-access-and-system-packages)).
+
+### Launch Templates
+
+ITS maintains the launch templates for the courses that use them. Do not modify
+them without first checking with ITS. A locally edited copy is the usual reason
+a service that works for the rest of the class fails for one member.
 
 ## Multi-Pod Topologies
 
-------------------------------------------------------------------------
-
-**A course may provide a cluster rather than a container.** Where that happens —
-Spark is the standing example — the cluster is spawned by launching the course
-environment from `datahub.ucsd.edu`, not by running a script, and the pieces are
-found with `kubectl`:
+A course may provide a cluster rather than a container. Spark is the standard
+example. The cluster is spawned by launching the course environment from
+`datahub.ucsd.edu`, not by running a script, and its pods are found with
+`kubectl`:
 
 ```bash
 kubectl get pods                              # find spark-master-XXX-XXX
-kubectl exec -it <spark-master-XXX-XXX> bash  # get into the master
+kubectl exec -it <spark-master-XXX-XXX> bash  # open a shell in the master pod
 ```
 
-Work inside the master pod is ordinary work; a job is submitted to the cluster by
-its in-cluster address, e.g. `spark://spark-master-svc:7077`.
+Work inside the master pod proceeds as in any other pod. A job is submitted to
+the cluster at its in-cluster address, for example
+`spark://spark-master-svc:7077`.
 
-**Logging out does not stop the cluster.** It keeps running, and keeps holding its
-resources, until it is stopped — **File → Hub Control Panel → Stop My Server**.
-*This is the single most common way a class exhausts its own capacity.*
+### Stopping a Multi-Pod Cluster
+
+> [!WARNING]
+> Logging out does not stop the cluster. It keeps running and holding its
+> resources until it is stopped with **File → Hub Control Panel → Stop My Server**.
+
+See also: [Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session)
 
 ## Reading Events
 
-------------------------------------------------------------------------
-
-Events are the cluster's account of what it did to a pod and why.
+Events record what the cluster did to a pod and why.
 
 ```bash
 kubectl get events                        # everything recent in the namespace
@@ -112,94 +151,59 @@ kubectl describe pod <pod-name>           # the events attached to one pod
 kubectl get events --field-selector involvedObject.name=<pod-name>
 ```
 
-**`kubectl describe pod` is usually the right one.** It puts the events at the
-bottom of the pod's own description, next to the resource requests and the node
-assignment, which is the context that makes them interpretable.
+`kubectl describe pod` is usually the most useful of the three. It lists the
+events at the bottom of the pod's own description, next to the resource
+requests and the node assignment.
 
-*Events repay a prompt look.* Kubernetes retains them for a limited window, so a
-session that ended overnight may have nothing left to show by morning. For
-unattended work, a log file is the durable record, not the event stream.
-→ [Checkpointing & Logging](checkpointing.md)
+### Event Retention
+
+Kubernetes retains events for a limited window, so a session that ended
+overnight may have no events left to show by morning. For unattended work, a
+log file is the durable record, not the event stream. Logging is covered in
+[Checkpointing & Logging Long Runs](checkpointing.md).
 
 ## Ordinary Pod Events
 
-------------------------------------------------------------------------
+Most events are unrelated to reservations. The reason strings in this table
+are standard Kubernetes vocabulary and mean the same here as on any Kubernetes
+cluster.
 
-Most of what appears has nothing to do with reservations.
-
-| Reason | What it means |
+| Reason | Meaning |
 |---|---|
-| `Scheduled` | The scheduler picked a node. The pod is about to start |
-| `FailedScheduling` | Nothing could take it. `0/5 nodes available` alongside a GPU request is usually a missing or misspelled `gpu-class` label |
-| `Pulling`, `Pulled` | The image is being fetched. A large custom image can spend minutes here |
-| `Started`, `Killing` | The container started; the container is being stopped |
-| `OOMKilled` *(as a pod status)* | Memory limit reached — see the request/limit halving on the [`launch.sh` reference](launch-sh-reference.md#requests-are-half-of-limits) |
-| `DeadlineExceeded` *(as a pod status)* | The runtime limit was reached → [The Runtime Limit](job-modes-and-limits.md#the-runtime-limit) |
-
-*The reason strings in the first six rows are Kubernetes' own, not ours* — they
-mean here what they mean on any cluster.
+| `Scheduled` | The scheduler picked a node. The pod is about to start. |
+| `FailedScheduling` | No node could take the pod. `0/5 nodes available` alongside a GPU request usually indicates a missing or misspelled `gpu-class` label ([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)). |
+| `Pulling`, `Pulled` | The image is being fetched. A large custom image can spend minutes in this state. |
+| `Started`, `Killing` | `Started`: the container started. `Killing`: the container is being stopped. |
+| `OOMKilled` (pod status) | The memory limit was reached. Memory requests and limits are described in [Resource Requests and Limits](launch-sh-reference.md#resource-requests-and-limits). |
+| `DeadlineExceeded` (pod status) | The runtime limit was reached. See [The Runtime Limit](job-modes-and-limits.md#the-runtime-limit). |
 
 ## Reservation Events
 
-------------------------------------------------------------------------
+Five reason strings come from the reservation system rather than from
+Kubernetes. They record what the scheduling and reservation model did to a GPU
+session.
 
-**Five reason strings come from the reservation system rather than from Kubernetes
-itself.** They are how a GPU session accounts for what the scheduling and
-reservation model did to it.
-
-| Reason | The behaviour it relates to |
+| Reason | Related behavior |
 |---|---|
-| `RuntimeGuaranteed` | The guaranteed portion of a session. There is no hard kill at the end of a window; there is an in-session countdown → [The Countdown](../gpu-access/what-ends-a-session.md#the-countdown) |
-| `Preempted` | The capacity was taken for someone else's booking. A best-effort reservation accepts this from its first tick → [Preemption](../gpu-access/what-ends-a-session.md#preemption) |
-| `OnDemandLeaseDenied` | An on-demand lease — the reservation that launching without booking creates — was not granted → [Launching Without a Booking](../gpu-access/reservations.md#launching-without-a-booking) |
-| `OverstayRelinked` | Overstay: running on past a guaranteed window, which has a cost → [Overstay](../gpu-access/what-ends-a-session.md#overstay) |
-| `ReservationReassigned` | The reservation behind the session is no longer the one it started with → [Reservations](../gpu-access/reservations.md) |
+| `RuntimeGuaranteed` | The guaranteed portion of a session. There is no hard kill at the end of a window; there is an in-session countdown. See [The Countdown](../gpu-access/what-ends-a-session.md#the-countdown). |
+| `Preempted` | The capacity was taken for another booking. A best-effort reservation accepts this from its first tick. See [Preemption](../gpu-access/what-ends-a-session.md#preemption). |
+| `OnDemandLeaseDenied` | An on-demand lease, the reservation that launching without a booking creates, was not granted. See [Launching Without a Booking](../gpu-access/reservations.md#launching-without-a-booking) and [On-Demand Lease Charges](../gpu-access/service-units-and-budgets.md#on-demand-lease-charges). |
+| `OverstayRelinked` | Overstay: a session running on past a guaranteed window. Overstay has a cost. See [Overstay](../gpu-access/what-ends-a-session.md#overstay). |
+| `ReservationReassigned` | The reservation behind the session is no longer the one it started with. See [Reservations](../gpu-access/reservations.md). |
 
-**The second column is context, not a definition.** Each entry points at the
-behaviour we are confident the event concerns; the precise trigger for each is not
-yet documented, and where the two disagree, the linked page is the one to trust.
+Each row names the behavior an event relates to and is not a definition of the
+event. The precise trigger for each reservation event is not yet published.
 
 ## Reading an Event Alongside the Session
 
-------------------------------------------------------------------------
+Events are read together with the pod's status and the job's own logs.
 
-Events are most useful in combination with the pod's status and the job's own logs.
+| Observation | Interpretation |
+|---|---|
+| The session ended with no event and no error | The session was most likely idle-culled. A warning comes first, saved work survives, and the ending is not a crash. See [What Ends a Session](../gpu-access/what-ends-a-session.md). |
+| The session never started | The cause is a scheduling problem. The events at the bottom of the `kubectl describe pod` output show it. |
+| The session ended mid-run with a reservation event | The ending is a capacity outcome rather than a fault. Checkpointing addresses this case; see [Checkpointing & Logging Long Runs](checkpointing.md). |
+| The session ended mid-run with no event or error anywhere | Report it to ITS with the pod name, the node from the launch output, and the approximate time. See [Support Contacts](../reference/getting-help.md#support-contacts). |
 
-- **A session that ended with no event and no error** was most likely idle-culled.
-  A warning comes first, saved work survives, and it is not a crash.
-  → [What Ends a Session](../gpu-access/what-ends-a-session.md)
-- **A session that never started** is a scheduling problem, and
-  `kubectl describe pod` will say so in the events at the bottom.
-- **A session that ended mid-run, with a reservation event**, is a capacity
-  outcome rather than a fault. It is also the case checkpointing exists for.
-- **A session that ended mid-run with nothing anywhere** is worth reporting to us.
-  Please include the pod name, the node from the launch output, and roughly when.
-
-## Caveats & Limitations
-
-------------------------------------------------------------------------
-
-**Anything started by hand has to be stopped by hand.** Nothing created with
-`kubectl create` is cleaned up on logout. `kubectl delete -f <manifest>` removes
-what a manifest created; `kubectl get pods` at the end of a session shows what is
-still there.
-
-**Manifest pods draw on the same limits.** A namespace's totals cover everything
-running at once, so a database pod and a notebook pod share one allowance — which
-is usually why the second one will not schedule.
-→ [Running Several Jobs at Once](job-modes-and-limits.md#running-several-jobs-at-once)
-
-**Containers are unprivileged here too.** A manifest that expects to run as root,
-or to mount a host path, will not work.
-→ [The Hard Boundary](../environments/customizing-your-environment.md#the-hard-boundary)
-
-**We support the platform, not arbitrary Kubernetes.** Please tell us what a set of
-hand-written manifests is meant to do before the work goes deep — there is often a
-supported route, and where there is not, we would rather know early.
-→ [The Six Requests](../reference/getting-help.md#the-six-requests)
-
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+[Error Messages](../reference/error-messages.md) covers
+why a session ended without assuming Kubernetes knowledge.

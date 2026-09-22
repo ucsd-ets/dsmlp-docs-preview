@@ -1,70 +1,84 @@
 # Sign-In & Session Problems
 
-Nearly every failure to reach [datahub.ucsd.edu](https://datahub.ucsd.edu) is one
-of four things, and most of them have a self-service remedy. The sections below
-are ordered by how often each turns out to be the cause; please work down them
-before filing a ticket.
+This page covers common failures to reach or start a session on
+[datahub.ucsd.edu](https://datahub.ucsd.edu) and their remedies, most of which
+are self-service.
 
-*Sign-in itself is standard UCSD single sign-on.* An account that cannot get past
-the campus sign-in page has a campus credential problem rather than a Datahub
-one, and the [ITS Service Desk](https://support.ucsd.edu/) handles it.
+## Campus Sign-In Failures
 
-## The Course Is Not Listed
+Datahub sign-in is standard UCSD single sign-on. An account that cannot get past
+the campus sign-in page has a campus credential problem, not a Datahub problem,
+and the [ITS Service Desk](https://support.ucsd.edu/) handles it.
 
-------------------------------------------------------------------------
+## Missing Course
 
-Sign-in succeeds, but the expected course is not there. This is a provisioning
-question rather than an access fault.
+Sign-in succeeds, but the expected course does not appear. A missing course is a
+provisioning matter, not an access fault.
 
-**Rosters are loaded into workspaces one business day before the start of the
-term.** A course that is not listed before then has not been loaded yet.
+### Roster Loading and TSS Changes
 
-**A TSS change is reflected in Datahub and DSMLP by 10am the day following the
-change** — an add, a drop, a section change. *Please allow until then before
-treating a missing course as a fault; beyond that timeframe, report it to*
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu).
-→ [When Access Starts & Ends](when-access-starts-and-ends.md#students-enrolled-in-a-course)
+Rosters are loaded into workspaces one business day before the start of the
+term, and a TSS change, such as an add, a drop, or a section change, is
+reflected in Datahub and DSMLP by 10am the day following the change. A course
+that is not listed before those times has not been loaded yet. Report a course
+that is still missing after that time to
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu). Roster provisioning is described in
+[Students Enrolled in a Course](when-access-starts-and-ends.md#students-enrolled-in-a-course).
 
-**The instructor or TA is the first stop for anything course-shaped.** Course
-staff can see the roster, which is the fastest way to tell "not enrolled yet"
-from "enrolled and not provisioned". Auditors, observers and Extended Studies
-students are not on the TSS roster the automatic setup uses, and are added
-through Canvas by the instructor.
+### Roster Checks by Course Staff
 
-**Outside a course entirely** — an independent study, a capstone, a personal
-project — no roster grants access, and the route in is a request rather than a
-wait. → [Projects & Independent Study](../student-project.md)
+The instructor or TA is the first contact for a course matter. Course staff can
+see the roster and can tell a student who is not yet enrolled from one who is
+enrolled but not provisioned. Auditors, observers, and Extended Studies students
+are not on the TSS roster that the automatic setup uses, and the instructor adds
+them through Canvas, as described in
+[Students Enrolled in a Course](when-access-starts-and-ends.md#students-enrolled-in-a-course).
+
+### Access Outside a Course
+
+No roster grants access for an independent study, a capstone, or a personal
+project. Access for this work is obtained by request, as described in
+[Projects & Independent Study](../student-project.md).
 
 ## "Spawn Failed"
 
-------------------------------------------------------------------------
+The account is signed in and an environment has been selected, but the
+environment does not start. Check four causes in order: a Datahub session
+already running, a full disk quota, a stale profile, and a broken package in
+`.local`.
 
-The account is signed in, an environment has been selected, and it will not
-start. Please try these in order.
+### Datahub Session Already Running
 
-**1. A Datahub session is already running.** A member may have one Datahub
-session at a time, so a session left running — for this course or another one —
-has to be stopped before a new one starts. Use **File → Hub Control Panel → Stop
-My Server**, or the manual resetter below where the running session cannot be
-reached. *This limit is on Datahub only: shell, VS Code and batch jobs are not
-part of it.*
-→ [One Datahub Session](datahub-in-the-browser.md#one-datahub-session)
+A member may have one Datahub session at a time, and shell, VS Code, and batch
+jobs do not count toward that limit, as described in
+[Concurrent Datahub Sessions](datahub-in-the-browser.md#concurrent-datahub-sessions).
+A session left running, for this course or another, must be stopped before a
+new one starts. Stop it with **File → Hub Control Panel → Stop My Server**.
+Where the running session cannot be reached, use the manual resetter described
+in [Stale Profile and the Manual Resetter](#stale-profile-and-the-manual-resetter).
 
-**2. The disk quota is full.** A full quota stops a session from starting and
-says nothing about why. It is shown at
+### Full Disk Quota
+
+A full disk quota prevents a session from starting and produces no error
+message. The quota is shown at
 [datahub.ucsd.edu/hub/spawn](https://datahub.ucsd.edu/hub/spawn) → **Services** →
-**disk-quota-service**.
-→ [Directories, Quotas & Cleaning Up](../workspaces-and-storage/your-files-and-quotas.md#two-quotas-not-one)
+**disk-quota-service**. Storage quotas are described in
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
 
-**3. The profile is stale.** A **manual resetter** is provided for exactly this.
-From [datahub.ucsd.edu](https://datahub.ucsd.edu), open the **services**
-dropdown, choose **manual-resetter**, and click reset. *It stops any running
-servers, signs the account out and resets the profile — files are preserved.*
+### Stale Profile and the Manual Resetter
 
-**4. A package installed into `.local` has broken the environment.** Packages
-under `.local/lib/python3.x/site-packages` load ahead of the ones the image
-provides, and one incompatible package can stop a notebook from starting. Move
-them aside from a terminal:
+The **manual resetter** is provided for a stale profile. It stops any running
+servers, signs the account out, and resets the profile. Files are preserved.
+
+1. Open [datahub.ucsd.edu](https://datahub.ucsd.edu).
+2. Open the **services** dropdown and choose **manual-resetter**.
+3. Click reset.
+
+### Broken Package in `.local`
+
+Packages under `.local/lib/python3.x/site-packages` load ahead of the packages
+the image provides, and one incompatible package can stop a notebook from
+starting. Move them aside from a terminal:
 
 ```bash
 ssh USERNAME@dsmlp-login.ucsd.edu
@@ -73,41 +87,48 @@ workspace -c COURSE_ID            # enter the course workspace
 mv .local/lib .local/lib.old      # move the offending packages aside
 ```
 
-*Please install into a virtual environment rather than into `.local`.*
-→ [Customizing an Environment](../environments/customizing-your-environment.md)
+Install packages into a virtual environment rather than into `.local`.
+Installing packages is described in
+[Customizing an Environment](../environments/customizing-your-environment.md).
 
-**Where none of the four applies, please tell us.** The cause of an otherwise
-unexplained spawn failure is not currently documented, and a report with the time
-and the course helps us find it.
+### Unexplained Spawn Failures
+
+The cause of a spawn failure not explained by a running session, a full quota, a
+stale profile, or a broken `.local` package is not yet documented. Report such a
+failure with the time and the course, as described in
+[Reporting a Problem](#reporting-a-problem).
 
 ## Links Clicked Before Sign-In
-
-------------------------------------------------------------------------
 
 Course materials are often distributed by a link that fetches a repository into
 the course environment:
 
-```
+```text
 https://datahub.ucsd.edu/hub/user-redirect/git-pull?repo=<url-encoded>&urlpath=tree%2F<dir>%2F&branch=main
 ```
 
-**Its commonest failure is being clicked before authentication.** The link needs
-a signed-in session to redirect into; without one it fails in a way that looks
-like a broken link, and is reasonably reported as one.
+The most common failure of such a link is a click before sign-in. The link needs
+a signed-in session to redirect into. Without one, it fails in a way that
+resembles a broken link.
 
-*The fix is order of operations.* Sign in at
-[datahub.ucsd.edu](https://datahub.ucsd.edu) first, start the course
-environment, and then click the link — or simply click it again once signed in.
-→ [Grading](../grading/README.md)
+To open the link:
 
-## A Launch the Cluster Refuses
+1. Sign in at [datahub.ucsd.edu](https://datahub.ucsd.edu).
+2. Start the course environment.
+3. Click the link.
 
-------------------------------------------------------------------------
+Clicking a failed link again after signing in also works.
 
-**A GPU already held.** A launch that reports a GPU quota being exceeded means a
-pod on the same account already holds the GPU being requested. Usually the old
-pod is on its way out and clears within a minute or two; if it does not, stop it
-from the login node:
+See also: [Grading](../grading/README.md)
+
+## Launches Refused by the Cluster
+
+### GPU Held by an Existing Pod
+
+A launch that reports an exceeded GPU quota indicates that a pod on the same
+account already holds the requested GPU. The earlier pod is usually terminating
+and clears within a minute or two. If it does not clear, delete it from the
+login node:
 
 ```bash
 ssh USERNAME@dsmlp-login.ucsd.edu
@@ -115,47 +136,62 @@ kubectl get pods
 kubectl delete pod <pod-id>
 ```
 
-**The total across everything running.** Concurrent sessions are allowed, but
-their combined CPU, memory and GPU must fit within the Kubernetes limits on the
-namespace and, for GPUs, within the reservation system's limits. A launch that
-would take the total past them is refused. *Stopping something no longer in use is
-the remedy; there is nothing to request.*
-→ [Running Several Jobs at Once](../running-jobs/job-modes-and-limits.md#running-several-jobs-at-once)
+### Aggregate Resource Limits
 
-**A 504, after a crash.** A notebook that exhausts its memory or spins in an
-infinite loop can take the pod down with it, and the hub returns a 504 until it
-notices and resets. The same `kubectl delete pod` speeds that up; then run the
-manual resetter and start again.
-→ [Error Messages](../reference/error-messages.md)
+Concurrent sessions are permitted, but their combined CPU, memory, and GPU must
+fit within the Kubernetes limits on the namespace and, for GPUs, within the
+reservation system's limits. A launch that would take the total past those
+limits is refused. The remedy is to stop a session or job that is no longer in
+use. No request is required. Running several jobs together is described in
+[Running Several Jobs at Once](../running-jobs/job-modes-and-limits.md#running-several-jobs-at-once).
 
-**Signing out stops nothing.** Logging out, closing the tab and closing a laptop
-all leave the container running and holding its resources. Use
-**File → Hub Control Panel → Stop My Server**.
+### 504 Error After a Crash
 
-## When Access Has Ended
+A notebook that exhausts its memory or runs an infinite loop can take its pod
+down. The hub then returns a 504 error until it detects the failure and resets.
+To recover:
 
-------------------------------------------------------------------------
+1. Delete the pod with `kubectl delete pod`, as described in
+   [GPU Held by an Existing Pod](#gpu-held-by-an-existing-pod). This shortens
+   the wait for the hub to reset.
+2. Run the manual resetter, as described in
+   [Stale Profile and the Manual Resetter](#stale-profile-and-the-manual-resetter).
+3. Start the session again.
 
-Access is retained for **one additional quarter** beyond the term the course ran
-in. After that the course no longer appears, and that is not a fault. *Files
-remain retrievable for a period afterwards, and an extension can be requested.*
-→ [How Long Access Lasts](when-access-starts-and-ends.md#one-additional-quarter) ·
-[Retrieving Work Before Access Ends](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends)
+Error messages and their causes are listed in
+[Error Messages](../reference/error-messages.md).
+
+### Sessions Left Running After Sign-Out
+
+> [!WARNING]
+> Logging out, closing the tab, and closing a laptop leave the container running
+> and holding its resources.
+
+Stop the session with **File → Hub Control Panel → Stop My Server**, as
+described in [Stopping a Session](datahub-in-the-browser.md#stopping-a-session).
+
+## End of Course Access
+
+Course access is retained for a period beyond the term the course ran in, as
+described in
+[One Additional Quarter](when-access-starts-and-ends.md#one-additional-quarter).
+After that period, the course no longer appears, and its absence is not a fault.
+Files remain retrievable for a period afterward, and an extension can be
+requested. Copying files out is described in
+[Retrieving Work Before Access Ends](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends).
 
 ## Reporting a Problem
 
-------------------------------------------------------------------------
+Raise course matters with the instructor or TA first. For platform matters,
+email [datahub@ucsd.edu](mailto:datahub@ucsd.edu) or file a ticket with the
+[ITS Service Desk](https://support.ucsd.edu/). A report includes the following
+details:
 
-Please raise anything course-shaped with the instructor or TA first. For
-platform matters, email [datahub@ucsd.edu](mailto:datahub@ucsd.edu) or file a
-ticket with the [ITS Service Desk](https://support.ucsd.edu/). *Please include
-the course, the system in use (Datahub or `dsmlp-login`), the environment name,
-the exact command if there was one, and a screenshot.* We aim to resolve
-individual user issues within **1-2 business days**.
-→ [Getting Help](../reference/getting-help.md)
+- The course
+- The system in use (Datahub or `dsmlp-login`)
+- The environment name
+- The exact command, if there was one
+- A screenshot
 
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+Response targets for individual issues are listed in
+[Response Targets](../reference/getting-help.md#response-targets).

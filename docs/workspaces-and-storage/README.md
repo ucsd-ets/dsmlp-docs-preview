@@ -1,23 +1,15 @@
 # Workspaces & Storage
 
-The unit that governs rosters, storage, images, GPU access and quotas — and
-everything about where files live and how they move.
-
-------------------------------------------------------------------------
-
-Documented once, and linked from wherever it is needed. *One fact, one anchor: a
-figure documented here is not restated on an audience page.*
-
-**Every page in this directory is an initial draft.** Each opens with a note
-naming what its writer could not settle. Please read those before treating any
-page as final.
+This section covers the workspace, the unit that governs rosters, storage,
+images, GPU access, and quotas. It also covers where files are stored, how they
+move and are shared, and shared datasets.
 
 | Page | Covers |
 |---|---|
-| [What a Workspace Is](what-a-workspace-is.md) | The unit itself: roster, storage, images, GPU classes, quotas — and belonging to several at once. |
-| [Directories, Quotas & Cleaning Up](your-files-and-quotas.md) | Where files live, the two quota pools, what fills them, and external storage. |
-| [Moving & Sharing Data](moving-and-sharing-data.md) | Transfers in and out, retrieving work before access ends, and sharing on and off the cluster. |
-| [Datasets](datasets.md) | Shared corpora, staging a dataset, and the classification and licensing limits. |
+| [What a Workspace Is and What It Controls](what-a-workspace-is.md) | What a workspace covers and controls, provisioning, workspace managers, belonging to several workspaces, choosing a workspace in the browser and on the command line, and missing workspaces. |
+| [Directories, Quotas & Cleaning Up](your-files-and-quotas.md) | The directories in a session, workspace and personal quotas, checking usage, causes of and recovery from a full quota, requesting more space, external storage, and backups. |
+| [Moving & Sharing Data](moving-and-sharing-data.md) | Transfer routes, retrieving work before access ends, sharing within a workspace and with teams, and sharing with people who have no cluster account. |
+| [Datasets](datasets.md) | Where shared datasets are stored, finding and reading them in place, requesting a staged dataset, restricted and licensed datasets, and retention after a course. |
 
 ---
 

@@ -1,40 +1,52 @@
 # Building & Publishing a Custom Image
 
-**A custom image is what a course builds when a standard image does not go far
-enough** — most often when the course needs an operating-system package, which
-cannot be installed from inside a running container.
-→ [The Hard Boundary](customizing-your-environment.md#the-hard-boundary)
-
-*A Python or R package for personal use needs no custom image.*
-→ [Customizing an Environment](customizing-your-environment.md)
+This page covers building, publishing, and testing a custom image, which a
+course builds when a standard image does not meet its needs, most often because
+the course requires an operating-system package that cannot be installed from
+inside a running container
+([Root Access and System Packages](customizing-your-environment.md#root-access-and-system-packages)).
+A Python or R package for personal use does not require a custom image and is
+covered in [Customizing an Environment](customizing-your-environment.md).
 
 ## Choosing a Base Image
 
-------------------------------------------------------------------------
-
-**Derive from a standard image.** An image built on one of ours inherits a
-working Jupyter, a working kernel set, and the platform conventions the rest of
-this documentation assumes. An image built from scratch is an experimental case
-and carries a much heavier support burden.
+Derive a custom image from a standard image. A derived image inherits a working
+Jupyter installation, a working kernel set, and the platform's conventions. The
+contents of each standard image are listed in
+[Standard Images](standard-images.md#standard-images).
 
 | Start from | When |
 |---|---|
-| `datahub-base-notebook` | A small, well-defined set of tools is being added. The smallest image we publish, and the fastest to build. |
-| `datascience-notebook` | The standard Python/R/Julia analysis stack is wanted underneath the additions. |
-| `scipy-ml-notebook` | CUDA, TensorFlow or PyTorch is genuinely needed. |
-| `rstudio-notebook` | RStudio is needed. *It is not GPU-enabled.* |
+| `datahub-base-notebook` | A small, well-defined set of tools is being added. It is the smallest image ITS publishes and the fastest to build. |
+| `datascience-notebook` | The standard Python, R, and Julia analysis stack is wanted beneath the additions. |
+| `scipy-ml-notebook` | CUDA, TensorFlow, or PyTorch is required. |
+| `rstudio-notebook` | RStudio is required. The image is not GPU-enabled ([RStudio and GPU Support](standard-images.md#rstudio-and-gpu-support)). |
 
-**Prefer the smaller base where build time matters.** Building on
-`scipy-ml-notebook` inherits the entire CUDA stack, and every build during
-development pays for it.
-→ [Standard Images and What Is in Them](standard-images.md)
+### Base Image and Build Time
+
+Where build time matters, derive from the smaller base. An image built on
+`scipy-ml-notebook` inherits the entire CUDA stack, which adds to the time of
+every build during development.
+
+### Custom CUDA Toolkits
+
+`scipy-ml-notebook` already carries a CUDA toolkit with a matching PyTorch and
+TensorFlow. A custom CUDA toolkit must be kept compatible with the driver on the
+node indefinitely. The supported CUDA version is recorded in the
+`scipy-ml-notebook` Dockerfile.
+
+### Experimental Images
+
+An image not derived from a standard image is an experimental case, as is a
+student-built container of any derivation. Such images run on the platform, but
+they require substantially more of the builder's time and are outside the
+standard support tier. Contact ITS through
+[Getting Help](../reference/getting-help.md) at least a quarter in advance.
 
 ## The Dockerfile
 
-------------------------------------------------------------------------
-
-The example repository ships an annotated Dockerfile whose shape is the one to
-copy:
+The example repository contains an annotated Dockerfile that serves as the
+model for a custom image:
 
 ```dockerfile
 ARG BASE_CONTAINER=ghcr.io/ucsd-ets/datascience-notebook:stable
@@ -51,125 +63,151 @@ USER jovyan
 RUN pip install --no-cache-dir networkx scipy
 ```
 
-**`USER root` is the only place root is available.** Switch back to the notebook
-user afterwards; the container still runs as the member who launched it, not as
-root.
+### Root Access During the Build
 
-**Prefer `pip` to `conda`.** pip resolves conflicts more forgivingly and is
+Root is available only under `USER root` in the Dockerfile. Switch back to the
+notebook user after the root steps, as the example does with `USER jovyan`. A
+container started from the image runs as the member who launched it, not as
+root
+([Root Access and System Packages](customizing-your-environment.md#root-access-and-system-packages)).
+
+### Python Packages
+
+Prefer `pip` to `conda`. pip resolves dependency conflicts more leniently and is
 substantially faster. Where a conda package is unavoidable, install conda
-packages first and pip packages after. `pip install --no-cache-dir -r
-requirements.txt` reads the list from a file instead.
+packages first and pip packages after them. To install a list of packages from a
+file, use `pip install --no-cache-dir -r requirements.txt`.
 
-**For R, prefer `install.packages()` over conda** — conda packages inflate build
-time sharply. `conda install -c conda-forge ...` is the fallback for anything
-not on CRAN.
+### R Packages
 
-**Keep the image small.** Concatenate `RUN` steps, since each one becomes a
-layer; if a conda install takes an unreasonable amount of time, `mamba` does the
-same job faster. To offer a second environment as its own notebook kernel,
-create it as a conda environment and expose it with `nb_conda_kernels`.
+Prefer `install.packages()` to conda for R packages. Conda packages increase
+build time sharply. For a package not on CRAN, fall back to
+`conda install -c conda-forge ...`.
+
+### Image Size and Install Time
+
+Each `RUN` step becomes a layer. Concatenate `RUN` steps to keep the image
+small. If a conda install takes an unreasonable amount of time, `mamba` performs
+the same installation faster.
+
+### Additional Kernels
+
+To offer a second environment as its own notebook kernel, create it as a conda
+environment and expose it with `nb_conda_kernels`.
 
 ## Building & Publishing
 
-------------------------------------------------------------------------
+Publish the image to the GitHub Container Registry with GitHub Actions. The
+workflow in the example repository, `.github/workflows/docker.yml`, builds the
+image on each push and tags it with the branch name. A push to `main` produces
+`...:main`.
 
-**Publish with GitHub Actions to the GitHub Container Registry.** The example
-repository's workflow lives at `.github/workflows/docker.yml`, builds on push,
-and **tags the image with the branch name** — pushing to `main` produces
-`...:main`. Commit, push, then watch the run under the repository's **Actions**
-tab; a successful run leaves the image under **Packages**.
+1. Commit the changes and push them.
+2. Follow the workflow run under the repository's **Actions** tab.
+3. After a successful run, find the image under **Packages**.
 
-**Build locally as well where possible.** `docker build -t <image-fullname> .`
-followed by `docker run --rm -it <image-fullname> /bin/bash` gives a far shorter
-debugging loop than waiting on a hosted build. *When a build fails, start from
-the last step Docker ran* — the output prints an intermediate image ID after
-each successful step, and a shell in that image shows the state the failing
-command was working from. Two mistakes account for most failures: an install
-command without `-y`, which then waits forever for a prompt, and Windows CRLF
-line endings in a file the build reads, which `dos2unix` fixes.
+### Local Builds
+
+Where possible, also build the image locally. A local build and shell give a far
+shorter debugging cycle than waiting for a hosted build:
+
+```bash
+docker build -t <image-fullname> .
+docker run --rm -it <image-fullname> /bin/bash
+```
+
+### Failed Builds
+
+Debug a failed build from the last step Docker completed. The build output
+prints an intermediate image ID after each successful step. A shell in that
+image shows the state the failing command started from.
+
+Two mistakes account for most build failures:
+
+- An install command without `-y`, which waits indefinitely at a prompt.
+- Windows CRLF line endings in a file the build reads. `dos2unix` corrects the
+  line endings.
 
 ## Course Images
 
-------------------------------------------------------------------------
+ITS configures the repository and build process for a course image.
 
-**Ask for a course image with the course request**, or by updating the course's
-support ticket. Please include the packages to be added and the email addresses
-of everyone who should be able to maintain the repository.
+### Requesting a Course Image
 
-**We configure the repository and its build process.** Branches correspond to
-Docker tags: pushing to a `wi24` branch updates `{image}:wi24`. Updating to a
-newer base image is a one-line change:
+Request a course image in the course request or by updating the course's
+support ticket. Include the packages to be added and the email addresses of
+everyone who should be able to maintain the repository.
+
+### Branches and Docker Tags
+
+Branches correspond to Docker tags. A push to a `wi24` branch updates
+`{image}:wi24`. Updating to a newer base image is a one-line change:
 
 ```dockerfile
 FROM ghcr.io/ucsd-ets/datascience-notebook:2024.4-stable
 ```
 
-**Develop on a branch.** Create `dev` or `test`, commit there, and let the build
-publish `{image}:test`. When it works, open a pull request into the branch the
-course actually uses, have a team member review it, and merge — that rebuilds
-the production tag.
+### Development Branches
 
-**Preserving a version is a git tag.** A branch tag is overwritten on every
-push; a tag such as `fa24` freezes that build, and the course can then be
-pointed at it. → [Pinning a Workspace](standard-images.md#pinning-a-workspace)
+1. Create a `dev` or `test` branch and commit to it. The build publishes the
+   branch's tag, such as `{image}:test`.
+2. Test the branch image as described in
+   [Testing a Custom Image on DSMLP](#testing-a-custom-image-on-dsmlp).
+3. When the image works, open a pull request into the branch the course uses.
+4. Have a team member review the pull request.
+5. Merge the pull request. The merge rebuilds the production tag.
 
-## Testing It on DSMLP
+### Preserving a Build with a Git Tag
 
-------------------------------------------------------------------------
+A branch tag is overwritten on every push. A git tag such as `fa24` freezes that
+build, and the course can then be pointed at it, as described in
+[Pinning a Workspace](standard-images.md#pinning-a-workspace).
 
-From the login node, a custom image launches into the course workspace:
+### Instructor and ITS Responsibilities
+
+For course-specific customization, the instructor or a designated Technical
+Point of Contact leads installation, configuration, and student use. ITS staff
+support this work through 1:1 Consultation, described in
+[Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation),
+rather than by building the image.
+
+## Testing a Custom Image on DSMLP
+
+From the login node, launch the custom image into the course workspace:
 
 ```bash
 launch.sh -i <image>:<tag> -P Always -W <workspace-id>
 ```
 
-**`-P Always` forces a fresh pull.** Without it the node may run a cached copy
-of an older build. Drop the flag once development is finished.
+Take the workspace ID from `workspace --list` rather than constructing it
+([Listing Workspace IDs](../workspaces-and-storage/what-a-workspace-is.md#listing-workspace-ids)).
 
-*Run `workspace --list` for the workspace ID; do not try to construct it.*
-→ [Belonging to Several Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces)
-
-The launch prints a URL — open it and exercise the features the course depends
+The launch prints a URL. Open it and exercise the features the course depends
 on. When a launch times out or fails, `kubectl logs <pod-name>` is the first
-place to look.
-→ [Kubernetes](../running-jobs/kubernetes.md)
+place to look
+([Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md)).
 
-*Two things shorten the loop.* The first launch on a node downloads the image
-and a second on the same node does not, so `-n` with a bare node number
-(e.g. `-n 30`) is worth reusing while iterating. And a final
-`CMD ["/bin/bash"]` in the Dockerfile suppresses the notebook server in favour
-of a plain shell; a service in the pod is still reachable with
-`kubectl port-forward pods/<POD_NAME> <PORT>:8888`.
-→ [Reaching a Notebook or a Service](../access/the-login-node.md#reaching-a-notebook-or-a-service)
+### Forcing a Fresh Pull
 
-Once the production tag is rebuilt, test it one last time the way students will
-meet it: from the **Launch your Environment** spawn page on Datahub.
+`-P Always` forces a fresh pull. Without it, the node may run a cached copy of
+an older build. Remove the flag once development is finished.
 
-## Caveats & Limitations
+### First Pull and Node Reuse
 
-------------------------------------------------------------------------
+A large image must be downloaded to the node a session is placed on before
+anything in the session starts, so the first launch on a node is slow. A second
+launch on the same node does not download the image again. While iterating,
+reuse one node with `-n` and a bare node number, for example `-n 30`.
 
-**Instructors lead, we assist:** for course-specific customization the
-instructor or a designated Technical Point of Contact takes the lead on
-installation, configuration and student use; ITS staff support this through 1:1
-Consultation rather than by building the image. *Note that consultation
-availability is limited in the final weeks of a term.*
+### Replacing the Notebook Server with a Shell
 
-**Not deriving from a standard image is an experimental case**, as are
-student-built containers of any derivation. They run on the platform, but they
-need substantially more of the builder's time and sit outside the standard
-support tier. Please talk to us at least a quarter ahead.
+A final `CMD ["/bin/bash"]` in the Dockerfile suppresses the notebook server
+and starts a plain shell instead. A service in the pod is still reachable with
+`kubectl port-forward pods/<POD_NAME> <PORT>:8888`, as described in
+[Reaching a Notebook or a Service](../access/the-login-node.md#reaching-a-notebook-or-a-service).
 
-**A first pull is slow:** a large image must be downloaded to whichever node a
-session lands on before anything starts.
+### Final Test from Datahub
 
-**CUDA is its own project:** `scipy-ml-notebook` already carries a CUDA toolkit
-with a matching PyTorch and TensorFlow. Building a custom one means keeping that
-toolkit compatible with the driver on the node, indefinitely. The supported
-version is recorded in the `scipy-ml-notebook` Dockerfile, not here.
-
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+After the production tag is rebuilt, test the image once more from the
+**Launch your Environment** spawn page on Datahub, which is the route students
+use.

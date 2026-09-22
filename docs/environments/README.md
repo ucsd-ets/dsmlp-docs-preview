@@ -1,21 +1,13 @@
 # Environments
 
-The software images a session runs, what can be added to one, and how to build a
-new one.
-
-------------------------------------------------------------------------
-
-Documented once, and linked from wherever it is needed.
-
-**Every page in this directory is an initial draft.** Each opens with a note
-naming what its writer could not settle. Please read those before treating any
-page as final.
+This section covers the software images a session runs, adding packages to an
+environment, and building a custom image.
 
 | Page | Covers |
 |---|---|
-| [Standard Images, Tags & Pinning](standard-images.md) | The three maintained images, how they inherit, tag forms, and holding a course on one build. |
-| [Customizing an Environment](customizing-your-environment.md) | Installing into a home directory, private kernels, R libraries — and the boundary at root. |
-| [Building & Publishing a Custom Image](building-a-custom-image.md) | A Dockerfile, a base image, and testing the result on DSMLP. |
+| [Standard Images, Tags, and Pinning](standard-images.md) | The standard images, image inheritance, image names and tags, image selection for a session, the quarterly rebuild, and pinning a workspace. |
+| [Customizing an Environment](customizing-your-environment.md) | What can be installed, Python packages in a private kernel, R packages, root access and system packages, and recovering a broken environment. |
+| [Building & Publishing a Custom Image](building-a-custom-image.md) | Choosing a base image, the Dockerfile, building and publishing, course images, and testing a custom image on DSMLP. |
 
 ---
 

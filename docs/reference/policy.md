@@ -1,27 +1,34 @@
-# Policy: Acceptable Use, Data Classification & Shared-Resource Courtesy
+# Policy
 
-Three separate obligations sit on everyone who uses Datahub and DSMLP: what the
-University permits on the platform, what campus policy permits on any IT
-resource, and what colleagues on a shared cluster are entitled to expect. This
-page covers all three.
+This page states the conditions for using Datahub and DSMLP: data
+classification, campus acceptable use, hosting of services, expected practice on
+shared resources, self-supporting programs, and scheduled maintenance.
 
 ## Data Classification
 
-------------------------------------------------------------------------
+P3 and P4 are University
+[classification levels](https://security.ucop.edu/policies/institutional-information-and-it-resource-classification.html).
+The University's classification is the authority on which level applies to a
+dataset.
 
-**P4 data is prohibited.** Highly-sensitive information such as clinical records
-or export-controlled material must not be placed on Datahub or DSMLP. There is no
+### P4 Data
+
+P4 data is prohibited. Highly sensitive information, such as clinical records or
+export-controlled material, must not be placed on Datahub or DSMLP. There is no
 review path and no exception.
 
-**P3 data may be permitted after review.** Legally or contractually protected
-information is *not* categorically excluded. It requires a conversation before
-any of it reaches the cluster, and depending on the nature of the data,
-**vetting may take 4-6 weeks or longer**.
+### P3 Data
 
-The University's [classification
-levels](https://security.ucop.edu/policies/institutional-information-and-it-resource-classification.html)
-are the authority on which level applies. The examples our own documentation
-gives are:
+P3 data may be permitted after review. Legally or contractually protected
+information is not categorically excluded, but it must be raised with the
+contacts in
+[Contacts for Classification Questions](#contacts-for-classification-questions)
+before any of it reaches the cluster. Depending on the nature of the data,
+vetting may take 4-6 weeks or longer.
+
+### Examples by Kind of Data
+
+ITS documentation gives these examples:
 
 | Kind of data | Examples |
 |---|---|
@@ -30,121 +37,139 @@ gives are:
 | Student records | Other students' grades or academic records (FERPA) |
 | Contractually protected | Information subject to certain Data Use Agreements |
 
-**Where to raise it.** For instruction and coursework, email
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu). For research, Research IT at
-[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
-→ [Restricted & Licensed Datasets](../workspaces-and-storage/datasets.md#restricted--licensed-datasets) ·
-[Getting Help](getting-help.md)
+### Contacts for Classification Questions
+
+For instruction and coursework, email
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu). For research, email Research IT at
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu). Restricted and licensed
+datasets are covered in
+[Restricted & Licensed Datasets](../workspaces-and-storage/datasets.md#restricted--licensed-datasets),
+and other support routes in [Getting Help](getting-help.md).
 
 ## Appropriate Use
 
-------------------------------------------------------------------------
+### IT Acceptable Use Policy
 
-**The campus-wide [IT Acceptable Use
-Policy](https://adminrecords.ucsd.edu/ppm/docs/135-9.html) applies here as it
-does to any campus IT resource**, including its prohibitions on commercial or
-political activity, hacking or cyberstalking, and other types of unwelcome
-behavior. Nothing about this platform's academic purpose relaxes it.
+The campus-wide
+[IT Acceptable Use Policy](https://adminrecords.ucsd.edu/ppm/docs/135-9.html)
+applies to Datahub and DSMLP as it does to any campus IT resource, including its
+prohibitions on commercial or political activity, hacking or cyberstalking, and
+other types of unwelcome behavior. The platform's academic purpose does not
+relax it.
 
-**Access is granted to an individual, not to that individual's collaborators.**
-An account, its home directory and any dataset granted with it are for the
-account holder's own use and are not passed on. The workspace's `public/` and
-`teams/` areas are the sanctioned route for sharing.
-→ [Inside the Workspace](../workspaces-and-storage/moving-and-sharing-data.md#inside-the-workspace)
+### Individual Access and Sharing
 
-## Not a Place for Externally-Available Services
+Access is granted to an individual, not to that individual's collaborators. An
+account, its home directory, and any dataset granted with it are for the account
+holder's own use and are not passed on. The workspace's `public/` and `teams/`
+areas are the sanctioned route for sharing, as described in
+[Inside the Workspace](../workspaces-and-storage/moving-and-sharing-data.md#inside-the-workspace).
 
-------------------------------------------------------------------------
+## Hosting Externally Available Services
 
-**Datahub and DSMLP should not be used to host externally-available services or
-applications, except as required for coursework or projects.**
+Datahub and DSMLP should not be used to host externally available services or
+applications, except as required for coursework or projects. A class demo, a
+project web application, or a service an assignment requires is in scope. A
+production service, a persistent public endpoint, or anything whose outage
+someone outside the University would notice is out of scope. Access to a service
+running in a container is described in
+[Reaching a Notebook or a Service](../access/the-login-node.md#reaching-a-notebook-or-a-service).
 
-A compute node can be drained for patching, a pod can be preempted, and a session
-has a deadline. *(This caveat applies primarily to the compute nodes executing
-user jobs; critical components such as networking, file storage and backups are
-maintained to Enterprise IT standards.)*
+### Availability and Reliability
 
-**A class demo, a project web application, a service an assignment requires:
-all in scope.** A production service, a persistent public endpoint, or anything
-somebody outside the University would notice going down: not.
-→ [Port Forwarding & Reaching Services in a Container](../access/the-login-node.md#reaching-a-notebook-or-a-service)
+A compute node can be drained for patching, a pod can be preempted, and a
+session has a deadline. These conditions apply primarily to the compute nodes
+that execute user jobs. Critical components such as networking, file storage,
+and backups are maintained to Enterprise IT standards.
 
-## Shared-Resource Courtesy
+## Use of Shared Resources
 
-------------------------------------------------------------------------
+The practices in this section are requests rather than rules, with the exception
+of the prohibition in
+[Computation on the Login Node](#computation-on-the-login-node).
 
-Every one of these is a request rather than a rule.
+### Stopping Unused Sessions
 
-**Please stop sessions that are not in use.** GPU cards are assigned to
-containers exclusively: a card attached to an idle session is unusable by
-anybody else. Stop the session with **File → Hub Control Panel →
-Stop My Server**, or delete the pod from the login node. *Logging out, closing
-the tab and closing a laptop all leave it running.*
-→ [Datahub in the Browser](../access/datahub-in-the-browser.md)
+Sessions that are not in use are expected to be stopped. GPU cards are assigned
+to containers exclusively, and a card attached to an idle session is unusable by
+any other user. Logging out, closing the tab, or closing a laptop leaves a
+session running; stop it with **File → Hub Control Panel → Stop My Server**, as
+described in
+[Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session), or
+delete the pod from the login node.
 
-**Please do not treat idle culling as a cleanup service.** The delay before it
-acts is measured in hours on a quiet cluster.
-→ [Idle Culling](../gpu-access/what-ends-a-session.md#what-counts-as-idle)
+Idle culling is not a substitute for stopping a session. On a quiet cluster, the
+delay before it acts is measured in hours. The idle criteria are described in
+[What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle).
 
-**Please debug on CPU before requesting a GPU.** Both PyTorch and TensorFlow
-switch between CPU and GPU easily, and a CPU-only container is not the scarce
-thing. → [Access](../access/README.md)
+### Debugging on CPU
 
-**Please ask for the smallest thing that works** — the smallest GPU class a model
-fits in, the memory a job needs rather than the maximum permitted, the hours it
-actually takes. A larger class is not faster for a model that already fits in a
-smaller one; it is only scarcer.
-→ [GPU Classes](../gpu-access/gpu-classes.md)
+Code is expected to be debugged on CPU before a GPU is requested. PyTorch and
+TensorFlow both switch easily between CPU and GPU. The ways to start a session
+are described in [Access](../access/README.md).
 
-**Please do not compute on the login node.** It is a jumpbox for launching jobs
-and moving files. Running a training script, a build or a long analysis there is
-prohibited.
-→ [The Login Node](../access/the-login-node.md)
+### Sizing Resource Requests
 
-**Please do not keep a personal copy of a shared dataset.** Read it where it
-lives. A per-student copy of a large corpus exhausts a home quota, and multiplied
-across a roster it exhausts rather more than that.
-→ [Shared Datasets](../workspaces-and-storage/datasets.md)
+Requests are expected to name the smallest resources that work: the smallest GPU
+class a model fits in, the memory a job needs rather than the maximum permitted,
+and the hours the job actually takes. A larger GPU class is not faster for a
+model that already fits in a smaller one. The classes are described in
+[GPU Classes](../gpu-access/gpu-classes.md).
 
-**Please cancel a booking that will not be used.** Cancelling in advance carries
-no penalty, and the capacity returns to the pool.
-→ [The Cancellation Penalty](../gpu-access/service-units-and-budgets.md#the-cancellation-penalty)
+### Computation on the Login Node
 
-**Demand for GPUs may exceed capacity** at peak hours during 10th and Finals
-Weeks or at assignment deadlines. Work shifted to a daytime or off-peak hour
-costs less.
-→ [Off-Peak Discounts](../gpu-access/service-units-and-budgets.md#peak--off-peak-hours)
+Running computation on the login node, such as a training script, a build, or a
+long analysis, is prohibited; the login node is for launching jobs and moving
+files, as described in
+[What the Login Node Is For](../access/the-login-node.md#what-the-login-node-is-for).
+
+### Personal Copies of Shared Datasets
+
+A shared dataset is expected to be read where it lives rather than copied. A
+per-student copy of a large corpus exhausts a home quota. Shared datasets are
+described in
+[Datasets](../workspaces-and-storage/datasets.md).
+
+### Canceling Unused Bookings
+
+A booking that will not be used is expected to be canceled. Canceling in advance
+carries no penalty, and the capacity returns to the pool. Penalties are
+described in
+[The Cancellation Penalty](../gpu-access/service-units-and-budgets.md#the-cancellation-penalty).
+
+### Peak GPU Demand
+
+Demand for GPUs may exceed capacity at peak hours during 10th and Finals Weeks,
+or at assignment deadlines. Work shifted to a daytime or off-peak hour costs
+less, as described in
+[Peak & Off-Peak Hours](../gpu-access/service-units-and-budgets.md#peak--off-peak-hours).
 
 ## Self-Supporting Programs
 
-------------------------------------------------------------------------
-
-**Self-supporting programs are welcome**, and there is a cost attached.
 [Self-supporting programs](https://blink.ucsd.edu/instructors/academic-info/majors/selfsupport-codes.html)
-such as MAS and MBA may use Datahub and DSMLP for coursework or projects, and
+such as MAS and MBA may use Datahub and DSMLP for coursework or projects.
 [UC policy](https://www.ucop.edu/institutional-research-academic-planning/content-analysis/academic-planning/self-supporting-programs.html)
-requires us to recover the associated direct and indirect costs. *Please contact
-us at [datahub@ucsd.edu](mailto:datahub@ucsd.edu) to discuss it.*
+requires ITS to recover the associated direct and indirect costs. To discuss
+cost recovery, email [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
 
-*Note separately that storage above 1 TB is chargeable. Compute is not.*
-→ [Mounting External Storage](../workspaces-and-storage/your-files-and-quotas.md#mounting-external-storage)
+Charges for storage are set out in
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
+
+See also: [Mounting External Storage](../workspaces-and-storage/your-files-and-quotas.md#mounting-external-storage)
 
 ## Scheduled Maintenance
 
-------------------------------------------------------------------------
+### Instructional Maintenance
 
-**On the instructional side, maintenance runs Tuesdays, 6-8 AM.** In practice the
-work is usually limited to a subset of worker nodes, in which case running jobs
-are unaffected — but please do not plan a deadline into that window. Infrequent
-'Critical' updates may require downtime outside it, in which case we notify
-instructors as soon as is practical.
+Maintenance on the instructional side runs Tuesdays, 6-8 AM. The work is usually
+limited to a subset of worker nodes, in which case running jobs are unaffected.
+Do not plan a deadline within this window. Infrequent 'Critical' updates may
+require downtime outside the window; ITS notifies instructors of such downtime
+as soon as is practical.
 
-**The Research Cluster window is different in kind.** It is quarterly, at the
-break between terms, comes with about 7 days' notice, and **all running jobs are
-terminated**. → [Maintenance Closures](../gpu-access/what-ends-a-session.md#maintenance-closures)
+### Research Cluster Maintenance
 
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+The Research Cluster maintenance window is quarterly, at the break between
+terms, with about 7 days' notice. All running jobs are terminated. The effect on
+sessions is described in
+[Maintenance Closures](../gpu-access/what-ends-a-session.md#maintenance-closures).

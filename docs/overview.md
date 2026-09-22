@@ -1,179 +1,182 @@
-# Datahub & DSMLP: Overview
+# Datahub and DSMLP Overview
 
-------------------------------------------------------------------------
+This page describes Datahub and DSMLP and names the starting page for each
+audience. It also summarizes standard features, platform constraints, support
+contacts, and policy.
 
-UC San Diego's **Datahub** and **Data Science & Machine Learning Platform
-(DSMLP)** provide thousands of undergraduates, graduate students, and their
-instructors with access to Jupyter, RStudio, and other advanced computational
-resources for scheduled classes, formal independent study, and student projects.
-The same cluster carries research work, where it is also referred to as the
-**Research Cluster**.
+## Datahub, DSMLP, and the Research Cluster
+
+UC San Diego's Datahub and Data Science & Machine Learning Platform (DSMLP)
+provide thousands of undergraduates, graduate students, and their instructors
+with access to Jupyter, RStudio, and other computational resources for scheduled
+classes, formal independent study, and student projects. The same cluster runs
+research work and, in that context, is also called the **Research Cluster**.
 
 The platforms are used in courses ranging from introductory Data Science
-lectures, to graduate-level applied machine-learning, to curricula in Biology,
-Music, Social Sciences, and Public Health. Over AY 2025-26, more than 140
-classes, 75 instructors, and 18,000 student enrollments were hosted.
+lectures to graduate-level applied machine learning, and in curricula in
+Biology, Music, Social Sciences, and Public Health. In AY 2025-26, the platforms
+hosted more than 140 classes, 75 instructors, and 18,000 student enrollments.
 
 **Datahub** is the web interface, at
-[datahub.ucsd.edu](https://datahub.ucsd.edu). **DSMLP** is the cluster beneath
-it, and is also reachable from a terminal. They are not separate services, and
-the same files are present in both.
-
-Please reach out to our team with any questions or feedback.
-
-- Email: [datahub@ucsd.edu](mailto:datahub@ucsd.edu)
-- 1:1 Consultation (instructors, TAs, and Technical Points of Contact):
-  <https://ucsd-datahub.youcanbook.me/>
-
-## Changing in Fall 2026: GPU Reservations
-
-------------------------------------------------------------------------
-
-From Fall 2026, access to GPUs is managed by a **reservation system**. A web
-interface books a specific window — *"Tuesday 9am-7pm, 4× X-Large"* — and for the
-length of that window the capacity is held and sessions are admitted ahead of the
-walk-up queue. Ad-hoc, on-demand use continues to be supported.
-
-**On-demand launches draw on the Service Unit budget exactly as a booked window
-would.** Launching an eligible session is what authorizes that spend. Anyone
-using GPUs at all should read
-[On-Demand Leases Charge Budget](gpu-access/service-units-and-budgets.md#on-demand-leases-charge-budget)
-before the first launch of the term.
+[datahub.ucsd.edu](https://datahub.ucsd.edu). **DSMLP** is the cluster that
+runs Datahub sessions, and it is also reachable from a terminal. Datahub and
+DSMLP are a single service, and the same files are present in both.
 
 ## Where to Begin
 
-------------------------------------------------------------------------
+Each audience has its own starting page.
 
-| Audience | Please see | Which assumes |
+| Audience | Starting page | Assumes |
 |---|---|---|
-| A student enrolled in a course that uses Datahub | **[Using Datahub in a Course](student-in-a-course.md)** | A web browser and nothing else |
-| That same student, where the course requires SSH, `launch.sh`, batch jobs, VS Code, or a GPU class the course menu does not offer | **[Working from the Command Line](working-from-the-command-line.md)** | A terminal and `ssh` |
-| Teaching or assisting with a course | **[Teaching with Datahub & DSMLP](instructor-or-ta.md)** | A browser for most tasks |
-| Undertaking a personal project, independent study, capstone, or club or team project | **[Projects & Independent Study](student-project.md)** | Familiarity with a shell |
-| A graduate student, postdoc, undergraduate, or staff researcher working without a lab workspace | **[Research on DSMLP](individual-researcher.md)** | Familiarity with a shell |
-| Faculty arranging access for a research group | **[Setting Up a Research Lab](faculty-research-lab.md)** | Some steps are performed by our staff |
+| A student enrolled in a course that uses Datahub | [Using Datahub in a Course](student-in-a-course.md) | A web browser and nothing else |
+| A student in such a course, where the course requires SSH, `launch.sh`, batch jobs, VS Code, or a GPU class the course menu does not offer | [Working from the Command Line](working-from-the-command-line.md) | A terminal and `ssh` |
+| Teaching or assisting with a course | [Teaching with Datahub and DSMLP](instructor-or-ta.md) | A browser for most tasks |
+| Undertaking a personal project, independent study, capstone, or club or team project | [Projects & Independent Study](student-project.md) | Familiarity with a shell |
+| A graduate student, postdoc, undergraduate, or staff researcher working without a lab workspace | [Research on DSMLP](individual-researcher.md) | Familiarity with a shell |
+| Faculty arranging access for a research group | [Setting Up a Research Lab](faculty-research-lab.md) | Some steps are performed by ITS staff |
 
-*Coursework and a personal project are two separate workspaces*, with different
-eligibility, different resources, and different access lifetimes. Please read the
-course pages for coursework and the project page for the project.
+Coursework and a personal project are two separate workspaces, with different
+eligibility, different resources, and different access lifetimes. Coursework is
+covered in [Using Datahub in a Course](student-in-a-course.md) and
+[Working from the Command Line](working-from-the-command-line.md), and a
+personal project in [Projects & Independent Study](student-project.md).
 
 ## Workspaces
 
-------------------------------------------------------------------------
+Users are divided into groups called **workspaces**: one per course, one per
+lab, or one general catch-all population. A workspace anchors all cluster
+configuration: rosters, storage, container images, GPU access, and storage and
+GPU quotas, as described in
+[What a Workspace Is and What It Controls](workspaces-and-storage/what-a-workspace-is.md).
 
-Users are divided into groups called **workspaces**: one per course, lab, or
-general catch-all population. Workspaces anchor all cluster configuration:
-rosters, storage, container images, GPU access, and storage and GPU quotas.
+A member may belong to several workspaces at once, for example as a TA for one
+course, a student in another, and a member of a lab, and chooses the workspace
+to work in at launch. A member of more than one workspace has a home directory
+in each, as described in
+[Belonging to Several Workspaces](workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces).
 
-A member may belong to several workspaces at once — a TA for one course, a
-student in another, a member of a lab — and picks the context to work in at
-launch time. A member of more than one workspace has a home directory in each.
-→ [Workspaces & Storage](workspaces-and-storage/README.md)
+See also: [Workspaces & Storage](workspaces-and-storage/README.md)
 
 ## Standard Features
 
-------------------------------------------------------------------------
+### Job Environment
 
-**Job environment.** All jobs, whether web/Jupyter, CLI, or batch, present a
-compute environment derived from the member's account and workspace context
-together with any job-specific configuration. Course sessions typically begin at
-2 CPU cores and 4GB RAM; upper limits are based on class size, demand, and
-capacity.
+All jobs, whether browser-based Jupyter sessions, command-line jobs, or batch
+jobs, run in a compute environment derived from the member's account and
+workspace together with any job-specific configuration. A course session in the
+browser typically begins at 2 CPU cores and 4GB RAM, as described in
+[The Browser Session](access/datahub-in-the-browser.md#the-browser-session).
+Upper limits are based on class size, demand, and capacity.
 
-**GPUs**, organized into five classes by size rather than by hardware model, from
-approximately 6GB to approximately 96GB. Each workspace is given access to one or
-more classes, matching anticipated work.
-→ [GPU Classes](gpu-access/gpu-classes.md)
+### GPUs
 
-**Storage.** A per-user, per-workspace home directory; a shared area readable by
-everyone in the workspace; and a per-user, cluster-wide private area available
-in every workspace. Course home directories are typically 5-10GB; research
-accounts are substantially larger. Optional mounts of external storage are
-available.
-→ [Directories, Quotas & Cleaning Up](workspaces-and-storage/your-files-and-quotas.md#where-files-live)
+GPUs are organized into five classes by size rather than by hardware model.
+Each workspace is given access to one or more classes, matching its anticipated
+work. The classes are listed in
+[GPU Class Sizes](gpu-access/gpu-classes.md#gpu-class-sizes).
 
-**Standard Software Images** — curated environments covering the widely-used
-Python, R, and Julia data analysis stacks, a CUDA/GPU-enabled image with
-TensorFlow and PyTorch, and an RStudio image. Courses and labs may further
-customize or pin their own.
-→ [Standard Images](environments/standard-images.md)
+### Storage
 
-**Three ways to work**: in a browser, at a terminal over SSH, or with a desktop
-editor such as VS Code connected to a cluster container.
-→ [Access](access/README.md)
+Each member has a per-user, per-workspace home directory; a shared area readable
+by everyone in the workspace; and a per-user, cluster-wide private area
+available in every workspace. The directories are listed in
+[Where Files Live](workspaces-and-storage/your-files-and-quotas.md#where-files-live),
+and the quotas for course and research home directories in
+[Workspace and Personal Quotas](workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
+Optional mounts of external storage are available, as described in
+[Mounting External Storage](workspaces-and-storage/your-files-and-quotas.md#mounting-external-storage).
 
-## Three Things Worth Knowing Early
+### Standard Software Images
 
-------------------------------------------------------------------------
+Curated images cover the widely used Python, R, and Julia data analysis stacks.
+They include a CUDA/GPU-enabled image with TensorFlow and PyTorch, and an
+RStudio image. Courses and labs may further customize or pin their own images.
+The images are described in
+[Standard Images, Tags, and Pinning](environments/standard-images.md).
 
-**Containers run unprivileged**, under the member's own UID, with no root or sudo
-inside the container. `sudo apt-get install` will not work; this is by design and
-is not a fault to report. → [The Hard Boundary](environments/customizing-your-environment.md#the-hard-boundary)
+### Ways to Work
 
-**The login node is not for computing.** It exists to launch jobs and move files.
-→ [The Login Node](access/the-login-node.md)
+Work is done in a browser, at a terminal over SSH, or in a desktop editor such
+as VS Code connected to a cluster container. Each route is described in
+[Access](access/README.md).
 
-**An idle GPU session still holds its GPU**, and is reclaimed once it has been
-idle long enough.
-→ [Idle Culling](gpu-access/what-ends-a-session.md#what-counts-as-idle)
+## GPU Reservations
+
+From Fall 2026, access to GPUs is managed by a reservation system. A booking,
+made through a web interface, holds capacity for a specific window, and for the
+length of that window sessions are admitted ahead of the walk-up queue. Ad-hoc,
+on-demand use without a booking is also supported. Booking is described
+in [Reservations](gpu-access/reservations.md). Reservations, per-group quotas,
+and Service Unit budgets are the mechanisms that manage contention for GPUs, as
+described in [GPU Access](gpu-access/README.md).
+
+> [!WARNING]
+> An on-demand launch draws on the Service Unit budget as a booked window does,
+> and launching an eligible session authorizes that spend. See
+> [On-Demand Lease Charges](gpu-access/service-units-and-budgets.md#on-demand-lease-charges).
+
+## Platform Constraints
+
+### Root Access
+
+Containers run unprivileged, under the member's own UID, with no root or sudo
+inside the container, as described in
+[Root Access and System Packages](environments/customizing-your-environment.md#root-access-and-system-packages).
+`sudo apt-get install` fails by design, and the failure is not a fault to
+report.
+
+### Computation on the Login Node
+
+The login node is for launching jobs and moving files, and running computation
+on it is prohibited, as described in
+[What the Login Node Is For](access/the-login-node.md#what-the-login-node-is-for).
+
+### Idle GPU Sessions
+
+An idle GPU session still holds its GPU, and the session is reclaimed once it
+has been idle long enough, as described in
+[What Counts as Idle](gpu-access/what-ends-a-session.md#what-counts-as-idle).
 
 ## Support
 
-------------------------------------------------------------------------
+Questions and feedback go to the contact for the topic.
 
-| Topic | Please contact |
+| Topic | Contact |
 |---|---|
 | A course a student is enrolled in | The instructor or TA, first |
-| Datahub or DSMLP itself | [datahub@ucsd.edu](mailto:datahub@ucsd.edu), or the [IT Service Desk](https://support.ucsd.edu/) |
+| Datahub or DSMLP itself | [datahub@ucsd.edu](mailto:datahub@ucsd.edu), or the [ITS Service Desk](https://support.ucsd.edu/) |
 | The Research Cluster, or Universal Scale Storage | [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) |
 | Which platform is appropriate for a research project | [Research IT](https://research-it.ucsd.edu/computing/index.html) |
+| 1:1 Consultation, for instructors, TAs, and Technical Points of Contact (TPOCs) | [ucsd-datahub.youcanbook.me](https://ucsd-datahub.youcanbook.me/) |
 
-We aim to resolve individual user issues within **1-2 business days**. Urgent or
-broadly-scoped problems may be escalated through the IT Service Desk; *a ticket
-should say plainly what is affected and how many people.*
-→ [Getting Help](reference/getting-help.md)
+Urgent or broadly scoped problems may be escalated through the ITS Service
+Desk. A ticket for such a problem states what is affected and how many people,
+as described in
+[Incidents Affecting More Than One Person](reference/getting-help.md#incidents-affecting-more-than-one-person).
+ITS response targets are given in
+[Response Targets](reference/getting-help.md#response-targets), the terms of
+1:1 Consultation in
+[Support & Technical Consultation](instructor-or-ta.md#support--technical-consultation),
+and all support routes in [Getting Help](reference/getting-help.md).
 
-## Caveats & Limitations
+## Policy
 
-------------------------------------------------------------------------
+Conditions of use are set out in [Policy](reference/policy.md).
 
-**No Sensitive Data:** Datahub is not engineered to protect highly-sensitive data
-such as clinical records or export-controlled information ("P4" per
-[University of California classification levels](https://security.ucop.edu/policies/institutional-information-and-it-resource-classification.html))
-and must not be used for such purposes. Legally- or contractually-protected
-information ("P3") may be permitted after review; note that depending on the
-nature of the data, vetting may take 4-6 weeks or longer.
-→ [Policy](reference/policy.md)
-
-**Shared Compute Resources:** Datahub and DSMLP system resources are shared among
-all courses and research groups. Demand for resources, in particular for GPUs,
-may exceed capacity at peak hours during 10th and Finals Weeks or at assignment
-deadlines. From Fall 2026, reservations, per-group quotas and Service Unit
-budgets are the mechanisms by which that contention is managed.
-→ [GPU Access](gpu-access/README.md)
-
-**Scheduled Maintenance:** Datahub may be unavailable Tuesdays, 6-8AM for
-installation of time-sensitive updates or security patches. *In practice this
-work is usually limited to a subset of worker nodes, in which case running jobs
-are unaffected.* Infrequent 'Critical' updates may require downtime outside of
-this timeframe.
-
-**Availability and Reliability:** Datahub and DSMLP were designed with student
-workloads in mind, deliberately trading some of the costly redundancy typical of
-financial or health settings for additional capacity and capability. As such,
-they should not be used to host externally-available services or applications
-except as required for coursework or projects. *(This caveat applies primarily to
-the compute nodes executing user jobs; critical components such as networking,
-file storage, and backups are maintained to Enterprise IT standards.)*
-
-**Appropriate Use:** The campus-wide
-[IT Acceptable Use Policy](https://adminrecords.ucsd.edu/ppm/docs/135-9.html)
-applies to use of Datahub and DSMLP, including prohibitions on commercial or
-political activity, hacking or cyberstalking, and other types of unwelcome
-behavior.
-
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+- Highly sensitive data (P4), such as clinical records or export-controlled
+  information, must not be used on Datahub or DSMLP, and legally or
+  contractually protected information (P3) may be permitted after review, as
+  described in [Data Classification](reference/policy.md#data-classification).
+- Datahub and DSMLP system resources are shared among all courses and research
+  groups, and demand, in particular for GPUs, may exceed capacity at peak hours
+  during 10th and Finals Weeks or at assignment deadlines, as described in
+  [Use of Shared Resources](reference/policy.md#use-of-shared-resources).
+- Datahub may be unavailable during scheduled maintenance for time-sensitive
+  updates or security patches, on the schedule given in
+  [Scheduled Maintenance](reference/policy.md#scheduled-maintenance).
+- Datahub and DSMLP are not to be used to host externally available services or
+  applications except as required for coursework or projects, as described in
+  [Hosting Externally Available Services](reference/policy.md#hosting-externally-available-services)
+  and [Availability and Reliability](reference/policy.md#availability-and-reliability).
+- The campus-wide IT policy on acceptable use applies to Datahub and DSMLP, as
+  described in [Appropriate Use](reference/policy.md#appropriate-use).

@@ -1,31 +1,40 @@
-# The Notebook Grading Workflow, End to End
+# Notebook Grading Workflow
 
-**nbgrader runs inside Datahub, from a shared course grader account.** This page
-is the whole loop: create, release, collect, grade, hand back, export. *The
-choice of tool comes first:*
-[Choosing a Grading Tool](choosing-a-grading-tool.md).
+nbgrader runs inside Datahub from a shared course grader account. This page
+covers the nbgrader workflow from creating an assignment to importing grades
+into Canvas; the choice of grading tool is covered in
+[Choosing a Grading Tool & Interface](choosing-a-grading-tool.md).
 
-## Before the Term: The Grader Account
+## Grader Account
 
-------------------------------------------------------------------------
+Each Datahub course is issued one shared nbgrader TA grader account, and its
+credentials go to the instructor before instruction begins. nbgrader works only
+from that account. An instructor's or TA's own account cannot use it.
 
-**Each Datahub course is issued one shared nbgrader TA grader account**, and its
-credentials go to the instructor before instruction begins. **nbgrader works
-only from that account** — an instructor's or TA's own account cannot use it.
+To open Formgrader:
 
-Sign in to [datahub.ucsd.edu](https://datahub.ucsd.edu) as the grader account,
-launch the course environment, and open **Nbgrader → Formgrader**. *The account
-is shared course infrastructure: its local environment must not be reset or
-cleaned by hand; raise it in the course ticket instead.*
-→ [Which Interface Supports Grading](choosing-a-grading-tool.md#which-interface-supports-grading) ·
-[Common Grading Failures & Recovery](grading-failures.md)
+1. Sign in to [datahub.ucsd.edu](https://datahub.ucsd.edu) as the grader
+   account.
+2. Launch the course environment.
+3. Open **Nbgrader → Formgrader**.
 
-## The Shape of It
+The interfaces that support nbgrader are listed in
+[Interface Support for nbgrader](choosing-a-grading-tool.md#interface-support-for-nbgrader).
 
-------------------------------------------------------------------------
+The grader account is shared course infrastructure. Its local environment must
+not be reset or cleaned by hand. Request any reset or cleanup in the course
+ticket. Known failures of the grader environment and their recovery are listed
+in [Common Grading Failures & Recovery](grading-failures.md).
 
-Work moves through four directories in the grader's home, each with the same
-internal structure:
+### Multiple Graders
+
+There is no per-TA identity inside nbgrader. Agree on who is grading which
+submissions before two people open the same submission.
+
+## Assignment Directories
+
+Work moves through four directories in the grader account's home directory,
+each with the same internal structure:
 
 | Directory | Holds | Created by |
 |---|---|---|
@@ -36,43 +45,51 @@ internal structure:
 
 ## Creating an Assignment
 
-------------------------------------------------------------------------
+1. In **Manage Assignments**, choose **Add new assignment...**.
+2. Enter a name that follows the rules in [Assignment Names](#assignment-names).
+3. Set the due date and the **Timezone as UTC offset**: `-0800` for PST, or
+   `-0700` for PDT. Due dates are in UTC.
+4. Open `source/{assignment_id}/` and add the notebook and any supporting files.
+5. Rename the notebook to match the assignment name.
 
-In **Manage Assignments**, choose **Add new assignment...**, then:
+### Assignment Names
 
-- **Name it without a file extension.** An assignment called `Assignment_1`
-  creates a folder of that name; the notebooks inside it carry `.ipynb`.
-- **Use a name unique across every assignment the grader account has created**,
-  not merely within the course.
-- **Avoid spaces in the name.** A space here is one of the two known causes of a
-  failed export at the end of the term.
-- **Set the due date, and set the timezone offset.** Due dates are in UTC; set
-  **Timezone as UTC offset** to `-0800` for PST, or `-0700` for PDT.
+- Omit the file extension. An assignment called `Assignment_1` creates a folder
+  of that name; the notebooks inside it carry `.ipynb`.
+- Use a name that is unique across every assignment the grader account has
+  created, not only within the course.
+- Do not use spaces. A space in the name is one of the two known causes of a
+  failed export at the end of the term, described in
+  [Export Failures](#export-failures).
 
-Then open `source/{assignment_id}/` and add the notebook and any supporting
-files, **renaming the notebook to match the assignment name**.
+### Assignment File Size Limit
+
+Assignment file size is capped at 100MB by default. Raising the limit requires
+editing `nbgrader_config.py` in the course environment. Contact ITS at
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu) before raising it.
 
 ## Marking Up Cells
 
-------------------------------------------------------------------------
+Open the assignment notebook and turn on the nbgrader cell toolbar with
+**Nbgrader → Create Assignment** or the panel on the right-hand side of the
+notebook. In the classic interface, the toolbar is under
+**View → Cell Toolbar → Create Assignment**. Every cell then carries a grading
+control.
 
-Open the assignment notebook and turn on the nbgrader cell toolbar —
-**Nbgrader → Create Assignment**, or the panel on the right-hand side of the
-notebook. *In the classic interface it is **View → Cell Toolbar → Create
-Assignment**.* Every cell then carries a grading control.
-
-| Cell type | Use it for |
+| Cell type | Use |
 |---|---|
 | **Manually graded answer** | A free response, in one cell |
-| **Manually graded task** | Work the student does *across* cells, e.g. process data and plot it |
+| **Manually graded task** | Work the student does across cells, such as processing data and plotting it |
 | **Autograded answer** | Code the student writes, tested later |
 | **Autograder tests** | `assert` statements that grade an autograded answer |
 | **Read-only** | Anything students must not change, including test cells |
 
-**Every marked cell needs an ID, and a point value where one applies.**
+Every marked cell needs an ID, and a point value where one applies.
 
-**Solutions and hidden tests are delimited by special comment lines.** The
-region between them is replaced when the assignment is generated:
+### Solution and Hidden Test Regions
+
+Special comment lines delimit solutions and hidden tests. The region between
+them is replaced when the assignment is generated:
 
 ```python
 ### BEGIN SOLUTION
@@ -84,181 +101,170 @@ assert mean([2, 4]) == 3
 ### END HIDDEN TESTS
 ```
 
-*Without the delimiters the whole cell is released as-is, solutions included.*
+> [!WARNING]
+> Without the delimiters, the whole cell is released as-is, solutions included.
 
-**Leave at least one visible test**, or a comment saying hidden tests exist.
+Leave at least one visible test, or a comment stating that hidden tests exist.
 
-**Please do not ask students to copy a read-only or autograded cell.** Copying
-one corrupts the notebook's metadata and blocks autograding.
-→ [Common Grading Failures & Recovery](grading-failures.md)
+### Copying Read-Only and Autograded Cells
 
-**Validate the assignment's own solutions** with the **Validate** button before
-releasing. A pop-up reports which cells failed, if any.
+Do not ask students to copy a read-only or autograded cell. Copying one corrupts
+the notebook's metadata and blocks autograding. Recovery is covered in
+[Common Grading Failures & Recovery](grading-failures.md).
+
+### Validating Solutions
+
+Before releasing, validate the assignment's own solutions with the
+**Validate** button. A pop-up reports which cells failed, if any.
 
 ## Generating, Releasing & Collecting
 
-------------------------------------------------------------------------
+1. Select **Generate** in **Manage Assignments**. This creates `release/`,
+   mirroring `source/` with solutions stripped.
+2. Preview the release version and confirm that the hidden tests are hidden.
+3. Select **Release**. The button becomes an "x"; clicking it again un-releases
+   the assignment. Un-releasing does not recall copies that students have
+   already fetched.
+4. Select **Collect** after the deadline. A pop-up reports how many submissions
+   came in.
 
-1. **Generate**, from Manage Assignments. This creates `release/`, mirroring
-   `source/` with solutions stripped.
-2. **Preview the release version** and confirm the hidden tests really are
-   hidden.
-3. **Release.** The button becomes an "x"; clicking it again un-releases the
-   assignment. *Students who already fetched it keep their copy — an un-release
-   does not recall it.*
-4. **Collect**, after the deadline. A pop-up reports how many submissions came
-   in.
+### Distributing Other Course Materials
 
-*Course materials that are not nbgrader assignments — lecture notebooks, data —
-are usually distributed with a `git-pull` link instead.* Its commonest failure
-is a student clicking it before signing in.
-→ [Datahub in the Browser](../access/datahub-in-the-browser.md)
+Course materials that are not nbgrader assignments, such as lecture notebooks
+and data, are usually distributed with a `git-pull` link. The most common
+failure of the link is a student clicking it before signing in. Signing in is
+covered in [Datahub in the Browser](../access/datahub-in-the-browser.md).
 
 ## Autograding, Manual Grading & Feedback
 
-------------------------------------------------------------------------
+An assignment must be autograded before it can be manually graded. This applies
+to every assignment, including one with no autograded cells.
 
-**Autograde first, always.** In Manage Assignments, click the submission count
-to reach Manage Submissions. Grade one submission with **Autograde**, or all of
-them at once with the command line shown under the **Instructions** tab. Results
-land in `autograded/`.
+### Autograding
 
-**An assignment must be autograded before it can be manually graded.** This
-applies to *every* assignment, including ones with no autograded cells at all.
+In **Manage Assignments**, click the submission count to open
+**Manage Submissions**. Grade one submission with **Autograde**, or grade all of
+them at once with the command line shown under the **Instructions** tab.
+Results are written to `autograded/`.
 
-Submissions then show as *graded* or *needs manual grading*; the **Manual
-Grading** tab is where the latter are worked through and per-cell comments
-added.
+### Manual Grading
 
-**Feedback is two clicks and both are needed.** **Generate Feedback** builds an
-HTML breakdown of each student's assignment; **Release Feedback** is what makes
-it visible to them.
+After autograding, each submission shows as **graded** or
+**needs manual grading**. Submissions that need manual grading are worked
+through in the **Manual Grading** tab, where per-cell comments are also added.
+
+### Feedback
+
+Returning feedback takes two steps, and both are required.
+**Generate Feedback** builds an HTML breakdown of each student's assignment.
+**Release Feedback** makes it visible to the student.
 
 ## The Student Roster
 
-------------------------------------------------------------------------
+The nbgrader roster updates from course enrollment through the instructional
+weeks. It is not maintained by hand.
 
-**The roster updates itself from course enrollment** through the instructional
-weeks; it is not maintained by hand.
+### Adding Student Names
 
-**Students do not appear in Manage Students until they submit something**, and
-then only by username. To get first and last names in, run this from the login
-node while signed in as the grader account:
+Students do not appear in **Manage Students** until they submit something, and
+then only by username. To add first and last names:
 
-```bash
-update-nbgrader -c <course-id>
-```
+1. From the login node, signed in as the grader account, run:
 
-That writes a CSV to the grader account's home directory. Check it, then move it
-somewhere the course environment can see — `workspace --list` prints the
-course's path — and import it from a terminal *inside* the course environment:
+    ```bash
+    update-nbgrader -c <course-id>
+    ```
 
-```bash
-nbgrader db student import <course-id>-nbgrader-students.csv
-```
+    This writes a CSV to the grader account's home directory.
+
+2. Check the CSV.
+3. Move it to a location the course environment can see. `workspace --list`
+   prints the course's path.
+4. From a terminal inside the course environment, import it:
+
+    ```bash
+    nbgrader db student import <course-id>-nbgrader-students.csv
+    ```
 
 Formgrader shows the names after the import.
 
 ## Exporting the Grades
 
-------------------------------------------------------------------------
-
-**Grade export is manual.** `nbgrader export` produces `grades.csv`, and course
+Grade export is manual. `nbgrader export` produces `grades.csv`, and course
 staff upload that CSV to Canvas. There is no automatic route from Datahub to the
 Canvas gradebook.
 
-Signed in as the course grader account, open a terminal in the course
-environment (**File → New → Terminal**) and run:
+> [!NOTE]
+> Only graded work is exported. Submissions still at **needs manual grading**
+> are omitted. Complete
+> [Autograding, Manual Grading & Feedback](#autograding-manual-grading--feedback)
+> before exporting.
 
-```bash
-nbgrader export
-```
+1. Sign in as the course grader account and open a terminal in the course
+   environment (**File → New → Terminal**).
+2. Run:
 
-This writes **`grades.csv`** into the course home directory. Download it from
-the file browser.
+    ```bash
+    nbgrader export
+    ```
 
-*Only graded work is exported.* Anything still sitting at *needs manual grading*
-is omitted, so the grading pass comes first.
-→ [Autograding, Manual Grading & Feedback](#autograding-manual-grading--feedback)
+    This writes `grades.csv` into the course home directory.
+
+3. Download `grades.csv` from the file browser.
+
+### Export Failures
+
+Export fails for two known reasons: an assignment created with a space in its
+title, and an assignment deleted through the filesystem rather than with
+`nbgrader db assignment remove`. In both cases, delete the assignment properly
+and run the export again. Recovery is covered in
+[Common Grading Failures & Recovery](grading-failures.md).
+
+### Exporting Before Access Ends
+
+Access to the grader account ends after the term. Export grades and any other
+grading data that must be kept well before that date, following
+[Retrieving Work Before Access Ends](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends).
+
+### Handling the Exported CSV
+
+The exported CSV, like other grading data, is student record data. Once
+downloaded, it leaves the platform and is stored on a local machine. Handle and
+dispose of it in line with [Policy](../reference/policy.md).
 
 ## Importing Into Canvas
 
-------------------------------------------------------------------------
-
-In [Canvas](https://canvas.ucsd.edu/), open the course and:
+In [Canvas](https://canvas.ucsd.edu/), open the course, then:
 
 1. Select the **Grades** tab, then **Actions → Import**.
 2. Choose the exported `grades.csv`.
-3. **Map any assignment Canvas does not recognise.** Canvas offers a
-   **--Choose Assignment--** dropdown for each unknown assignment; pick the
+3. Map any assignment Canvas does not recognize. Canvas offers a
+   **--Choose Assignment--** dropdown for each unknown assignment. Pick the
    matching Canvas assignment, or create one, and set the points it is worth.
 4. Select **Continue**. Canvas shows every student and their new grade, with
-   **changes highlighted in red**.
+   changes highlighted in red.
 5. Review that screen, then select **Save Changes**.
 
-The highlighted rows are the grades about to change, and that screen is the last
-point before Canvas writes them.
+The highlighted rows are the grades about to change. The review screen is the
+last point before Canvas writes them.
 
-For the field order Canvas expects, follow
-[Canvas's own gradebook import documentation](https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-import-grades-in-the-Gradebook/ta-p/807).
+The field order Canvas expects is given in the
+[Canvas gradebook import documentation](https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-import-grades-in-the-Gradebook/ta-p/807).
 
-## What Canvas *Is* Connected To
+## Scope of the Canvas Integration
 
-------------------------------------------------------------------------
+Canvas carries course membership into Datahub and creates teams from Canvas
+groups. It does not receive grades from nbgrader or from Datahub by any
+automatic route, and a Canvas account is not the account used to sign in to
+Datahub.
 
-**Canvas is how course membership reaches Datahub — not how grades leave it.**
-
-| Canvas does | Canvas does not |
-|---|---|
-| Carry non-roster auditor and observer access into the course | Receive grades from nbgrader |
-| Carry TAs and other course staff added there | Receive grades from Datahub by any automatic route |
-| Create teams, from Canvas groups | Serve as the account Datahub is signed in to |
-
-*Enrolled student access comes from TSS course rosters rather than from
-Canvas, and the nbgrader roster follows course enrollment on its own.*
-→ [When Access Starts & Ends](../access/when-access-starts-and-ends.md)
+Enrolled student access comes from TSS course rosters; auditors, observers, TAs,
+and other course staff are added through Canvas, as described in
+[Students Enrolled in a Course](../access/when-access-starts-and-ends.md#students-enrolled-in-a-course).
 
 ## The Otter & Gradescope Routes
 
-------------------------------------------------------------------------
-
-**Grades reach Canvas through Gradescope**, not through us. A course that needs
-automatic grade transfer takes a Gradescope route.
-→ [Choosing a Grading Tool](choosing-a-grading-tool.md)
-
-## Caveats & Limitations
-
-------------------------------------------------------------------------
-
-**Export fails for two known reasons:** an assignment created with a space in
-its title, and an assignment deleted through the filesystem rather than with
-`nbgrader db assignment remove`. Both are fixed by deleting the assignment
-properly and re-running the export.
-→ [Common Grading Failures & Recovery](grading-failures.md)
-
-**The CSV is student record data.** Once downloaded it leaves the platform and
-sits on a local machine; please handle and dispose of it accordingly.
-→ [Policy](../reference/policy.md)
-
-**Export before access to the grader account ends**, not after. The grader
-account does not stay open indefinitely past the term.
-→ [Retrieving Work](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends)
-
-**One shared account, several graders:** there is no per-TA identity inside
-nbgrader. Please agree who is grading what before two people open the same
-submission.
-
-**Assignment file size is capped**, at a default given as 100MB. Raising it
-means editing `nbgrader_config.py` in the course environment; please ask us
-rather than guessing, given the open question in the draft note above.
-
-**Grading data is student record data**, and access to the grader account ends
-at some point after the term. Please export anything that must be kept well
-before that, not after. → [Policy](../reference/policy.md) ·
-[Retrieving Work Before Access Ends](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends)
-
-------------------------------------------------------------------------
-
-If you still have questions or need additional assistance, email us at
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) or submit a ticket to the
-[ITS Service Desk](https://support.ucsd.edu/).
+On the Otter and Gradescope routes, grades reach Canvas through Gradescope, not
+through Datahub. A course that needs automatic grade transfer uses a Gradescope
+route. The routes are compared in
+[Choosing a Grading Tool & Interface](choosing-a-grading-tool.md).

@@ -33,8 +33,15 @@ A few conventions the pages follow. Match them if you are proposing wording:
 - **"Workspace", not "usage group".** A workspace is the unit a person has
   access to; "usage group" is internal vocabulary and does not appear in
   reader-facing pages.
-- **Second person, present tense.** "You launch a container", not "the user
-  will launch a container".
+- **Third person, present tense.** Write about the system and the people who
+  use it, not to the reader: "A launch creates a container", not "you launch
+  a container". Instructions are imperative: "Stop the session before
+  launching another."
+- **Headings name a topic.** A noun phrase such as "Idle Culling" or "Stopping
+  a Session", not a sentence, a question or a slogan.
+- **Warnings are callouts.** `> [!WARNING]` or `> [!CAUTION]` for anything that
+  must not be missed, `> [!NOTE]` for a qualification. Importance is not
+  signaled with bold sentences.
 - **One `#` heading per page, at the top.** It becomes the page title, the
   breadcrumb and the sidebar entry.
 - **Link to a section's `README.md`, not its directory.** Write
@@ -47,6 +54,6 @@ A few conventions the pages follow. Match them if you are proposing wording:
 ## A note on the draft banner
 
 Pages currently carry a site-wide draft notice. The content is under active
-review and some pages describe behaviour that has not yet been verified against
+review and some pages describe behavior that has not yet been verified against
 a primary source. If a page contradicts what the platform actually does, that is
 exactly the kind of issue worth filing.
