@@ -153,9 +153,11 @@ re-explain mechanisms.
 ## 5. Source Hygiene
 
 **5.1 No HTML comments in published pages.** Remove the 20 `<!-- FIGURE -->`,
-`<!-- TO ADD -->`, and `<!-- UNSETTLED -->` comments. The "Worked Example" on
-the Service Units page renders with empty cost cells because every figure is a
-comment; remove the example until rates are published.
+`<!-- TO ADD -->`, and `<!-- UNSETTLED -->` comments. The build renders each
+`FIGURE` marker as a "figure not published" placeholder, so the "Worked
+Example" on the Service Units page ships with every cost cell reading "figure
+not published"; remove the example until rates are published. Where a single
+value is unpublished, use one neutral sentence instead of a placeholder.
 
 **5.2 Delete the closing "If you still have questions..." paragraph** from all
 37 pages. It is second person and duplicates Getting Help.

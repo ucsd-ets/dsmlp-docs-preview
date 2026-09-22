@@ -126,9 +126,11 @@ somewhere.
   `workspaces-and-storage/moving-and-sharing-data.md:170`,
   `gpu-access/reservations.md:99`, `working-from-the-command-line.md:212`.
 - 20 HTML comments (`<!-- FIGURE: ... -->`, `<!-- TO ADD -->`,
-  `<!-- UNSETTLED -->`) remain in source. On
-  `gpu-access/service-units-and-budgets.md` the "Worked Example" tables render
-  with empty cost cells because every figure is a comment.
+  `<!-- UNSETTLED -->`) remain in source. The build hook renders each
+  `FIGURE` marker as a visible "figure not published" placeholder, so on
+  `gpu-access/service-units-and-budgets.md` the "Worked Example" tables ship
+  with every cost cell reading "figure not published SU". The `TO ADD` and
+  `UNSETTLED` comments are not rendered and are invisible to readers.
 - The `mkdocs.yml` site-wide draft banner already exists; the per-hub draft
   notice duplicates it.
 
