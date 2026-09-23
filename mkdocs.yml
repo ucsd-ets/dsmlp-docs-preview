@@ -20,6 +20,12 @@ site_dir: _site
 theme:
   name: null
   custom_dir: theme
+  # Without this, theme/404.html is never rendered. MkDocs' built-in themes
+  # list 404.html in their own mkdocs_theme.yml; a name: null theme has no
+  # such file, so only MkDocs' sitemap.xml is built and GitHub Pages falls
+  # back to its generic "404 File not found" page.
+  static_templates:
+    - 404.html
 
 extra:
   site_name_short: DSMLP
