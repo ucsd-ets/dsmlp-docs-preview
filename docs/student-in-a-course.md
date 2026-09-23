@@ -115,9 +115,10 @@ Where a course offers a GPU option, selecting it is all that is required.
 > Launching the session is what authorizes that spend, and a session left
 > running costs the same as one in use.
 
-An exhausted budget is a matter for the instructor or TA. They may book on a
-student's behalf, which does not draw on that student's budget, and they may
-request an increase.
+A course budget renews each week. An exhausted budget is a matter for the
+instructor or TA, who may request an increase. A booking the instructor or TA
+makes on a student's behalf is charged to the student's own budget, so it does
+not help a student who has run out.
 
 See also: [On-Demand Lease Charges](gpu-access/service-units-and-budgets.md#on-demand-lease-charges), [Service Units & Budgets](gpu-access/service-units-and-budgets.md)
 
@@ -130,17 +131,34 @@ See also: [What Counts as Idle](gpu-access/what-ends-a-session.md#what-counts-as
 
 ### Reservations
 
-A GPU needed at a known time can be reserved. A reservation guarantees access,
-not a running job. The notebook is launched as usual and is placed on the
-reserved capacity ahead of the walk-up queue.
+A GPU needed at a known time can be reserved in the reservation app at
+[reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/). A reservation
+guarantees access, not a running job. The notebook is launched as usual and is
+placed on the reserved capacity ahead of the walk-up queue.
 
 A booked window that is missed may still be claimed within a short grace
 period. After that, the reservation is cancelled, the capacity returns to the
-pool, and a cancellation charge is assessed. The instructor or TA may waive the
-charge where warranted. Releasing a window in advance carries no penalty, and
-charges cover only time actually used.
+pool, and a cancellation charge is assessed. The same applies when the session
+stops partway through a booking and is not restarted within about 30 minutes.
+The instructor or TA may waive the charge where warranted. Cancelling at least
+24 hours ahead costs nothing; a later cancellation keeps part of the cost.
 
 See also: [Reservations](gpu-access/reservations.md), [The Claim Window](gpu-access/reservations.md#the-claim-window), [The Cancellation Penalty](gpu-access/service-units-and-budgets.md#the-cancellation-penalty)
+
+### Reservation Events
+
+The reservation system reports on a GPU session with Kubernetes events. Datahub
+shows them while a session starts, and `kubectl describe pod` shows them from
+the command line. Each is defined in [Reservation Events](reference/reservation-events.md):
+
+- While a session waits: `WaitingForReservation`, `ReservationFull`,
+  `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
+  `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
+  `AnnotationIgnored`.
+- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
+  `BestEffortAdmitted`.
+- When it is stopped: `Preempted`, `ReservationCancelled`,
+  `ReservationReassigned`.
 
 ## Problems in a Running Session
 

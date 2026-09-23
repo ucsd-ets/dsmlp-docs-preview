@@ -71,9 +71,12 @@ Request a lab workspace from
 
 ### Workspace Manager Permissions
 
-A workspace manager may view the group's calendar, book on a member's behalf,
-and waive a cancellation charge. A manager may not edit Service Unit budgets or
-group limits from the application. Those are administrative actions, requested
+A workspace manager may view the group's reservations, book on a member's
+behalf, cancel members' bookings, and waive a cancellation charge, and may
+arrange GPU loans with another group in the same cohort where the cohort allows
+them. A booking made on a member's behalf is charged to the member's budget. A
+manager may not edit Service Unit budgets, group limits, or the workspace length
+cap from the application. Those are administrative actions, requested
 by ticket as described in
 [Administrative Requests](reference/getting-help.md#administrative-requests).
 Privilege tiers are described in [Managing a Group](reference/managing-a-group.md).
@@ -143,16 +146,19 @@ Borrowing, including how far ahead it applies, is described in
 [Borrowing Beyond Quota](gpu-access/quotas-and-availability.md#borrowing-beyond-quota).
 
 Borrowing carries a seniority. Course workspaces always hold senior borrowing
-rights. Hardware contributors are granted junior borrowing rights. Junior
-borrowing yields first when a senior borrower or a quota holder requires the
-capacity. Junior capacity is real capacity and is the first to be given back.
+rights. Hardware contributors are granted junior borrowing rights. A junior
+borrower may borrow only the idle capacity above a deeper reserve floor, so it
+reaches idle capacity later than a senior borrower does. Seniority applies only
+when a reservation is made. Once admitted, a junior borrower's reservation is
+protected like any other for its full length.
 
 ### Service Unit Budgets
 
 Service Unit budgets divide a group's capacity among its members by the same
 mechanism that courses use to divide capacity across a roster, as described in
-[Service Units & Budgets](gpu-access/service-units-and-budgets.md). Research
-budgets typically apply on a monthly or quarterly basis, as described in
+[Service Units & Budgets](gpu-access/service-units-and-budgets.md). A lab's
+budget and length cap start at the same defaults as a course's, and are changed
+on the PI's request. See
 [Budget Windows & Cadences](gpu-access/service-units-and-budgets.md#budget-windows--cadences).
 Budgets are set administratively, and changes are requested by ticket, as
 described in
@@ -170,7 +176,23 @@ still has headroom, as described in
 Manager reports cover reservations by group, peak simultaneous use by class,
 reserved hours, and effective limits, as described in
 [What the Reports Cover](reference/managing-a-group.md#what-the-reports-cover).
-Some reports display cluster-wide data rather than data for the group alone.
+Three of the four reports display cluster-wide data rather than data for the
+group alone.
+
+### Reservation Events
+
+The reservation system reports on each GPU session with Kubernetes events,
+shown by `kubectl describe pod`, and by `kubectl get events` after the pod is
+gone. Each is defined in [Reservation Events](reference/reservation-events.md):
+
+- While a session waits: `WaitingForReservation`, `ReservationFull`,
+  `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
+  `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
+  `AnnotationIgnored`.
+- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
+  `BestEffortAdmitted`.
+- When it is stopped: `Preempted`, `ReservationCancelled`,
+  `ReservationReassigned`.
 
 ## Contributing Hardware (Pilot)
 
@@ -253,8 +275,8 @@ requires, and the reclaiming of an idle GPU session, described in
   that fits in a smaller one. It is scarcer and more expensive.
 - Shut down containers that nobody is using. An idle container continues to
   hold its CPU, memory, and GPU against the group's quota.
-- Cancel unused windows. Canceling in advance carries no penalty. A missed
-  booking is charged, as described in
+- Cancel unused windows. Canceling at least 24 hours ahead costs nothing. A
+  later cancellation, or a missed booking, is charged. See
   [The Cancellation Penalty](gpu-access/service-units-and-budgets.md#the-cancellation-penalty).
 
 ### Off-Peak Discounts

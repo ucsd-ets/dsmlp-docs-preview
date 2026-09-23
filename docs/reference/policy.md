@@ -132,8 +132,8 @@ described in
 
 ### Canceling Unused Bookings
 
-A booking that will not be used is expected to be canceled. Canceling in advance
-carries no penalty, and the capacity returns to the pool. Penalties are
+A booking that will not be used is expected to be canceled. Canceling at least
+24 hours ahead costs nothing, and the capacity returns to the pool. Penalties are
 described in
 [The Cancellation Penalty](../gpu-access/service-units-and-budgets.md#the-cancellation-penalty).
 

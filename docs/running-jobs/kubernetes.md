@@ -1,9 +1,9 @@
 # Direct Kubernetes Use and Session Events
 
-This page covers direct use of the Kubernetes cluster beneath `launch.sh` for
-cases the launcher does not handle, chiefly running more than one pod at a time
-and running something other than a notebook, and the events a session emits.
-It assumes working knowledge of Kubernetes.
+Direct use of the Kubernetes cluster beneath `launch.sh` suits cases the
+launcher does not handle, chiefly running more than one pod at a time and
+running something other than a notebook. This page assumes working knowledge of
+Kubernetes.
 
 ## Scope of Support
 
@@ -36,9 +36,12 @@ kubesh <pod-name>                   # open a shell inside a pod
 
 `kubectl describe pod` is the first command to run when a launch misbehaves.
 Its output carries the scheduling messages that the launcher's own output
-summarizes away. Among them, `0/5 nodes available` after a GPU request usually
-indicates a missing `gpu-class` label, as described in
-[Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label).
+summarizes away, and the events the reservation system writes about a GPU pod.
+A GPU pod waiting for the reservation system always shows a `FailedScheduling`
+event about untolerated taints; the reservation event beside it gives the
+reason. See
+[Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)
+and [Reservation Events](../reference/reservation-events.md).
 
 ### Shell Access to a Pod
 
@@ -94,6 +97,18 @@ report its progress.
 
 `kubectl delete -f <manifest>` removes what a manifest created. Run
 `kubectl get pods` at the end of a session to see what is still running.
+
+### GPU Pods From a Manifest
+
+A pod created from a manifest that requests a GPU is admitted, charged, and
+ended by the reservation system like a launched one. It needs:
+
+- An `nvidia.com/gpu` resource request.
+- The `gpu-class` label, naming the class.
+- The `dsmlp/course` label, naming the workspace, which `launch.sh` sets from
+  `-W`. A pod without it is charged to `ORG_ON_DEMAND` and never claims a course
+  booking; see
+  [Claiming a Booking](../gpu-access/reservations.md#claiming-a-booking).
 
 ### Resource Limits for Manifest Pods
 
@@ -157,7 +172,7 @@ requests and the node assignment.
 
 ### Event Retention
 
-Kubernetes retains events for a limited window, so a session that ended
+Kubernetes keeps events for about an hour by default, so a session that ended
 overnight may have no events left to show by morning. For unattended work, a
 log file is the durable record, not the event stream. Logging is covered in
 [Checkpointing & Logging Long Runs](checkpointing.md).
@@ -171,7 +186,7 @@ cluster.
 | Reason | Meaning |
 |---|---|
 | `Scheduled` | The scheduler picked a node. The pod is about to start. |
-| `FailedScheduling` | No node could take the pod. `0/5 nodes available` alongside a GPU request usually indicates a missing or misspelled `gpu-class` label ([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)). |
+| `FailedScheduling` | No node could take the pod. For a GPU pod, a message about untolerated taints is normal until the reservation system admits the pod ([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)). |
 | `Pulling`, `Pulled` | The image is being fetched. A large custom image can spend minutes in this state. |
 | `Started`, `Killing` | `Started`: the container started. `Killing`: the container is being stopped. |
 | `OOMKilled` (pod status) | The memory limit was reached. Memory requests and limits are described in [Resource Requests and Limits](launch-sh-reference.md#resource-requests-and-limits). |
@@ -179,20 +194,46 @@ cluster.
 
 ## Reservation Events
 
-Five reason strings come from the reservation system rather than from
-Kubernetes. They record what the scheduling and reservation model did to a GPU
-session.
+The reservation system writes 15 events of its own about GPU pods. Each is a
+full sentence that states what happened and what to do, and the **From** column
+of `kubectl describe pod` reads `gpu-reservation-controller`. All 15 are
+defined in [Reservation Events](../reference/reservation-events.md):
 
-| Reason | Related behavior |
+- While a pod waits: `WaitingForReservation`, `ReservationFull`,
+  `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
+  `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
+  `AnnotationIgnored`.
+- When a pod is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
+  `BestEffortAdmitted`.
+- When a pod is stopped: `Preempted`, `ReservationCancelled`,
+  `ReservationReassigned`.
+
+The three stopping events are type `Normal` and are written just before the pod
+is deleted. Read them with `kubectl get events`.
+
+## Reservation Annotations
+
+The reservation system also writes annotations on each GPU pod it admits.
+`kubectl describe pod` lists them under **Annotations**. They are informational:
+the reservation system does not read them back.
+
+| Annotation | Value |
 |---|---|
-| `RuntimeGuaranteed` | The guaranteed portion of a session. There is no hard kill at the end of a window; there is an in-session countdown. See [The Countdown](../gpu-access/what-ends-a-session.md#the-countdown). |
-| `Preempted` | The capacity was taken for another booking. A best-effort reservation accepts this from its first tick. See [Preemption](../gpu-access/what-ends-a-session.md#preemption). |
-| `OnDemandLeaseDenied` | An on-demand lease, the reservation that launching without a booking creates, was not granted. See [Launching Without a Booking](../gpu-access/reservations.md#launching-without-a-booking) and [On-Demand Lease Charges](../gpu-access/service-units-and-budgets.md#on-demand-lease-charges). |
-| `OverstayRelinked` | Overstay: a session running on past a guaranteed window. Overstay has a cost. See [Overstay](../gpu-access/what-ends-a-session.md#overstay). |
-| `ReservationReassigned` | The reservation behind the session is no longer the one it started with. See [Reservations](../gpu-access/reservations.md). |
+| `galends/booking-reference` | `res-` and the ID of the reservation the pod runs under |
+| `galends/reservation-kind` | `booking` or `on_demand` |
+| `galends/reservation-start`, `galends/reservation-end` | The reservation's own window |
+| `galends/reservation-gpu-count` | The number of GPUs the reservation holds, which can be more than the pod uses |
+| `galends/gpu-class-name` | The class's name in the reservation app |
+| `galends/admitted-at` | When the pod was first admitted |
+| `galends/guaranteed-until` | The end of the runtime guarantee. It moves later when a directly following booking is added |
+| `galends/guarantee-status` | `guaranteed`, or `overstay` once the guarantee has ended |
+| `galends/pod-runtime-limit-seconds` | The length of the guarantee in seconds, when it was last recorded. Nothing enforces it |
+| `galends/termination-warning-at`, `-risk`, `-message` | Present only while the pod is at risk of preemption. See [The Termination Warning](checkpointing.md#the-termination-warning) |
 
-Each row names the behavior an event relates to and is not a definition of the
-event. The precise trigger for each reservation event is not yet published.
+Timestamps are UTC, in the form `2026-09-23T17:00:00Z`; only the prose of
+`termination-warning-message` is in Pacific time. `guaranteed-until` and
+`guarantee-status` are refreshed about every 5 minutes. When the pod moves onto
+another reservation, the reservation annotations change with it.
 
 ## Reading an Event Alongside the Session
 
@@ -202,7 +243,7 @@ Events are read together with the pod's status and the job's own logs.
 |---|---|
 | The session ended with no event and no error | The session was most likely idle-culled. A warning comes first, saved work survives, and the ending is not a crash. See [What Ends a Session](../gpu-access/what-ends-a-session.md). |
 | The session never started | The cause is a scheduling problem. The events at the bottom of the `kubectl describe pod` output show it. |
-| The session ended mid-run with a reservation event | The ending is a capacity outcome rather than a fault. Checkpointing addresses this case; see [Checkpointing & Logging Long Runs](checkpointing.md). |
+| The session ended mid-run with a reservation event | `Preempted` is a capacity outcome rather than a fault; `ReservationCancelled` and `ReservationReassigned` mean the reservation was cancelled or given to someone else. See [Events When a Pod Is Stopped](../reference/reservation-events.md#events-when-a-pod-is-stopped). |
 | The session ended mid-run with no event or error anywhere | Report it to ITS with the pod name, the node from the launch output, and the approximate time. See [Support Contacts](../reference/getting-help.md#support-contacts). |
 
 [Error Messages](../reference/error-messages.md) covers

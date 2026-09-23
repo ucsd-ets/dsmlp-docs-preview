@@ -132,8 +132,24 @@ A booked window that is missed is charged, as described in
 [The Claim Window](gpu-access/reservations.md#the-claim-window) and
 [The Cancellation Penalty](gpu-access/service-units-and-budgets.md#the-cancellation-penalty).
 A waiver is a workspace-manager action, and no TA watches a project calendar to
-offer one. Canceling in advance carries no penalty beyond the time actually
-used.
+offer one. Canceling at least 24 hours ahead costs nothing; a later cancellation
+keeps part of the cost.
+
+### Reservation Events
+
+The reservation system reports on a GPU session with Kubernetes events, shown by
+`kubectl describe pod`, by `kubectl get events` after the pod is gone, and by
+Datahub while a session starts. Each is defined in
+[Reservation Events](reference/reservation-events.md):
+
+- While a session waits: `WaitingForReservation`, `ReservationFull`,
+  `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
+  `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
+  `AnnotationIgnored`.
+- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
+  `BestEffortAdmitted`.
+- When it is stopped: `Preempted`, `ReservationCancelled`,
+  `ReservationReassigned`.
 
 ### Checkpointing
 
@@ -149,9 +165,9 @@ Common symptoms in project work are documented on these pages.
 |---|---|
 | `OOMKilled` | [Resource Requests and Limits](running-jobs/launch-sh-reference.md#resource-requests-and-limits) |
 | `DeadlineExceeded` | [The Runtime Limit](running-jobs/job-modes-and-limits.md#the-runtime-limit) |
-| `0/5 nodes available` | Usually a `gpu-class` label problem, as described in [Missing or Misspelled Class Label](gpu-access/gpu-classes.md#missing-or-misspelled-class-label) |
+| `Pending`, with `FailedScheduling` about untolerated taints | Normal while the reservation system decides; the reason is in the reservation event beside it. See [Missing or Misspelled Class Label](gpu-access/gpu-classes.md#missing-or-misspelled-class-label) |
 | The session ended unexpectedly | [What Counts as Idle](gpu-access/what-ends-a-session.md#what-counts-as-idle), or [End of a Reservation Window](gpu-access/what-ends-a-session.md#end-of-a-reservation-window) |
-| Reservation-related events in a pod | [Reservation Events](running-jobs/kubernetes.md#reservation-events) |
+| Reservation-related events in a pod | [Reservation Events](reference/reservation-events.md) |
 
 ## Outgrowing Project Access
 

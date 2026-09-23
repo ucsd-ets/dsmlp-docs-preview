@@ -10,7 +10,7 @@ familiarity with a Slurm cluster.
 |---|---|---|
 | Account / project | [What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md) | A workspace covers a course, a lab, or a catch-all population. It controls the roster, storage, images, GPU classes, quota, and budget. It is named with `launch.sh -W`. |
 | Allocation | Group quota and Service Unit budget | A group quota caps how many GPUs of a class a workspace may hold at once. A Service Unit budget caps how much GPU time may be spent. Neither alone is an allocation. |
-| Service units / core-hours | [Service Units & Budgets](../gpu-access/service-units-and-budgets.md) | Service Units are similar to core-hours. Each GPU class has an hourly rate, drawn against a budget that renews weekly for courses and monthly or quarterly for research. |
+| Service units / core-hours | [Service Units & Budgets](../gpu-access/service-units-and-budgets.md) | Service Units are similar to core-hours. Each GPU class has an hourly rate, drawn against a budget that renews weekly by default. |
 | Partition / queue | [GPU Classes](../gpu-access/gpu-classes.md) | A GPU class is a size band, requested as a pod label: `-l gpu-class=medium`. It is not a queue and not a nameable set of nodes. |
 | The scheduler | Kubernetes admission | There is no queue position, no backfill, and no observable priority ordering. |
 | `sbatch`, `srun`, `squeue`, `scancel` | [Slurm Compatibility Wrappers](#slurm-compatibility-wrappers) | The commands are installed and working. They translate into `launch.sh`, with no Slurm scheduler behind them. |
@@ -49,12 +49,15 @@ guaranteed request and how to size a job for it are described in
 
 ### Pending Pods
 
-A pending pod is not queued. With no scheduler arbitrating between
-submissions, a pod stays pending when nothing can currently take it.
-`0/5 nodes available` after a GPU request usually means the request carries no
-`gpu-class` label, as described in
+A pending CPU pod is not queued. With no scheduler arbitrating between
+submissions, it stays pending while nothing can take it. A pending GPU pod waits
+for the reservation system, which serves waiting on-demand requests in the order
+the pods were created. See
+[Waiting for an On-Demand Lease](../gpu-access/quotas-and-availability.md#waiting-for-an-on-demand-lease).
+Until it is admitted, a GPU pod shows a `FailedScheduling` event about
+untolerated taints, and the reservation event beside it gives the reason; see
 [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label).
-The message is also listed in [Error Messages](error-messages.md).
+The messages are also listed in [Error Messages](error-messages.md).
 
 ## Runtime Limit, Idle Culling, and Reservation Window
 
@@ -91,7 +94,6 @@ around `launch.sh`. There is no Slurm scheduler behind them.
 | `--cpus-per-task` | `-c` |
 | `--mem` | `-m`, rounded up to whole GB |
 | `--gres=gpu:N` | `-g N` |
-| `--gres=gpu:<model>:N` | `-g N` plus `-v <model>` |
 | `--time` | `K8S_TIMEOUT_SECONDS`, the container's runtime deadline |
 | `--output`, `--error` | Output files, with `%j`, `%A`, `%u`, `%x` and `%a` substitutions |
 | `--array` | Multiple submissions |

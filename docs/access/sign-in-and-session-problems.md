@@ -170,6 +170,35 @@ Error messages and their causes are listed in
 Stop the session with **File → Hub Control Panel → Stop My Server**, as
 described in [Stopping a Session](datahub-in-the-browser.md#stopping-a-session).
 
+## Reservation App Sign-In
+
+The reservation app at
+[reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/) uses UCSD single
+sign-on, like Datahub, but keeps its own session.
+
+### Expired Reservation App Sessions
+
+A reservation app session ends after 8 hours without use, and 24 hours after
+sign-in in any case. **Log out everywhere** ends it on every device at once. The
+app then returns to its login page with no message, and a booking that was
+being made in the wizard is lost. Sign in again and start the booking again.
+
+### Sign-In Errors Shown as Text
+
+A failed sign-in shows a line of text in the browser tab rather than a page:
+
+| Text | Meaning | Fix |
+|---|---|---|
+| `{"detail":"Invalid OAuth state parameter"}` | Sign-in took more than 10 minutes, or **Back** or **Refresh** was used during it | Start again from the login page |
+| `{"detail":"Your account domain is not permitted to access this application"}` | A non-UCSD account was used | Sign in with a UCSD account |
+| `{"detail":"Account is deactivated"}` | The reservation app account is deactivated | Write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| `{"detail":"SAML authentication failed"}` | Campus sign-in did not complete | Start again from the login page. If it happens again, write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+
+### `HTTP 422` in the Reservation App
+
+`HTTP 422` in a form means the app rejected one of the values sent, most often a
+blank field. Fill in every field and try again.
+
 ## End of Course Access
 
 Course access is retained for a period beyond the term the course ran in, as

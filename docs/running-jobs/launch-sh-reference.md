@@ -102,7 +102,6 @@ request and limit are the same number.
 | `-c <n>` | CPU cores | `-c 8` |
 | `-m <n>` | RAM in GB | `-m 32` |
 | `-g <n>` | GPU count | `-g 1` |
-| `-v <model>` | Specific GPU model: `1080`, `1080ti`, `2080ti`, `a30`, `a5000`, `a100`, `h100`, `rtxtitan`, `l40s` | `-v l40s` |
 | `-l <key=value>` | Apply a pod label. Repeatable | `-l gpu-class=medium` |
 
 > [!WARNING]
@@ -110,17 +109,24 @@ request and limit are the same number.
 > or not the session was booked ahead, and there is no free exploratory launch.
 > See [On-Demand Lease Charges](../gpu-access/service-units-and-budgets.md#on-demand-lease-charges).
 
-### GPU Class and GPU Model
+### GPU Class
 
-`-l gpu-class=<class>` requests a GPU size band instead of a named model and is
-the usual way to request a GPU. The classes are described in
-[GPU Classes](../gpu-access/gpu-classes.md). `-v` names
-hardware; `gpu-class` names a size band. Both work. Use one or the other, not
-both at once.
+`-l gpu-class=<class>` requests a GPU size band, and is the way to request a
+GPU. [GPU Classes](../gpu-access/gpu-classes.md) lists the classes.
 
-Classes medium and above carry `NoSchedule` taints, so a GPU request that omits
-the `gpu-class` label has no node to run on and fails with `0/5 nodes available`
-after a wait ([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)).
+Every GPU class is managed by the reservation system, which admits only pods
+that carry the `gpu-class` label. A GPU request that omits the label waits in
+`Pending` with no event from the reservation system
+([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)).
+
+### Workspace and GPU Charges
+
+`-W <workspace>` also sets the pod's `dsmlp/course` label, which decides which
+workspace's Service Unit budget a GPU session is charged to, and which bookings
+it can claim. A GPU launch without `-W` is charged to `ORG_ON_DEMAND`, the
+default workspace, and never claims a course booking. See
+[Claiming a Booking](../gpu-access/reservations.md#claiming-a-booking) and
+[The Default Workspace](../gpu-access/reservations.md#the-default-workspace).
 
 ### Team Selection
 
@@ -152,7 +158,7 @@ See also: [Belonging to Several Workspaces](../workspaces-and-storage/what-a-wor
 | `-i <image>` | Alternate container image | `-i ghcr.io/ucsd-ets/scipy-ml-notebook:2024.4-stable` |
 | `-P <policy>` | Image pull policy: `ifnotpresent`, `always`, `never` | `-P Always` |
 | `-E` | Add image pull secrets, for a private image. Use with `-i` | |
-| `-W <workspace>` | Launch into a workspace, which becomes `$HOME` | `-W DSC10_FA26_A00` |
+| `-W <workspace>` | Launch into a workspace, which becomes `$HOME`, and charge GPU time to it | `-W DSC10_FA26_A00` |
 | `-M <mntspec>` | Subpath-mount an existing filesystem elsewhere in the pod | |
 | `-F <mntspec>` | NFS-mount additional filesystems, as `/mnt:server_fqdn:/path` | |
 | `-x` | Patch a writeable directory onto the conda package cache | |
@@ -178,8 +184,8 @@ tag keeps using its copy.
 `-n` takes a bare number: `-n 30`, not `-n n30`. The leading `n` shown on
 [The Status Page](../gpu-access/quotas-and-availability.md#the-status-page) is
 not part of the value. A pod whose named node is full waits for that node and
-does not take an equivalent GPU elsewhere. To choose hardware, use
-`-l gpu-class=` or `-v`.
+does not take an equivalent GPU elsewhere. To choose a GPU size, use
+`-l gpu-class=`.
 
 The launch output names the node the pod was assigned to, in a line such as
 `INFO pod assigned to node: its-dsmlp-n04.ucsd.edu`. Include that line in a

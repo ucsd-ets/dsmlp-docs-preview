@@ -139,6 +139,7 @@ nav:
   - Reference:
       - reference/README.md
       - reference/error-messages.md
+      - reference/reservation-events.md
       - reference/getting-help.md
       - reference/glossary.md
       - reference/coming-from-hpc.md

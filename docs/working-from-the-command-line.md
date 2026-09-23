@@ -108,6 +108,10 @@ described in
 launch-scipy-ml.sh -W DSC102_FA26
 ```
 
+Pass `-W` on a GPU launch even with only one workspace. It decides which
+workspace's budget the session is charged to, and which bookings it can claim;
+see [Reservations from the Command Line](#reservations-from-the-command-line).
+
 ## Selecting a GPU Class
 
 The browser offers the environments a course has configured. From the shell, a
@@ -133,9 +137,10 @@ class is a request for the instructor to make, as described in
 
 ### Pending GPU Launches
 
-A GPU launch that remains pending and eventually fails with
-`0/5 nodes available` usually has a missing or misspelled `gpu-class` label, as
-described in
+A GPU launch waits in `Pending` until the reservation system admits it. The
+reason for a wait is in the events that `kubectl describe pod` shows; see
+[Reservation Events](#reservation-events). A pending GPU pod with no event from
+the reservation system is usually missing its `gpu-class` label. See
 [Missing or Misspelled Class Label](gpu-access/gpu-classes.md#missing-or-misspelled-class-label).
 
 ## Job Modes and Limits
@@ -182,7 +187,8 @@ label, as described in
 
 Jobs default to 6 hours, and up to 12 hours may be set at launch, as described
 in [The Runtime Limit](running-jobs/job-modes-and-limits.md#the-runtime-limit).
-Reservations are the mechanism for longer work.
+A booking does not lift the runtime limit. See
+[Reservation Length and Session Runtime](gpu-access/reservations.md#reservation-length-and-session-runtime).
 
 ### Idle Culling
 
@@ -226,16 +232,15 @@ quota, as described in
 |---|---|
 | `OOMKilled` | The container exceeded its memory limit. See [Requests and Limits](#requests-and-limits) |
 | `DeadlineExceeded` | The job reached its runtime limit. See [Runtime Limit](#runtime-limit) |
-| `Pending`, then `0/5 nodes available` | The job could not be scheduled. The usual cause is a GPU class label problem, and occasionally the cluster is full. See [Pending GPU Launches](#pending-gpu-launches) |
+| `Pending`, with `FailedScheduling` about untolerated taints | A GPU job waiting for the reservation system. The reason is in the reservation event beside it. See [Pending GPU Launches](#pending-gpu-launches) |
 | A session ended, with a warning beforehand | Idle culling. See [Idle Culling](#idle-culling) |
 
 If a GPU session ends and none of these statuses applies, the usual cause is
-the reservation system: the guaranteed window elapsed, or the session was
-running on capacity another user had booked. The course instructor or TA can
-see the course calendar and determine which. The underlying event codes are
-documented in [Reservation Events](running-jobs/kubernetes.md#reservation-events).
-Error text, causes, and fixes are listed in
-[Error Messages](reference/error-messages.md).
+the reservation system: the session was past its guarantee and was preempted,
+or its reservation was cancelled or given to a teammate. `kubectl get events`
+shows which, for about an hour afterwards; see
+[Reservation Events](#reservation-events). Error text, causes, and fixes are
+listed in [Error Messages](reference/error-messages.md).
 
 ## Reservations from the Command Line
 
@@ -247,11 +252,34 @@ Error text, causes, and fixes are listed in
 > term's budget. See
 > [On-Demand Lease Charges](gpu-access/service-units-and-budgets.md#on-demand-lease-charges).
 
-The runtime declared at launch is what is reserved and what is charged. Request
-the time the work needs rather than the maximum permitted.
+A launch without a booking holds an on-demand lease of 1 hour 10 minutes and
+is charged for the time the session uses within it. For a longer guarantee,
+open the reservation app at
+[reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/) once the session is
+running and use [Extend](gpu-access/reservations.md#extend).
+
+`-W` decides which workspace a GPU launch is charged to, and which bookings it
+can claim. A GPU launch without `-W` is charged to `ORG_ON_DEMAND`, the default
+workspace, and never claims a course booking. See
+[Claiming a Booking](gpu-access/reservations.md#claiming-a-booking).
 
 Booking, the cost of each class, the cancellation penalty, and overstay are
 documented in [GPU Access](gpu-access/README.md).
+
+### Reservation Events
+
+The reservation system reports on a GPU session with Kubernetes events, shown by
+`kubectl describe pod`, and by `kubectl get events` after the pod is gone. Each
+is defined in [Reservation Events](reference/reservation-events.md):
+
+- While a session waits: `WaitingForReservation`, `ReservationFull`,
+  `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
+  `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
+  `AnnotationIgnored`.
+- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
+  `BestEffortAdmitted`.
+- When it is stopped: `Preempted`, `ReservationCancelled`,
+  `ReservationReassigned`.
 
 ## Custom Images
 

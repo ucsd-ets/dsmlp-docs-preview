@@ -103,8 +103,10 @@ kubectl delete pod <pod-name>    # delete it when the work is finished
 
 `Pending` is a normal status, not an error. A pod stays Pending until the
 resources it requested become free, which for a GPU may take several minutes. A
-pod that stays Pending and then fails with `0/5 nodes available` usually has a
-missing `gpu-class` label rather than a full cluster, as described in
+GPU pod stays Pending until the reservation system admits it, and
+`kubectl describe pod` shows why in an event from `gpu-reservation-controller`;
+see [Reservation Events](../reference/reservation-events.md). A GPU pod with no
+such event may be missing its `gpu-class` label. See
 [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label).
 
 `kubectl logs` reads from the pod, so its output is unavailable once the pod is
@@ -177,6 +179,11 @@ stops, whatever it was doing, and `kubectl get pods` reports `DeadlineExceeded`.
 | Maximum settable at launch | 12 hours |
 | Longer than 12 hours | By request to [datahub@ucsd.edu](mailto:datahub@ucsd.edu), stating the purpose |
 
+The runtime limit also applies to a session running under a booking, however
+long the booking. `launch.sh` is scheduled to be corrected for this in Fall
+2026; see
+[Reservation Length and Session Runtime](../gpu-access/reservations.md#reservation-length-and-session-runtime).
+
 On the Research Cluster, the same figures apply, and extension requests go to
 [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) instead.
 
@@ -209,10 +216,10 @@ the pod is created, and a container that is already running cannot be extended.
 A personal launch script can carry the setting, as described in
 [Copying & Editing a Launch Script](#copying--editing-a-launch-script).
 
-GPU time draws on the workspace's Service Unit budget, as described in
-[Service Units & Budgets](../gpu-access/service-units-and-budgets.md). Request
-the runtime the work needs rather than the maximum permitted, and stop the
-container when the work finishes early.
+The runtime limit does not set what a GPU session is charged. The charge comes
+from the session's reservation, a booking or an on-demand lease. See
+[On-Demand Lease Charges](../gpu-access/service-units-and-budgets.md#on-demand-lease-charges).
+Stop the container when the work finishes early.
 
 ### Runtime Limit, Idle Culling, and Reservation Window
 
@@ -246,8 +253,9 @@ stating what the job is and roughly how long it needs.
 A job that checkpoints can be restarted. Checkpointing is covered in
 [Checkpointing & Logging Long Runs](checkpointing.md).
 
-For sustained multi-day work, the mechanism is a reservation rather than a
-longer runtime limit, as described in [Reservations](../gpu-access/reservations.md).
+A reservation holds GPU capacity for multi-day work, but does not lift the
+runtime limit. See
+[Reservation Length and Session Runtime](../gpu-access/reservations.md#reservation-length-and-session-runtime).
 
 ## Configuring Without Flags
 

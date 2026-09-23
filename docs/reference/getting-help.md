@@ -120,22 +120,24 @@ administrative action taken by someone else.
 | A resource tier above the default, as described in [Resource Tiers](../running-jobs/launch-sh-reference.md#resource-tiers) | Cluster administrators, by ticket to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) | What the work is, the CPU and memory it needs and why, whether it is one container or several at once, and how long the raise is needed for |
 | A GPU class the workspace was not granted | Cluster administrators. A request from an instructor or PI carries more weight than one from a member. | The workspace, the class needed, the model or dataset whose memory footprint requires it, and the dates it matters on |
 | More Service Units | Cluster administrators set budgets. A workspace manager may request a change but cannot edit a budget. | The workspace, what the work is, the date by which it must be done, and what the budget has already been spent on |
-| A waived cancellation penalty | The workspace manager: an instructor or TA for a course, a PI for a lab. A manager's waiver zeroes the member's share; only an administrator grants a full pardon. | Which booking, and what happened |
-| A longer reservation than the workspace permits | The instructor or PI, for the workspace's own cap; cluster administrators, beyond the 48-hour member cap | The length needed, why the work cannot be split into shorter windows, and how it checkpoints |
+| A waived cancellation penalty | The workspace manager: an instructor or TA for a course, a PI for a lab, at cancellation or afterwards. A manager's waiver clears the member's share; only an administrator clears a group pool's share. | Which booking, and what happened |
+| A longer reservation than the workspace permits | Cluster administrators, by ticket to [datahub@ucsd.edu](mailto:datahub@ucsd.edu). They alone set the workspace length cap; a course's cap is usually changed at the instructor's request | The length needed, why the work cannot be split into shorter windows, and how it checkpoints |
 
 ### Cancellation Penalty Waivers
 
 A cancellation penalty waiver needs no ticket. The workspace manager grants it
-in the interface, without ITS involvement.
+on the **Group Reservations** page of the reservation app, without ITS
+involvement.
 
 See also: [The Cancellation Penalty](../gpu-access/service-units-and-budgets.md#the-cancellation-penalty)
 
 ### Booking on a Member's Behalf
 
-When a member has run out of Service Units before a deadline, a workspace
-manager can book on that member's behalf instead of requesting more Service
-Units. A booking made on a member's behalf takes effect at once and does not
-draw on the member's budget.
+A booking a workspace manager makes on a member's behalf is charged to the
+member's budget. It is not a way around a spent budget: it can leave the member
+over budget, which blocks their own bookings and on-demand leases until the
+window renews. When a member has run out of Service Units before a deadline,
+request more by ticket.
 
 See also: [Service Units & Budgets](../gpu-access/service-units-and-budgets.md)
 
@@ -177,9 +179,10 @@ ticket.
 ## Workspace Managers and Cluster Administrators
 
 The **workspace manager** is the instructor or TA in a course, and the PI in a
-lab. A manager may view the group calendar, book on a member's behalf, and waive
-a cancellation charge. A manager may not edit Service Unit budgets or group
-limits, regardless of seniority.
+lab. A manager may view the group's reservations, book on a member's behalf,
+cancel members' bookings, and waive a cancellation charge, among other actions.
+A manager may not edit Service Unit budgets, group limits, or the workspace
+length cap, regardless of seniority.
 
 **Cluster administrators** hold all other administrative controls and are
 reached by ticket.

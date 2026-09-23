@@ -1,16 +1,19 @@
 # What Ends a Session
 
-A session ends for one of five causes: idle culling, the runtime limit,
-preemption, maintenance, or overstay followed by preemption. None of them is a
+A session ends for one of five causes other than its own code: idle culling,
+the runtime limit, preemption, eviction, or maintenance. None of them is a
 crash, and none of them loses saved work.
 
 | Cause | Signal | Details |
 |---|---|---|
 | Idle culling | The GPU was unused for about 30 minutes | [What Counts as Idle](#what-counts-as-idle) |
 | Runtime limit | The pod reached 6 hours, or 12 hours where that was set at launch | [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit) |
-| Preemption | The capacity was needed for a booking | [Preemption](#preemption) |
+| Preemption | The session was past its runtime guarantee, and its GPU was needed | [Preemption](#preemption) |
+| Eviction | The reservation the session ran under was cancelled, or given to a teammate | [Eviction](#eviction) |
 | Maintenance | A node was drained, or the Research Cluster maintenance window opened | [Maintenance Closures](#maintenance-closures) |
-| Overstay, then preemption | The reservation window closed, the session continued to run, and the capacity was needed for a booking | [Overstay](#overstay) |
+
+The end of a reservation window does not by itself stop a session; see
+[End of a Reservation Window](#end-of-a-reservation-window).
 
 ## Idle Culling
 
@@ -121,13 +124,12 @@ See also: [Job Modes](../running-jobs/job-modes-and-limits.md#job-modes)
 
 ### Inside a Booked Window
 
-A cull does not cancel the reservation. The booked window stands for its
-remaining length, and a session may be launched into it again.
+A cull does not cancel the reservation straight away. The booked window stands,
+and a session may be launched into it again. If no session is running under the
+booking about 30 minutes after the cull, the rest of the booking is cancelled as
+a no-show and charged.
 
-Whether a relaunch after a cull must fall within a new claim window is not yet
-published. Relaunch promptly after a cull inside a booked window.
-
-See also: [The Claim Window](reservations.md#the-claim-window)
+See also: [Relaunching Inside a Booked Window](reservations.md#relaunching-inside-a-booked-window)
 
 ### Browser Inactivity and Disconnection
 
@@ -145,66 +147,118 @@ See also: [Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-se
 
 ## End of a Reservation Window
 
-The close of a reservation window does not terminate the session running in
-it. Where no one else needs the capacity, the session continues to run.
+The close of a reservation window does not stop the session running in it.
+Where no one else needs the capacity, the session continues to run.
 
-The window defines what was charged for and what is guaranteed. After the
-window closes, the session runs without that guarantee.
+The window defines what was charged for and what is guaranteed. A session's
+**runtime guarantee** runs to the end of its reservation, and on through any
+booking that directly follows it; see
+[Back-to-Back Bookings](#back-to-back-bookings). After the guarantee ends, the
+session runs without it.
 
 ### The Countdown
 
-A session reports how long its guarantee has left. The countdown appears in the
-session itself, not by email. The countdown's lead time and presentation are
-not yet published.
+The Fall 2026 standard images include a Jupyter widget that counts down the
+time left on the session's guarantee. Instructions for VS Code are scheduled for
+Winter 2027. From the command line, `kubectl describe pod` shows the end of the
+guarantee in the pod's annotations; see
+[Reservation Annotations](../running-jobs/kubernetes.md#reservation-annotations).
 
-A checkpoint written before the window closes survives the end of the window.
+A checkpoint written before the guarantee ends survives the end of the window.
 From that point, the session can be stopped, extended, or left running.
+
+### Back-to-Back Bookings
+
+A booking that starts exactly when the current one ends, for the same GPU
+class, the same number of GPUs, and the same workspace, extends the guarantee at
+once.
+
+Any other later booking protects a running session only once it opens. A
+session on an on-demand lease moves onto the booking as soon as it opens. A
+session on another booking moves onto it once the booking is open and the
+session's own guarantee has ended. Either move records an `OverstayRelinked`
+event. Between the end of the
+guarantee and the opening of the later booking, the session is unprotected,
+and another member's booking that starts in that gap can stop it up to 15
+minutes before that booking starts. [Extend](reservations.md#extend) is the
+reliable way to keep a running session guaranteed.
 
 See also: [Checkpointing & Logging Long Runs](../running-jobs/checkpointing.md)
 
 ### Overstay
 
-**Overstay** is running a session past the end of its guaranteed window.
+**Overstay** is running a session past the end of its runtime guarantee.
+Overstay draws no Service Units. Its cost is that the session is no longer
+protected.
 
 > [!WARNING]
-> An overstaying session is not stopped or warned off, and nothing in the
-> interface prevents overstay. The time past the window is not covered by the
-> booking, and overstay has a cost.
+> An overstaying session keeps running with no guarantee. It can be stopped
+> whenever its GPU is needed, usually with about 15 minutes' notice, and
+> sometimes less. See [Preemption](#preemption).
 
-The cost of overstay is not yet published.
+The reservation app's Dashboard lists a job running past an on-demand lease
+under **Running Past Window**, with an **Extend** button. On the pod, the
+`galends/guarantee-status` annotation changes from `guaranteed` to `overstay`
+within about 5 minutes of the guarantee ending.
 
-An overstaying session runs on capacity that is no longer guaranteed to it.
-When that capacity is needed for another booked window, the overstaying session
-is the one that yields.
-
-A longer window arranged in advance is the alternative to overstay; see
-[Routes to More Time](reservations.md#routes-to-more-time).
-
-Releasing the unused remainder of a window early carries no cancellation
-penalty. The charge is for the time actually used, and the remainder returns to
-the pool. See [Cancelling in Advance](service-units-and-budgets.md#cancelling-in-advance).
+[Extend](reservations.md#extend) brings an overstaying session back under a
+guarantee. A longer window arranged in advance is the alternative to overstay;
+see [Routes to More Time](reservations.md#routes-to-more-time).
 
 ## Preemption
 
-**Preemption** is the ending of a session because its capacity is needed for a
-booking. It is a capacity outcome, not a fault.
+**Preemption** is the ending of a session that is past its runtime guarantee,
+because its GPU is needed. It is a capacity outcome, not a fault. A session
+inside its guarantee is never preempted.
 
-Preemption occurs in two situations:
+### What Triggers Preemption
 
-- An overstaying session, when a reservation comes due for the capacity it is
-  still holding.
-- A best-effort session, which accepts preemption from its first tick in
-  exchange for running now. See
-  [Best-Effort Reservations](reservations.md#best-effort-reservations).
+| Trigger | When |
+|---|---|
+| A booking starts, and its GPU class has too few free GPUs | Up to 15 minutes before the booking starts, and again at its start. The stop stands even if the booking is then never claimed |
+| Headroom | DSMLP keeps 15% of each GPU class free for on-demand jobs. When less is free, sessions past their guarantee are warned, and can be stopped once at least 15 minutes have passed |
 
-Saved work survives preemption. Anything held only in memory does not. There is
-no signal to catch and no opportunity to write data out before the session
-ends.
+An on-demand lease never triggers preemption. A lease that finds no free GPU
+waits.
 
-The session records the outcome as a Kubernetes event: `Preempted`, or
-`OverstayRelinked` where an overstay was involved.
+### Which Sessions Are Stopped
 
-See also: [Reservation Events](../running-jobs/kubernetes.md#reservation-events)
+Only sessions past their guarantee are candidates. Among them, sessions are
+chosen by the type of reservation they ran under: best-effort first, then
+on-demand leases, then bookings. Within a type, the choice is random.
+Sessions are stopped until enough GPUs are free.
+
+### Notice Before Preemption
+
+A session that may be preempted is first marked with termination-warning
+annotations on its pod. The notice is usually about 15 minutes, and there is no
+minimum. The pod is then deleted in the ordinary way: `SIGTERM`, a grace period
+of 10 minutes for pods started by `launch.sh`, then a forced stop.
+[The Termination Warning](../running-jobs/checkpointing.md#the-termination-warning)
+describes reading and acting on the warning.
+
+Saved work survives preemption. Anything held only in memory does not.
+
+The session records the outcome as a `Preempted` event, written just before the
+pod is deleted.
+
+See also: [Reservation Events](../reference/reservation-events.md#preempted)
+
+## Eviction
+
+A running session is deleted, with no warning beforehand, in two cases:
+
+| Event | Cause |
+|---|---|
+| `ReservationCancelled` | The reservation the session ran under was cancelled while its window was open: by its owner, a workspace manager, an administrator, or a teammate in team mode |
+| `ReservationReassigned` | A teammate adopted the booking in team mode, or it was given to another user |
+
+Before deleting a session for a cancellation, the reservation system moves it
+onto another open booking of the same member, where one matches and has room.
+Both events are type `Normal`, and the pod is gone by the time they can be read,
+so read them with `kubectl get events`.
+
+See also: [Reservation Events](../reference/reservation-events.md#events-when-a-pod-is-stopped)
 
 ## Maintenance Closures
 
@@ -250,10 +304,14 @@ questions about them.
 
 When nodes are taken out of service for planned work, the GPU classes they back
 have fewer GPUs, or none, for the duration. A class can therefore show nothing
-available on particular dates even though no one has booked it.
+available on particular dates even though no one has booked it. The reservation
+app shows the lower figure without a label. Bookings already made are not
+cancelled.
 
 A class that shows nothing available on a date may be fully booked or closed for
-maintenance. The two cases look identical to a user.
+maintenance. The two cases look identical to a user. While a class is short of
+nodes, a GPU session waiting for an on-demand lease records an
+`OnDemandAdmissionPaused` event.
 
 Where a class in regular use shows nothing available across a specific span of
 days and no notice has been sent, report it to

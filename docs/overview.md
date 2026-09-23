@@ -103,8 +103,10 @@ as VS Code connected to a cluster container. Each route is described in
 ## GPU Reservations
 
 From Fall 2026, access to GPUs is managed by a reservation system. A booking,
-made through a web interface, holds capacity for a specific window, and for the
-length of that window sessions are admitted ahead of the walk-up queue. Ad-hoc,
+made in the reservation app at
+[reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/), holds capacity for a
+specific window, and for the length of that window sessions are admitted ahead
+of the walk-up queue. Ad-hoc,
 on-demand use without a booking is also supported. Booking is described
 in [Reservations](gpu-access/reservations.md). Reservations, per-group quotas,
 and Service Unit budgets are the mechanisms that manage contention for GPUs, as

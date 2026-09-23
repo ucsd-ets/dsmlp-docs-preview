@@ -27,7 +27,7 @@ in [Sections, Teams and Group Data](#sections-teams-and-group-data).
 | Storage | Home directories are per-user and per-workspace. The workspace also holds its shared `public/` area and any `teams/` directories. Home directory quotas are listed in [Workspace and Personal Quotas](your-files-and-quotas.md#workspace-and-personal-quotas). |
 | Container images | Each workspace defines one or more Jupyter configurations, each an image plus CPU, RAM, and GPU quantities, and members pick one from a menu. For example, a course might offer a CPU-only environment for most of the quarter and a 1-GPU environment for its projects. |
 | GPU class access | Each workspace is granted access to one or more [GPU Classes](../gpu-access/gpu-classes.md) matching the work it was provisioned for. A request for a class the workspace was not granted is refused. |
-| Quotas and budgets | Group quotas cap how much of each GPU class the workspace can hold at once. Per-workspace Service Unit budgets divide that capacity between its members: weekly for courses, monthly or quarterly for research. |
+| Quotas and budgets | Group quotas cap how much of each GPU class the workspace can hold at once. Per-workspace Service Unit budgets divide that capacity between its members, and renew weekly by default. |
 
 The resources in this table stop at the workspace boundary. The `private/`
 directory is the exception: it is per-user and cluster-wide, and it appears in

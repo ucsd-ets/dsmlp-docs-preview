@@ -244,13 +244,16 @@ ProxyCommand, as described in
 ## GPU Access for a Course
 
 From Fall 2026, GPU access is managed by a reservation system, described in
-[GPU Access](gpu-access/README.md).
+[GPU Access](gpu-access/README.md). Its web app is at
+[reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/).
 
 ### Quotas and Service Unit Budgets
 
 A course holds a GPU quota, the number of GPUs of each class it may hold at
 once. Its students hold Service Unit (SU) budgets, which divide that capacity
-across the roster. Quotas are described in
+across the roster. A course workspace's defaults, including its weekly budget,
+its booking horizon, and its length cap, are changed at the instructor's request
+by ticket. Quotas are described in
 [Quotas, Cohorts & Availability](gpu-access/quotas-and-availability.md) and
 budgets in [Service Units & Budgets](gpu-access/service-units-and-budgets.md).
 
@@ -265,19 +268,24 @@ example for week 9. Report assignment deadlines in the survey.
 
 ### Course Calendar
 
-As workspace managers, instructors and TAs see the whole course calendar and may
-book on behalf of a student whose project has run into trouble.
+As workspace managers, instructors and TAs see every reservation in the course
+on the reservation app's **Group Reservations** page. They may book on a
+student's behalf, cancel a student's booking, and waive penalties, as described
+in [Managing a Group](reference/managing-a-group.md). In a course whose roster is
+loaded automatically, the instructor, TAs, and graders are all workspace
+managers.
 
 ### Assisting a Student at the Service Unit Limit
 
-Two routes are available, listed with the immediate one first.
+Request a budget change by ticket to
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu). The change itself is an
+administrative action.
 
-1. Book on the student's behalf. The booking takes effect at once and does not
-   draw on that student's budget. This is the appropriate route late in the
-   evening before a deadline.
-2. Request a budget or limit change by ticket to
-   [datahub@ucsd.edu](mailto:datahub@ucsd.edu). The change itself is an
-   administrative action.
+> [!WARNING]
+> A booking made on a student's behalf is charged to that student's budget. It
+> skips only the check that the student can afford it, so it can leave the
+> student over budget and block their own bookings and on-demand sessions until
+> the budget renews the following Monday.
 
 Budgets are described in
 [Service Units & Budgets](gpu-access/service-units-and-budgets.md), and the
@@ -286,15 +294,33 @@ request in [Administrative Requests](reference/getting-help.md#administrative-re
 ### Waiving a Cancellation Charge
 
 A student who misses a booked window is assessed a cancellation charge.
-Instructors and TAs may waive the charge where warranted, as described in
-[The Cancellation Penalty](gpu-access/service-units-and-budgets.md#the-cancellation-penalty).
+Instructors and TAs may waive the charge where warranted, on the
+**Group Reservations** page, when cancelling or afterwards. See
+[Having a Charge Waived](gpu-access/service-units-and-budgets.md#having-a-charge-waived).
 
 ### Manager Reports
 
 Manager reports cover reservations by group, peak simultaneous use by class,
 reserved hours, and effective limits, as described in
 [What the Reports Cover](reference/managing-a-group.md#what-the-reports-cover).
-Some reports display cluster-wide data rather than data for the course alone.
+Three of the four reports display cluster-wide data rather than data for the
+course alone.
+
+### Reservation Events
+
+The reservation system reports on each student's GPU session with Kubernetes
+events. Datahub shows them while a session starts, and `kubectl describe pod`
+shows them from the command line. A student's question often quotes one. Each
+is defined in [Reservation Events](reference/reservation-events.md):
+
+- While a session waits: `WaitingForReservation`, `ReservationFull`,
+  `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
+  `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
+  `AnnotationIgnored`.
+- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
+  `BestEffortAdmitted`.
+- When it is stopped: `Preempted`, `ReservationCancelled`,
+  `ReservationReassigned`.
 
 ### Advising Students
 

@@ -118,8 +118,10 @@ The modes are described in
 
 ### Runtime Limit
 
-Jobs default to 6 hours, and up to 12 hours may be set at launch. Reservations
-are the mechanism for longer work. The limit is described in
+Jobs default to 6 hours, and up to 12 hours may be set at launch. A booking
+does not lift the limit. See
+[Reservation Length and Session Runtime](gpu-access/reservations.md#reservation-length-and-session-runtime).
+The limit is described in
 [The Runtime Limit](running-jobs/job-modes-and-limits.md#the-runtime-limit).
 
 ### Checkpointing
@@ -134,10 +136,18 @@ the code it is running. Methods are described in
 Observing a running job is described in
 [Watching a Running Job](running-jobs/watching-your-job.md).
 
-A session emits Kubernetes Events with reservation-specific reasons:
-`RuntimeGuaranteed`, `Preempted`, `OnDemandLeaseDenied`, `OverstayRelinked`,
-and `ReservationReassigned`. They are described in
-[Reservation Events](running-jobs/kubernetes.md#reservation-events).
+The reservation system reports on a GPU session with Kubernetes events, shown by
+`kubectl describe pod`, and by `kubectl get events` after the pod is gone. Each
+is defined in [Reservation Events](reference/reservation-events.md):
+
+- While a session waits: `WaitingForReservation`, `ReservationFull`,
+  `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
+  `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
+  `AnnotationIgnored`.
+- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
+  `BestEffortAdmitted`.
+- When it is stopped: `Preempted`, `ReservationCancelled`,
+  `ReservationReassigned`.
 
 Direct use of Kubernetes is available to advanced users, as described in
 [Direct Kubernetes Use and Session Events](running-jobs/kubernetes.md).
@@ -163,10 +173,10 @@ are described in [GPU Classes](gpu-access/gpu-classes.md).
 
 ### Multi-Day Reservations
 
-Research workspaces can permit multi-day reservations well beyond the short caps
-that course workspaces use. A multi-day fine-tuning run can therefore be booked
-against guaranteed hardware. Member reservations cap at 48 hours, within an
-absolute ceiling of 168 hours that no one exceeds. The caps are described in
+A research workspace starts with the same length cap as a course workspace.
+Cluster administrators can raise it on the researcher's request, so that a
+multi-day fine-tuning run can be booked against guaranteed hardware. A member's
+own booking caps at 48 hours unless the workspace is in researcher mode. See
 [Reservation Length Caps](gpu-access/reservations.md#reservation-length-caps).
 
 ### Borrowing
@@ -184,22 +194,25 @@ through borrowing, as described in
 
 The charges are described in
 [On-Demand Lease Charges](gpu-access/service-units-and-budgets.md#on-demand-lease-charges).
+A launch holds a lease of 1 hour 10 minutes; for longer, use
+[Extend](gpu-access/reservations.md#extend) in the reservation app at
+[reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/).
 
 ### Budget Windows
 
-Research SU budgets, where set, typically apply on a monthly or quarterly basis
-rather than weekly, as described in
+A research SU budget starts with the same size and weekly window as a course
+budget, and either can be changed on the researcher's request. See
 [Budget Windows & Cadences](gpu-access/service-units-and-budgets.md#budget-windows--cadences).
 The balance remaining in a budget is covered in
 [Remaining Balance](gpu-access/service-units-and-budgets.md#remaining-balance).
 
 ### Cancellations and Missed Windows
 
-Releasing a window well in advance, or handing back the end of a mostly used
-session, carries no cancellation penalty. Charges cover the time actually used,
-and the remainder returns to the pool. A window missed without cancelling is
-charged, and an individual researcher has no instructor from whom to request a
-waiver. The charge is described in
+Releasing a window at least 24 hours in advance costs nothing. A later
+cancellation, or handing back the end of a session, keeps the time used and
+usually part of the unused time. A window missed without cancelling is charged, and an
+individual researcher has no instructor from whom to request a waiver. The
+charge is described in
 [The Cancellation Penalty](gpu-access/service-units-and-budgets.md#the-cancellation-penalty).
 
 ### Off-Peak Hours

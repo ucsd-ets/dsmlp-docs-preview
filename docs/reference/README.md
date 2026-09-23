@@ -1,11 +1,12 @@
 # Reference
 
-This section covers error messages, support routing, the glossary, HPC
-vocabulary, group management, policy, and software.
+This section covers error messages, reservation events, support routing, the
+glossary, HPC vocabulary, group management, policy, and software.
 
 | Page | Covers |
 |---|---|
-| [Error Messages](error-messages.md) | Error messages and failure symptoms with their causes and fixes, for signing in, command-line launches, `kubectl get pods` statuses, and code and notebooks. |
+| [Error Messages](error-messages.md) | Error messages and failure symptoms with their causes and fixes, for signing in, command-line launches, `kubectl get pods` statuses, the reservation app, and code and notebooks. |
+| [Reservation Events](reservation-events.md) | The 15 Kubernetes events the reservation system writes on a GPU pod, what each means, and what to do; and the waiting states that produce no event. |
 | [Getting Help](getting-help.md) | Support tiers and contacts, the contents of a support ticket, response targets, 1:1 Consultation, and administrative requests. |
 | [Glossary](glossary.md) | Definitions of the terms used across the documentation, in alphabetical order. |
 | [Coming from HPC](coming-from-hpc.md) | HPC and Slurm terms and their DSMLP equivalents, differences from Slurm behavior, the Slurm compatibility wrappers and their limitations, and unsupported HPC features. |

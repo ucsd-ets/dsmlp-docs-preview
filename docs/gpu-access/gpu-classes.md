@@ -2,8 +2,7 @@
 
 A **GPU class** is a size band of GPU memory rather than a hardware model: a
 request names the amount of GPU memory the work needs, and the platform selects
-the physical card that provides it. This page covers the five classes, choosing
-and requesting a class, and confirming what was allocated.
+the physical card that provides it.
 
 ## GPU Class Sizes
 
@@ -73,11 +72,10 @@ described under
 > There is no free exploratory launch. See
 > [On-Demand Lease Charges](service-units-and-budgets.md#on-demand-lease-charges).
 
-The runtime requested is the runtime charged. Request the time the work needs
-rather than the maximum permitted under
-[The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit).
-A session must be stopped explicitly. Logging out does not stop it, as
-described under
+A launch without a booking holds an on-demand lease of 1 hour 10 minutes, and
+is charged for the time the session uses within it. A longer guarantee comes
+from [Extend](reservations.md#extend) in the reservation app. A session must be
+stopped explicitly. Logging out does not stop it. See
 [Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session).
 
 ### Workspace Class Grants
@@ -93,14 +91,9 @@ by the instructor or PI. The grant is part of the workspace, described in
 A member who belongs to several workspaces selects the one a launch goes into
 with `-W`, as described under
 [Belonging to Several Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces).
-The launch uses that workspace's class grant and Service Unit budget.
-
-### Selecting a Specific GPU Model
-
-`-v` is a different mechanism. It names a specific GPU model instead of a size
-band. Both forms work. Workspace grants, reservations, and quotas are all
-expressed in classes, so `-l gpu-class=` is the usual form and `-v` is for
-pinning the hardware.
+The launch uses that workspace's class grant and Service Unit budget. A GPU
+launch without `-W` is charged to `ORG_ON_DEMAND`; see
+[The Default Workspace](reservations.md#the-default-workspace).
 
 ### Slurm Partition Mapping
 
@@ -123,15 +116,25 @@ as described in [Working from the Command Line](../working-from-the-command-line
 
 ## Missing or Misspelled Class Label
 
-`medium` and above carry `NoSchedule` taints. A GPU request with no
-`gpu-class` label, or with a misspelled label, cannot be scheduled. The pod
-stays pending and eventually fails with `0/5 nodes available`.
+Every GPU class is managed by the reservation system. The nodes behind each
+class carry a `NoSchedule` taint, and a GPU pod waits in `Pending` until the
+reservation system admits it. While it waits, `kubectl describe pod` shows a
+`FailedScheduling` event from the Kubernetes scheduler of the form
+`0/N nodes are available: … untolerated taint(s) …`. That event is normal for
+every GPU pod that has not been admitted yet. It does not by itself mean that
+the label is wrong or that the cluster is full.
 
-This is the most common GPU launch failure, and the message does not mention
-the label. Check the spelling of `gpu-class` and of the class name before
-concluding that the cluster is full. A full cluster is covered under
+Read the events from `gpu-reservation-controller` beside it:
+
+| What `kubectl describe pod` shows | Cause | Fix |
+|---|---|---|
+| An `UnknownGpuClass` event, which lists the known classes | The class name is misspelled. Class names are case-sensitive | Delete the pod and launch again with the correct name |
+| No event from `gpu-reservation-controller` after a minute or two, and no `gpu-class` under **Labels** | The label is missing. The reservation system never sees the pod | Delete the pod and launch again with `-l gpu-class=<class>` |
+| Any other reservation event | The reservation system is handling the pod | See [Reservation Events](../reference/reservation-events.md) |
+
+A full cluster is covered under
 [When the Cluster Is Full](quotas-and-availability.md#when-the-cluster-is-full),
-and the message is also listed in
+and the messages are also listed in
 [Error Messages](../reference/error-messages.md).
 
 ## Confirming the Allocation
@@ -172,9 +175,11 @@ start anything. When the window opens, a session is launched the usual way. The
 booking ensures that the capacity is available and that the session is
 admitted ahead of the walk-up queue.
 
+There is no control that selects a booking. A session that matches the booking,
+by user, class, workspace, and GPU count, claims it; see
+[Claiming a Booking](reservations.md#claiming-a-booking). A session of a
+different class does not claim the booking, and is given an on-demand lease
+instead.
+
 A booked window that is not claimed in time is cancelled. The deadline is under
 [The Claim Window](reservations.md#the-claim-window).
-
-The procedure for selecting a booked window on the Datahub spawn form is not
-yet published; [datahub@ucsd.edu](mailto:datahub@ucsd.edu) assists members who
-have booked a window.

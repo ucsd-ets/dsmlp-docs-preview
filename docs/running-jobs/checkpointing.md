@@ -11,17 +11,19 @@ logs for unattended jobs.
 |---|---|---|
 | The runtime limit: 6 hours by default, 12 if set at launch | None; the pod reports `DeadlineExceeded` | [The Runtime Limit](job-modes-and-limits.md#the-runtime-limit) |
 | Idle culling, once the GPU stops being used | Yes; a warning comes first, and the status is recorded on the pod | [What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle) |
-| Preemption, once a booking needs the capacity | Yes; minutes of notice, readable by the job itself | [End of a Reservation Window](../gpu-access/what-ends-a-session.md#end-of-a-reservation-window) |
+| Preemption, once the session is past its runtime guarantee and its GPU is needed | Usually; about 15 minutes of notice, readable by the job itself | [Preemption](../gpu-access/what-ends-a-session.md#preemption) |
+| Eviction, when the reservation is cancelled or given to a teammate | None | [Eviction](../gpu-access/what-ends-a-session.md#eviction) |
 | Research Cluster maintenance | Notice in advance, not on the pod; all running jobs are terminated | [Scheduled Maintenance](../reference/policy.md#scheduled-maintenance) |
 
 None of these stops indicates a fault in the code. Instructional maintenance
 generally leaves running jobs alone.
 
 > [!WARNING]
-> The runtime limit and Research Cluster maintenance are not announced on the
-> pod. The runtime limit stops the container at its deadline with no prior
-> warning and no signal to catch. Research Cluster maintenance terminates every
-> running job. Work that is not on disk before either one arrives is lost.
+> The runtime limit, an eviction, and Research Cluster maintenance are not
+> announced on the pod. The runtime limit stops the container at its deadline
+> with no prior warning and no signal to catch. Research Cluster maintenance
+> terminates every running job. Work that is not on disk before any of them
+> arrives is lost.
 
 Preemption and idle culling are announced on the pod, where a running program
 can read them. The reservation controller marks a session it may need to stop
@@ -187,10 +189,20 @@ outstanding future before exiting on a preemption.
 The reservation controller marks a session it may need to stop before stopping
 it. The mark is a set of annotations written onto the pod. It appears only while
 the session is at risk: a booking is coming due for capacity the session is
-holding, and the session is one of the candidates that could supply it.
+holding, or the class has less than its headroom free, and the session is one of
+the candidates that could supply it. Every candidate is marked, not only the
+sessions that will be stopped. See
+[Preemption](../gpu-access/what-ends-a-session.md#preemption).
 
-How far ahead of the earliest possible stop the warning appears, and whether a
-minimum notice is guaranteed, is not yet published.
+### Warning Timings
+
+| Timing | Value |
+|---|---|
+| How far ahead the controller looks | Bookings starting in the next 30 minutes |
+| Earliest stop for a booking | 15 minutes before the booking starts, or the end of the session's guarantee if that is later |
+| Usual notice | About 15 minutes. There is no minimum: a booking made at the last minute gives less |
+| Earliest stop for headroom | 15 minutes after the warning |
+| Delay before the container can read a warning | About 2 minutes |
 
 ### The Runtime Guarantee
 
@@ -216,7 +228,7 @@ Four annotations are relevant to a long-running job:
 | `galends/guaranteed-until` | UTC instant, `YYYY-MM-DDTHH:MM:SSZ` | The end of the protected period. It can move **later** while the session runs, when an abutting follow-on window is booked |
 | `galends/termination-warning-at` | UTC instant, same format | The **earliest** moment the session could be stopped. Never earlier than `guaranteed-until`. Present only while the session is at risk |
 | `galends/termination-warning-risk` | Decimal between 0 and 1, two places, e.g. `0.33` | The share of the candidates that has to be stopped. `1.00` means all of them |
-| `galends/termination-warning-message` | A sentence | The same thing in prose, in the cluster's local timezone. Written to be displayed as it stands, and not to be parsed |
+| `galends/termination-warning-message` | A sentence | The same thing in prose, in Pacific time. Written to be displayed as it stands, and not to be parsed. Its wording refers to "a reservation starting then" even for a stop 15 minutes before a booking starts, and for a headroom warning |
 
 `termination-warning-at` is the earliest possible stop, not a scheduled one. The
 shortfall it was computed from may be gone before that moment arrives, in which
@@ -227,24 +239,36 @@ countdown to a certain stop.
 ### Best-Effort Annotations
 
 Every annotation is optional and best-effort. Any of them can be absent at any
-moment, and the three warning annotations are removed when the risk clears. The
-controller does not read any of them back to decide anything. Each decision is
-recomputed from live reservation state. Code that reads the annotations handles
-each one being missing, ignores a value that does not parse rather than failing,
-and re-reads each value instead of caching it at startup.
+moment, and the three warning annotations are usually removed when the risk
+clears. A warning can also stay on the pod after the risk has passed: a
+`termination-warning-at` in the past, on a session that is still running, is
+stale. The controller does not read any of the annotations back to decide
+anything. Each decision is recomputed from live reservation state. Code that
+reads the annotations handles each one being missing, ignores a value that does
+not parse rather than failing, and re-reads each value instead of caching it at
+startup.
 
 ### Canceling a Pending Termination
 
-Extending or re-booking the window cancels a pending termination at any point
-until the pod is deleted. The controller re-checks every session's live
-guarantee before it selects any session to stop, so a reservation recorded
-before the selection always takes precedence. Extension is described in
-[Continue, Extend & Adopt](../gpu-access/reservations.md#continue-extend--adopt).
+**Extend** in the reservation app, if it is granted, cancels a pending
+termination at any point until the pod is deleted: the session moves onto a new
+booking and is guaranteed again. Extend can be refused when the GPUs are needed
+for a booking that follows. The controller re-checks every session's live guarantee before it selects
+any session to stop, so an Extend recorded before the selection always takes
+precedence. See [Extend](../gpu-access/reservations.md#extend).
+
+A new booking that starts exactly when the current guarantee ends, for the same
+class, number of GPUs, and workspace, also cancels it. A booking with a gap
+protects the session only once it opens, which can be after the stop. See
+[Back-to-Back Bookings](../gpu-access/what-ends-a-session.md#back-to-back-bookings).
 
 ## Reading the Warning From Inside a Container
 
 Annotations are visible to the container only when the pod spec projects them.
-A downward-API volume projects them and is refreshed as the values change:
+Pods started by `launch.sh` already mount a downward-API volume at
+`/etc/podinfo`; `ls /etc/podinfo` lists the files it carries. A pod created from
+a hand-written manifest needs a volume of its own. A downward-API volume
+projects the annotations and is refreshed as the values change:
 
 ```yaml
 spec:
@@ -303,9 +327,8 @@ the volume is refreshed.
 
 The kubelet updates the files on its own sync loop, which adds to the
 controller's own cadence. The warning therefore reaches the container some time
-into the notice period, not at its start. The worst-case delay between the
-controller writing an annotation and the container being able to read it is not
-yet published.
+into the notice period, not at its start: usually about 2 minutes after the
+controller writes it.
 
 Polling every 15 to 30 seconds is sufficient. To watch the files with `inotify`,
 watch the directory rather than the file, because the whole set is swapped
@@ -451,13 +474,13 @@ risk figure.
 
 ### The Grace Period
 
-A preempted pod is deleted in the ordinary way: `SIGTERM`, then a short interval
-before the container is stopped. The interval is long enough to flush data
-already staged in memory, and not long enough to write out optimizer state. The
-time to checkpoint comes from the warning. The grace period begins only after
-the decision to stop the pod has been made. Checkpoint on the warning, not from a
-`SIGTERM` handler. The grace period configured for launched pods is not yet
-published.
+A preempted or evicted pod is deleted in the ordinary way: `SIGTERM`, then a
+grace period, then a forced stop. Pods started by `launch.sh` have a grace
+period of 600 seconds, or 10 minutes. A `SIGTERM` handler that saves a
+checkpoint is a useful fallback where the save finishes well within that time,
+and it is the only chance to save before an eviction, which has no warning. The
+grace period begins only after the decision to stop the pod has been made, so
+for a preemption the warning comes earlier. Checkpoint on the warning first.
 
 ## Resuming
 
