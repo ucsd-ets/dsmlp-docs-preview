@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="262" viewBox="0 0 640 262" role="img" aria-labelledby="title desc">
+  <title id="title">GPU memory by class</title>
+  <desc id="desc">Horizontal bars of GPU memory per class, on a scale of 0 to 100 GB: xsmall about 6 GB, small 10 to 12 GB, medium 20 to 24 GB, large 40 to 48 GB, xlarge 80 to 96 GB. Each bar ends at the top of its class's range.</desc>
+  <rect width="640" height="262" fill="#ffffff"/>
+  <text x="104" y="22" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#182b49">GPU memory by class</text>
+  <g stroke-width="1" shape-rendering="crispEdges">
+    <line x1="104.5" y1="36" x2="104.5" y2="220" stroke="#c8c8c8"/>
+    <line x1="195.5" y1="36" x2="195.5" y2="220" stroke="#dddddd"/>
+    <line x1="286.5" y1="36" x2="286.5" y2="220" stroke="#dddddd"/>
+    <line x1="378.5" y1="36" x2="378.5" y2="220" stroke="#dddddd"/>
+    <line x1="469.5" y1="36" x2="469.5" y2="220" stroke="#dddddd"/>
+    <line x1="560.5" y1="36" x2="560.5" y2="220" stroke="#dddddd"/>
+  </g>
+  <g font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#747678" text-anchor="middle">
+    <text x="104.5" y="236">0</text>
+    <text x="195.5" y="236">20</text>
+    <text x="286.5" y="236">40</text>
+    <text x="378.5" y="236">60</text>
+    <text x="469.5" y="236">80</text>
+    <text x="560.5" y="236">100</text>
+  </g>
+  <text x="332.0" y="258" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#484949" text-anchor="middle">GPU memory (GB)</text>
+  <path d="M104,46 h23.4 a4,4 0 0 1 4,4 v12 a4,4 0 0 1 -4,4 h-23.4 z" fill="#00629b"/>
+  <text x="94" y="60.5" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" fill="#182b49" text-anchor="end">xsmall</text>
+  <text x="139.4" y="60.5" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#484949">~6 GB</text>
+  <path d="M104,82 h50.7 a4,4 0 0 1 4,4 v12 a4,4 0 0 1 -4,4 h-50.7 z" fill="#00629b"/>
+  <text x="94" y="96.5" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" fill="#182b49" text-anchor="end">small</text>
+  <text x="166.7" y="96.5" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#484949">10–12 GB</text>
+  <path d="M104,118 h105.4 a4,4 0 0 1 4,4 v12 a4,4 0 0 1 -4,4 h-105.4 z" fill="#00629b"/>
+  <text x="94" y="132.5" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" fill="#182b49" text-anchor="end">medium</text>
+  <text x="221.4" y="132.5" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#484949">20–24 GB</text>
+  <path d="M104,154 h214.9 a4,4 0 0 1 4,4 v12 a4,4 0 0 1 -4,4 h-214.9 z" fill="#00629b"/>
+  <text x="94" y="168.5" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" fill="#182b49" text-anchor="end">large</text>
+  <text x="330.9" y="168.5" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#484949">40–48 GB</text>
+  <path d="M104,190 h433.8 a4,4 0 0 1 4,4 v12 a4,4 0 0 1 -4,4 h-433.8 z" fill="#00629b"/>
+  <text x="94" y="204.5" font-family="Menlo, Consolas, 'DejaVu Sans Mono', monospace" font-size="13" fill="#182b49" text-anchor="end">xlarge</text>
+  <text x="549.8" y="204.5" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="13" fill="#484949">80–96 GB</text>
+</svg>

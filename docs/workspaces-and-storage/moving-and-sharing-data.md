@@ -23,10 +23,12 @@ jobs are its two purposes, as described in
 
 The JupyterLab file browser uploads files by drag and drop and downloads them
 from the right-click menu. It suits a small number of small files, such as a
-notebook and a CSV file. Above about 64 MB, or beyond a few dozen files,
-transfers stall, and an interrupted transfer cannot be resumed. Where a file is
-large and the browser is the only available route, compress it into a zip
-archive, upload the archive, and extract it from a terminal.
+notebook and a CSV file. The Datahub load balancer refuses a browser upload
+larger than 200 MB. Beyond a few dozen files, transfers stall, and an
+interrupted transfer cannot be resumed. Move a larger file with `scp` or
+`sftp`. See [scp, sftp and rsync](#scp-sftp-and-rsync). Where many small files
+must go through the browser, compress them into a zip archive, upload the
+archive, and extract it from a terminal.
 
 ## Git
 

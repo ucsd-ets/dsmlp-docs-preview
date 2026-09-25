@@ -31,7 +31,7 @@ not faults.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| A GPU pod sits at `Pending` with **`0/N nodes are available: … untolerated taint(s)`** | Normal while the reservation system decides on the pod. The reason is in the event from `gpu-reservation-controller` beside it | Read the events in `kubectl describe pod`; see [Reservation Events](reservation-events.md). With no such event and no `gpu-class` label, the label is missing; see [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label) |
+| A GPU pod sits at `Pending` with a `FailedScheduling` event beginning **`0/N nodes are available`** | Normal while the reservation system decides on the pod. The reason is in the event from `gpu-reservation-controller` beside it | Read the events in `kubectl describe pod`; see [Reservation Events](reservation-events.md). With no such event and no `gpu-class` label, the label is missing; see [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label) |
 | **"GPU quota exceeded. Wanted 1 but with 1 already in use, the quota of 1 would be exceeded"** | Another pod on the same account already holds the GPU | The earlier pod is usually terminating and clears within a minute or two. If it does not clear, run `kubectl get pods`, then `kubectl delete pod <pod-id>` |
 | The launcher rejects one of the program's own options | A missing `--`. The launcher reads everything before `--` as a launcher flag | Place `--` between the launcher flags and the program: `launch-scipy-ml.sh -g 1 -B -- python train.py --epochs 50` |
 | A GPU was requested and none arrived | `-G` where `-g` was meant. `-g 1` is one GPU; `-G 1` is a team ID | Use `-g` for the GPU count. The failure does not mention capitalization. See [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags) |
@@ -160,11 +160,12 @@ python -c "import torch; print(torch.cuda.get_device_name(0));"
 
 ### Full Storage Quota
 
-"No space left" when saving a notebook, or a "disk quota exceeded" email, means
-the storage quota is full. Files deleted in the Jupyter interface move to
-`.local/share/Trash`, where they continue to count against the quota until the
-automatic purge after 7 days. A deletion in the Jupyter interface therefore
-frees no space before that purge. Storage quotas are described in
+A notebook save that fails with `[Errno 122] Disk quota exceeded`, or a "disk
+quota exceeded" email, means the storage quota is full. Files deleted in the
+Jupyter interface move to `.local/share/Trash`, where they continue to count
+against the quota until the automatic purge after 7 days. A deletion in the
+Jupyter interface therefore frees no space before that purge. Storage quotas are
+described in
 [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
 
 ### Grading Validation and Metadata Errors

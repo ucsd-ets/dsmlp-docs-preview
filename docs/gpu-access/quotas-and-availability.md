@@ -157,7 +157,7 @@ The table lists the symptoms of a launch that cannot obtain a GPU.
 | An `OnDemandAdmissionPaused` event | On-demand admission is paused for the whole class, for example while its nodes are down. Leave the pod in place. |
 | A `WaitingForNode` event | The pod was launched with `-n` or `-v`, and no node it allows has a free GPU. No lease is requested, and nothing is charged, until one does. See [Node Selection](../running-jobs/launch-sh-reference.md#node-selection). |
 | A GPU class shows no availability for a date | The class is fully booked, or capacity has been withdrawn for maintenance. See [Maintenance Closures](what-ends-a-session.md#maintenance-closures). |
-| `FailedScheduling` about untolerated taints | Normal for every GPU pod that has not yet been admitted. Read the reservation events beside it. See [Missing or Misspelled Class Label](gpu-classes.md#missing-or-misspelled-class-label). |
+| A `FailedScheduling` event from the scheduler | Normal for every GPU pod that has not yet been admitted. Read the reservation events beside it. See [Missing or Misspelled Class Label](gpu-classes.md#missing-or-misspelled-class-label). |
 
 [Reservation Events](../reference/reservation-events.md) lists every event the
 reservation system writes.

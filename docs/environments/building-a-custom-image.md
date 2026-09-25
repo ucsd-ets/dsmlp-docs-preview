@@ -223,14 +223,18 @@ two.
 ### Pulling a Large Image Ahead of a Session
 
 A Datahub session or an interactive launch can time out while a large image is
-still downloading. A background job that only runs `sleep 10` lets the download
-finish without either timeout:
+still downloading. A batch job that only runs `sleep 10` lets the download
+finish without either timeout. `-B` queues the job and returns without waiting
+for it:
 
 ```bash
-launch.sh -i <image>:<tag> -b -- sleep 10
+launch.sh -i <image>:<tag> -B -- sleep 10
 ```
 
-Then launch the session as usual.
+The pull has finished when `kubectl get pods` shows the job as `Completed`. The
+pull also fills the UCSD image cache, so a session placed on any node then
+downloads the image from campus rather than from GitHub. That download is
+faster but not instant. Then launch the session as usual.
 
 ### Replacing the Notebook Server with a Shell
 

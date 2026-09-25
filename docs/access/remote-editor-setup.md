@@ -376,12 +376,25 @@ The running container can also be entered from the login node with
 
 ### Growth of `.vscode-server`
 
-VS Code installs a server component into the home directory the first time it
-connects, and `.vscode-server` grows past a gigabyte. On a course home
-directory, that is a large fraction of the quota. When the quota fills, the
-symptom is a session that does not start, not a VS Code error. Home directory
-quotas are described in
-[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
+VS Code installs a server component into `~/.vscode-server` in the workspace
+home directory the first time it connects, and the directory grows past a
+gigabyte. On a course home directory, that is a large fraction of the quota.
+When the quota fills, the symptom is a session that does not start, not a VS
+Code error.
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas)
+lists home directory quotas.
+
+To reclaim the space, close every VS Code window connected to the container,
+enter the container with `kubesh vscode-dsmlp`, and delete the directory:
+
+```bash
+rm -rf ~/.vscode-server
+```
+
+Run the command inside the container, not on the login node, whose home
+directory is a different one. VS Code installs the server again on the next
+connection. Deleting the directory also removes extensions installed in the
+container. Install them again after reconnecting.
 
 ## Editor Connection Failures
 

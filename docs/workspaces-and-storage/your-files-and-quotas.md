@@ -112,7 +112,8 @@ indicate the state of the other.
 | Workspace | The workspace home, plus `public/` and `teams/` |
 | Personal | `private/`, in every workspace |
 
-The personal quota belongs to the account rather than to any course.
+The personal quota belongs to the account rather than to any course. It is
+5 GB on an instructional account and 100 GB on a research account.
 
 Course home directories are 5-10 GB, toward the lower end for very large
 classes. Research home directories are on the order of 100 GB, set when the
@@ -252,8 +253,8 @@ read-only. The Nielsen subscription datasets are an example, described in
 ### Capacity Thresholds
 
 Above a certain volume, data belongs on external storage and is mounted rather
-than copied. Users do not set this boundary. The thresholds are not published.
-State the expected volume and its growth rate in the request described in
+than copied. Users do not set this boundary. State the expected volume and its
+growth rate in the request described in
 [Requesting External Storage](#requesting-external-storage). The reply states
 what fits where.
 

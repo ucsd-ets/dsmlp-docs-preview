@@ -238,7 +238,7 @@ quota, as described in
 |---|---|
 | `OOMKilled` | The container exceeded its memory limit. See [Requests and Limits](#requests-and-limits) |
 | `DeadlineExceeded` | The job reached its runtime limit. See [Runtime Limit](#runtime-limit) |
-| `Pending`, with `FailedScheduling` about untolerated taints | A GPU job waiting for the reservation system. The reason is in the reservation event beside it. See [Pending GPU Launches](#pending-gpu-launches) |
+| `Pending`, with a `FailedScheduling` event | A GPU job waiting for the reservation system. The reason is in the reservation event beside it. See [Pending GPU Launches](#pending-gpu-launches) |
 | A session ended, with a warning beforehand | Idle culling. See [Idle Culling](#idle-culling) |
 
 If a GPU session ends and none of these statuses applies, the usual cause is

@@ -98,5 +98,57 @@ For a custom image that carries its own toolkit, see
 
 ## CUDA Profiling
 
-DSMLP supports CUDA profiling. Instructions are not yet published. For
-details, write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
+Three profilers work on DSMLP. GPU performance counters are open to users
+inside the container, so each can collect hardware metrics.
+
+| Profiler | Shows | Output |
+|---|---|---|
+| Nsight Systems, `nsys` | A timeline of CPU threads, CUDA API calls, kernels, and memory copies, including where the GPU sits idle | A `.nsys-rep` report |
+| Nsight Compute, `ncu` | Per-kernel metrics read from the GPU's performance counters | A `.ncu-rep` report |
+| PyTorch profiler, `torch.profiler` | Time and memory by PyTorch operator | A printed table or a trace file |
+
+The standard images do not include Nsight Systems or Nsight Compute. NVIDIA's
+container images at `nvcr.io` are fully supported on DSMLP and include both.
+The PyTorch profiler is part of PyTorch, which `scipy-ml-notebook` includes.
+
+### Nsight Systems and Nsight Compute
+
+Launch an NVIDIA image, such as `nvcr.io/nvidia/pytorch`, with `-i`. `-s` starts
+a shell and no notebook server, because these images are not built on the
+standard images:
+
+```bash
+launch-scipy-ml.sh -W <WORKSPACE> -g 1 -l gpu-class=medium -i nvcr.io/nvidia/pytorch:<tag> -s
+```
+
+These images are large, so the first launch on a node is slow. See
+[Pulling a Large Image Ahead of a Session](../environments/building-a-custom-image.md#pulling-a-large-image-ahead-of-a-session).
+
+Profile the whole run with Nsight Systems to find where the time goes, then
+profile the kernels that dominate with Nsight Compute:
+
+```bash
+nsys profile -o timeline python train.py
+ncu --launch-count 20 -o kernels python train.py
+```
+
+Nsight Compute replays each kernel many times to read its counters, so a run
+under `ncu` is far slower than a normal one. `--launch-count` limits it to the
+first kernels launched. Both reports open in NVIDIA's desktop applications of
+the same names.
+
+### PyTorch Profiler
+
+In a PyTorch script, wrap a few training steps:
+
+```python
+import itertools
+
+from torch.profiler import ProfilerActivity, profile
+
+with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA]) as prof:
+    for batch in itertools.islice(loader, 10):
+        train_step(batch)
+
+print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
+```

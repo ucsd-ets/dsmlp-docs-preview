@@ -158,11 +158,40 @@ session runs without it.
 
 ### The Countdown
 
-In the Fall 2026 standard images, a Jupyter session shows an alert as the end
-of its guarantee approaches. Instructions for a similar popup in VS Code and
-other remote editors are planned for Winter 2027. From the command line,
-`kubectl describe pod` shows the end of the guarantee in the pod's annotations;
-see [Reservation Annotations](../running-jobs/kubernetes.md#reservation-annotations).
+In the Fall 2026 standard images, JupyterLab shows the session's status in the
+status bar at the bottom of the window. While the session is inside its
+guarantee, the indicator reads **Job protected** and counts down to the end of
+the guarantee. Its color follows the session's state:
+
+| Color | State |
+|---|---|
+| Green | Inside the runtime guarantee |
+| Amber | Inside the guarantee, with another booking due to start when it ends |
+| Gray | Past the guarantee, with nothing waiting for the capacity. See [Overstay](#overstay) |
+| Red, pulsing | Past the guarantee and at risk of preemption. The countdown runs to the earliest moment the session could be stopped |
+
+The indicator is hidden when there is nothing to report.
+
+![The JupyterLab status bar reading Job protected 59:55, below a notification that says GPU resources reserved until 10:56 AM, with a Details link.](../images/jupyterlab-reservation-status.png)
+
+Selecting the indicator, or running **Show Job Reservation/Resource Status**
+from the command palette, opens a dialog with the full detail. A brief
+notification appears when the session is admitted, when it moves to a
+different reservation, and when it starts running past its guarantee. While the
+session is at risk, a notification with a **Details** link stays on screen. It
+closes, with an all-clear, when the warning is withdrawn.
+[Warning Timings](../running-jobs/checkpointing.md#warning-timings) lists how
+much notice a warning gives.
+
+VS Code shows the same status in its own status bar, with the same
+notifications. Setup instructions for VS Code and other remote editors are
+planned for Winter 2027.
+
+![The VS Code status bar reading Job protected 55:49, below a notification that says GPU resources reserved (medium) until 10:49 AM, from DSMLP Job Reservation/Resource Status, with a Details button.](../images/vscode-reservation-status.png)
+
+From the command line, `kubectl describe pod` shows the end of the guarantee in
+the pod's annotations; see
+[Reservation Annotations](../running-jobs/kubernetes.md#reservation-annotations).
 
 A checkpoint written before the guarantee ends survives the end of the window.
 From that point, the session can be stopped, extended, or left running.

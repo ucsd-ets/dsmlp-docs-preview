@@ -65,9 +65,9 @@ support names
 
 A GPU pod waits in `Pending` until the reservation system admits it. While it
 waits, `kubectl describe pod` also shows a `FailedScheduling` event from the
-Kubernetes scheduler about untolerated taints. That scheduler event is normal
-for every GPU pod that has not been admitted yet, and does not mean the label is
-wrong or the cluster is full. See
+Kubernetes scheduler. That scheduler event is normal for every GPU pod that has
+not been admitted yet, and does not mean the label is wrong or the cluster is
+full. See
 [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label).
 
 ### `WaitingForReservation`

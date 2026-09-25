@@ -24,6 +24,8 @@ login node, which does not accept the full address. That prompt is described in
 After sign-in, Datahub lists the courses available to the account and, within a
 course, the environments configured for it.
 
+![The Select Your Notebook Environment page. Two options are listed, each naming a course, its instructor and its term, with the image and its size below, 2 CPU and 8G RAM. A Launch Environment button sits below the list.](../images/datahub-spawn-menu.png)
+
 ### Course List
 
 Each Datahub course appears separately and holds its own files. Students and
@@ -47,10 +49,11 @@ is busy. The live state of the cluster is shown on
 
 ## The Browser Session
 
-A browser session starts with 2 CPU cores and 4GB of RAM. This is the course
-spawn configuration, set per course. The defaults applied by the command-line
-launch scripts are a separate figure that describes a different object.
-Command-line launches are described in
+By default, a browser session starts with 2 CPU cores and 4 GB of RAM. This is
+the course spawn configuration, set per course, and a course can configure
+more. The environment menu shows each option's size. The defaults applied by
+the command-line launch scripts are a separate figure that describes a
+different object. See
 [Working from the Command Line](../working-from-the-command-line.md).
 
 A session provides JupyterLab, with notebooks, a file browser, a text editor,

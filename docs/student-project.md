@@ -165,7 +165,7 @@ Common symptoms in project work are documented on these pages.
 |---|---|
 | `OOMKilled` | [Resource Requests and Limits](running-jobs/launch-sh-reference.md#resource-requests-and-limits) |
 | `DeadlineExceeded` | [The Runtime Limit](running-jobs/job-modes-and-limits.md#the-runtime-limit) |
-| `Pending`, with `FailedScheduling` about untolerated taints | Normal while the reservation system decides; the reason is in the reservation event beside it. See [Missing or Misspelled Class Label](gpu-access/gpu-classes.md#missing-or-misspelled-class-label) |
+| `Pending`, with a `FailedScheduling` event | Normal while the reservation system decides; the reason is in the reservation event beside it. See [Missing or Misspelled Class Label](gpu-access/gpu-classes.md#missing-or-misspelled-class-label) |
 | The session ended unexpectedly | [What Counts as Idle](gpu-access/what-ends-a-session.md#what-counts-as-idle), or [End of a Reservation Window](gpu-access/what-ends-a-session.md#end-of-a-reservation-window) |
 | Reservation-related events in a pod | [Reservation Events](reference/reservation-events.md) |
 

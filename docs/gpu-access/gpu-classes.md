@@ -14,6 +14,8 @@ the physical card that provides it.
 | `large` | 40-48 GB | L40S, or a slice of an H100 or RTX PRO 6000 |
 | `xlarge` | 80-96 GB | A full H100 or RTX PRO 6000 Blackwell |
 
+![Bar chart of GPU memory by class, on a scale of 0 to 100 GB: xsmall about 6 GB, small 10 to 12 GB, medium 20 to 24 GB, large 40 to 48 GB, and xlarge 80 to 96 GB.](../images/gpu-class-sizes.svg)
+
 Plan against the memory column. The hardware column is context. Both columns
 are approximate and subject to change. A class specifies roughly how much GPU
 memory a session has, not which card it runs on, and two sessions in the same
@@ -131,12 +133,11 @@ as described in [Working from the Command Line](../working-from-the-command-line
 
 ## Missing or Misspelled Class Label
 
-Every GPU class is managed by the reservation system. The nodes behind each
-class carry a `NoSchedule` taint, and a GPU pod waits in `Pending` until the
-reservation system admits it. While it waits, `kubectl describe pod` shows a
-`FailedScheduling` event from the Kubernetes scheduler of the form
-`0/N nodes are available: … untolerated taint(s) …`. That event is normal for
-every GPU pod that has not been admitted yet. It does not by itself mean that
+Every GPU class is managed by the reservation system, and a GPU pod waits in
+`Pending` until the reservation system admits it. While it waits,
+`kubectl describe pod` shows a `FailedScheduling` event from the Kubernetes
+scheduler that begins `0/N nodes are available`. That event is normal for every
+GPU pod that has not been admitted yet. It does not by itself mean that
 the label is wrong or that the cluster is full.
 
 Read the events from `gpu-reservation-controller` beside it:

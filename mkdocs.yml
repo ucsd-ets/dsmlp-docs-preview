@@ -80,16 +80,13 @@ markdown_extensions:
 hooks:
   - tools/hooks.py
 
+not_in_nav: |
+  search.md
+
 # Catch broken cross-references at build time. The imported content is densely
 # cross-linked with relative .md links and anchors, so this is the main guard
 # against a rename stranding a dozen pages. CI runs with --strict, which turns
 # every one of these into a build failure.
-# docs/images/ is an asset directory; its README documents what belongs there
-# and is deliberately not a nav page.
-not_in_nav: |
-  images/README.md
-  search.md
-
 validation:
   omitted_files: warn
   absolute_links: warn

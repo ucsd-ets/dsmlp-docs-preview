@@ -60,6 +60,8 @@ the usual way and is admitted onto the booking. See
 5. On **Confirm Reservation**, add notes if needed and select
    **Confirm Reservation**.
 
+![The Select Date & Time step of the booking wizard. Hourly bars across two days show how many GPUs are free, with an amber strip under the off-peak hours. Three evening hours are selected, and the line below the timeline reads 6:00 PM to 9:00 PM, 3 hours, 1 GPU, 3 SU.](../images/reservation-wizard-date-time.png)
+
 **Next** checks the booking against every rule before the confirm step, and a
 refusal appears at the top of the page. The refusal messages and their fixes are
 listed in
@@ -96,11 +98,13 @@ send no email.
 
 ## The Booking Horizon
 
-In a course workspace, a booking must end within 10 days of the moment it is
-made. The horizon is rolling: at 7 PM on a Monday, it reaches 7 PM ten days
-later. Other workspaces set their own horizon. The wizard shows the bookable
-range above the timeline, for example `Bookable Wed, Sep 23, 2026 – Sat, Oct 3,
-2026 7:00 PM`. Workspace managers are not bound by the horizon when they book.
+In course and research workspaces alike, a booking must by default end within
+10 days of the moment it is made. The horizon is rolling: at 7 PM on a Monday,
+it reaches 7 PM ten days later. A booking needs no more notice than the
+earliest start in [Booking Rules](#booking-rules). The wizard shows the
+bookable range above the timeline, for example
+`Bookable Wed, Sep 23, 2026 – Sat, Oct 3, 2026 7:00 PM`. Workspace managers are
+not bound by the horizon when they book.
 
 See also: [Borrowing Beyond Quota](quotas-and-availability.md#borrowing-beyond-quota)
 

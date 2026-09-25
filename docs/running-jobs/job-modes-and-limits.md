@@ -157,6 +157,8 @@ Total CPU, memory, and GPU across everything a member has running must fit
 within the Kubernetes limits set on the member's namespace and, where GPUs are
 involved, within the reservation system's limits. A launch that would take the
 total past them is refused, whatever mix of sessions makes up that total.
+[Resource Tiers](launch-sh-reference.md#resource-tiers) lists the namespace
+limits.
 
 When a launch is refused for this reason, stop a pod that is no longer in use
 instead of filing a request. `kubectl get pods` lists what is running, and
@@ -290,30 +292,7 @@ waiting time and Service Units.
 | `K8S_GB_MEM` | `-m` | As for `K8S_NUM_CPU` |
 | `K8S_NUM_GPU` | `-g` | |
 | `K8S_DOCKER_IMAGE` | `-i` | |
-| `K8S_IMAGE_PULL_POLICY` | `-P` | `Always` while developing an image |
 | `K8S_TIMEOUT_SECONDS` | None | Runtime in seconds. See [Raising the Runtime Limit](#raising-the-runtime-limit) |
-| `K8S_ENTRYPOINT` | None | What the container runs on start |
-| `SPAWN_INTERACTIVE_SHELL` | `-s` / `-S` | Whether a shell is started |
-| `PROXY_ENABLED`, `PROXY_PORT` | `-j` / `-J` | Jupyter proxying |
-| `K8S_EXPORT_ENV_PREFIX` | None | See [Passing Variables into a Container](#passing-variables-into-a-container) |
-
-### Passing Variables into a Container
-
-`K8S_EXPORT_ENV_PREFIX` passes selected variables into the container. Every
-variable in the launching environment whose name carries the prefix arrives
-inside the pod with the prefix stripped:
-
-```bash
-export K8S_EXPORT_ENV_PREFIX=MYAPP
-export MYAPP_TRACKING_URI=http://example.invalid:5000   # arrives as TRACKING_URI
-```
-
-This passes a configuration value, such as an experiment-tracking URI or a run
-name, to a container without building it into an image or a notebook.
-
-> [!CAUTION]
-> Do not pass credentials this way. They are recorded in shell history and in
-> the pod's environment, where anything running in the pod can read them.
 
 ### Copying & Editing a Launch Script
 

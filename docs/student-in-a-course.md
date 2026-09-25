@@ -19,6 +19,8 @@ Readers not enrolled in such a course start at
 4. Wait for the environment to start. A launch may take a minute or two, and
    longer when the cluster is busy.
 
+![The Select Your Notebook Environment page. Two options are listed, each naming a course, its instructor and its term, with the image and its size below, 2 CPU and 8G RAM. A Launch Environment button sits below the list.](images/datahub-spawn-menu.png)
+
 Files are in the file browser on the left and persist between sessions.
 
 ## Starting and Stopping Sessions
@@ -167,7 +169,7 @@ the command line. Each is defined in [Reservation Events](reference/reservation-
 |---|---|
 | The kernel keeps dying on a large dataset | Out of memory. Load less at a time, or ask the instructor whether a larger option is available |
 | The notebook is slow and unresponsive | Check what else is open. Every notebook holds its own kernel and its own memory |
-| "No space left" when saving | The storage quota is full. See [Workspace and Personal Quotas](workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas) |
+| `[Errno 122] Disk quota exceeded` when saving | The storage quota is full. See [Workspace and Personal Quotas](workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas) |
 | A session ended while unattended | Expected when a session reaches its time limit or a GPU session is left idle. See [Starting and Stopping Sessions](#starting-and-stopping-sessions) and [Idle GPU Sessions](#idle-gpu-sessions) |
 | GPU code reports no device found | The session may not have a GPU. Check which environment was selected |
 

@@ -25,7 +25,7 @@ familiarity with a Slurm cluster.
 | Reservation | [Reservations](../gpu-access/reservations.md) | A reservation guarantees access, not a running job. The session is still launched as usual. |
 | Fairshare | Service Units and borrowing seniority | The mechanism differs. Service Units and borrowing seniority divide a contested cluster between workspaces and between members of a workspace, as described in [Service Units & Budgets](../gpu-access/service-units-and-budgets.md) and [Borrowing Beyond Quota](../gpu-access/quotas-and-availability.md#borrowing-beyond-quota). |
 | Login node | [The Login Node](../access/the-login-node.md) | The same rule applies. The login node is a jumpbox for launching jobs and moving files, and running computation on it is prohibited. |
-| Scratch | No documented equivalent | Not documented. |
+| Scratch | The container's `/tmp` | No shared scratch filesystem. `/tmp` is local to the node, fast, and erased when the pod ends. |
 
 ## Differences from Slurm Behavior
 
@@ -54,8 +54,8 @@ submissions, it stays pending while nothing can take it. A pending GPU pod waits
 for the reservation system, which serves waiting on-demand requests in the order
 the pods were created. See
 [Waiting for an On-Demand Lease](../gpu-access/quotas-and-availability.md#waiting-for-an-on-demand-lease).
-Until it is admitted, a GPU pod shows a `FailedScheduling` event about
-untolerated taints, and the reservation event beside it gives the reason; see
+Until it is admitted, a GPU pod shows a `FailedScheduling` event, and the
+reservation event beside it gives the reason; see
 [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label).
 The messages are also listed in [Error Messages](error-messages.md).
 

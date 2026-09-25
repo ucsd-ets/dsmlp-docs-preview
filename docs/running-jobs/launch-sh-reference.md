@@ -54,8 +54,8 @@ Calling `launch.sh` directly instead of a wrapper halves the CPU and leaves one
 eighth of the memory. The usual symptom is a process that dies without an error
 that explains the cause.
 
-A browser session starts at 2 CPU / 4 GB. That figure is a course's spawn
-configuration, not a command-line default, and is described in
+A browser session starts at 2 CPU / 4 GB by default. That figure is a course's
+spawn configuration, not a command-line default. See
 [The Browser Session](../access/datahub-in-the-browser.md#the-browser-session).
 The three sets of figures describe three different things.
 
@@ -130,10 +130,14 @@ that carry the `gpu-class` label. A GPU request that omits the label waits in
 
 ### Workspace and GPU Charges
 
-`-W <workspace>` also sets the pod's `dsmlp/course` label, which decides which
-workspace's Service Unit budget a GPU session is charged to, and which bookings
-it can claim. A GPU launch without `-W` is charged to `ORG_ON_DEMAND`, the
-default workspace, and never claims a course booking. See
+`-W <workspace>` also sets the pod's `dsmlp/course` and `dsmlp/user` labels.
+`dsmlp/course` decides which workspace's Service Unit budget a GPU session is
+charged to, and which bookings it can claim. The cluster mounts the workspace
+home directory, `public/`, and `private/` only into a pod that carries both
+labels; see
+[Home Directories in Manifest Pods](kubernetes.md#home-directories-in-manifest-pods).
+A GPU launch without `-W` is charged to `ORG_ON_DEMAND`, the default workspace,
+and never claims a course booking. See
 [Claiming a Booking](../gpu-access/reservations.md#claiming-a-booking) and
 [The Default Workspace](../gpu-access/reservations.md#the-default-workspace).
 

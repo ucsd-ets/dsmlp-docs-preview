@@ -9,8 +9,9 @@ Kubernetes.
 
 `launch.sh` is the supported path for ordinary work. It sets up the home
 directory, the workspace, group membership, and resource limits correctly. A
-hand-written manifest does none of this. Use `launch.sh` wherever it can do the
-job.
+hand-written manifest gets the workspace's directories only by carrying the
+labels in [Home Directories in Manifest Pods](#home-directories-in-manifest-pods),
+and gets none of the rest. Use `launch.sh` wherever it can do the job.
 
 ITS supports the platform, not arbitrary Kubernetes. Before substantial work on
 a set of hand-written manifests begins, describe to ITS what the manifests are
@@ -38,8 +39,7 @@ kubesh <pod-name>                   # open a shell inside a pod
 Its output carries the scheduling messages that the launcher's own output
 summarizes away, and the events the reservation system writes about a GPU pod.
 A GPU pod waiting for the reservation system always shows a `FailedScheduling`
-event about untolerated taints; the reservation event beside it gives the
-reason. See
+event; the reservation event beside it gives the reason. See
 [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)
 and [Reservation Events](../reference/reservation-events.md).
 
@@ -98,6 +98,28 @@ report its progress.
 `kubectl delete -f <manifest>` removes what a manifest created. Run
 `kubectl get pods` at the end of a session to see what is still running.
 
+### Home Directories in Manifest Pods
+
+The cluster mounts the workspace home directory, `public/`, and `private/` into
+a pod only when the pod carries two labels:
+
+```yaml
+metadata:
+  labels:
+    dsmlp/course: <WORKSPACE>
+    dsmlp/user: <username>
+```
+
+In a Job or Deployment, set them on the pod template, under
+`spec.template.metadata.labels`. The cluster checks both labels against the
+namespace: the user name must be the namespace's own, and the workspace must be
+one that user belongs to. A pod without both labels gets none of these
+directories. `launch.sh -W` sets both labels; see
+[Workspace and GPU Charges](launch-sh-reference.md#workspace-and-gpu-charges).
+
+Every pod gets `/etc/podinfo/annotations`, with or without the labels. See
+[Reading the Warning From Inside a Container](checkpointing.md#reading-the-warning-from-inside-a-container).
+
 ### GPU Pods From a Manifest
 
 A pod created from a manifest that requests a GPU is admitted, charged, and
@@ -109,6 +131,12 @@ ended by the reservation system like a launched one. It needs:
   `-W`. A pod without it is charged to `ORG_ON_DEMAND` and never claims a course
   booking; see
   [Claiming a Booking](../gpu-access/reservations.md#claiming-a-booking).
+
+The manifest sets no node selector for the class. The cluster's admission
+controller adds the class's node selection to any pod that carries the
+`gpu-class` label, whether the pod comes from `launch.sh`, from a hand-written
+manifest, or from a Job or Deployment, so a manifest pod with the label is
+routed like a launched one.
 
 ### Resource Limits for Manifest Pods
 
@@ -186,7 +214,7 @@ cluster.
 | Reason | Meaning |
 |---|---|
 | `Scheduled` | The scheduler picked a node. The pod is about to start. |
-| `FailedScheduling` | No node could take the pod. For a GPU pod, a message about untolerated taints is normal until the reservation system admits the pod ([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)). |
+| `FailedScheduling` | No node could take the pod. For a GPU pod, this event is normal until the reservation system admits the pod ([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)). |
 | `Pulling`, `Pulled` | The image is being fetched. A large custom image can spend minutes in this state. |
 | `Started`, `Killing` | `Started`: the container started. `Killing`: the container is being stopped. |
 | `OOMKilled` (pod status) | The memory limit was reached. Memory requests and limits are described in [Resource Requests and Limits](launch-sh-reference.md#resource-requests-and-limits). |

@@ -153,9 +153,10 @@ before it is confirmed.
 ### Peak & Off-Peak Hours
 
 Service Unit rates are discounted by 50% in the off-peak hours, 1 AM to 4 PM
-Pacific time. The peak hours run from 4 PM to 1 AM. The discounted hours are
-marked on the **Rates** page, which shows them for each day of the week, and by
-an amber strip on the booking wizard's timeline. An off-peak window is also more likely to be available. On a
+Pacific time, on every day of the week, weekends included. The peak hours run
+from 4 PM to 1 AM. The discounted hours are marked on the **Rates** page, which
+shows them for each day of the week, and by an amber strip on the booking
+wizard's timeline. An off-peak window is also more likely to be available. On a
 busy deadline evening there is a walk-up queue; at midday there usually is not.
 
 Batch and background jobs, which run unattended, are the work most easily

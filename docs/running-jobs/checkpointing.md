@@ -274,57 +274,43 @@ protects the session only once it opens, which can be after the stop. See
 
 ## Reading the Warning From Inside a Container
 
-Annotations are visible to the container only when the pod spec projects them.
-Pods started by `launch.sh` already mount a downward-API volume at
-`/etc/podinfo`; `ls /etc/podinfo` lists the files it carries. A pod created from
-a hand-written manifest needs a volume of its own. A downward-API volume
-projects the annotations and is refreshed as the values change:
+Every pod on DSMLP carries its annotations in the file
+`/etc/podinfo/annotations`. The cluster's admission controller adds the
+downward-API volume that holds the file to each pod it admits, whether the pod
+was started by `launch.sh`, by Datahub, from a hand-written manifest, or by a
+Job or Deployment. The kubelet refreshes the file as the values change.
 
-```yaml
-spec:
-  volumes:
-    - name: podinfo
-      downwardAPI:
-        items:
-          - path: guaranteed-until
-            fieldRef:
-              fieldPath: metadata.annotations['galends/guaranteed-until']
-          - path: termination-warning-at
-            fieldRef:
-              fieldPath: metadata.annotations['galends/termination-warning-at']
-          - path: termination-warning-risk
-            fieldRef:
-              fieldPath: metadata.annotations['galends/termination-warning-risk']
-          - path: termination-warning-message
-            fieldRef:
-              fieldPath: metadata.annotations['galends/termination-warning-message']
-  containers:
-    - name: notebook
-      volumeMounts:
-        - name: podinfo
-          mountPath: /etc/podinfo
-          readOnly: true
-```
+Do not add a volume at `/etc/podinfo` to a hand-written manifest. A second mount
+at the same path can cause the pod to be refused.
 
-Each file then holds one raw value, with no quoting, no escaping, and no
-trailing newline, so `$(cat …)` is the value:
+The file carries every annotation the session has, including the reservation
+behind it, its GPU class, and when it was admitted. Each annotation is on its
+own line as `key="value"`. The value is quoted, and any quote or backslash
+inside it is escaped:
 
 ```console
-$ cat /etc/podinfo/termination-warning-at; echo
-2026-08-21T17:30:16Z
-$ cat /etc/podinfo/termination-warning-risk; echo
-0.33
+$ grep '^galends/termination-warning' /etc/podinfo/annotations
+galends/termination-warning-at="2026-08-21T17:30:16Z"
+galends/termination-warning-risk="0.33"
 ```
 
-### Empty Annotation Files
+One value can be read with `sed`:
 
-An absent annotation is an empty file, not a missing one. All four files are
-created when the pod starts, and the three warning files stay empty while the
-session is not at risk. Test for a warning with `-s`, "exists and is not empty".
+```bash
+sed -n 's|^galends/termination-warning-at="\(.*\)"$|\1|p' /etc/podinfo/annotations
+```
+
+### Absent Annotations
+
+An annotation that is not set has no line in the file. The file itself exists
+from the pod's first second, and the three warning annotations are absent while
+the session is not at risk. Test for a warning by looking for the annotation's
+line, not for the file.
 
 > [!WARNING]
-> `-f` and `-e` are true from the pod's first second. A loop guarded on either
-> one exits immediately on every run, and does so silently.
+> A test on the file itself, such as `-f` or `-e`, is true from the pod's first
+> second. A loop guarded on the file exits immediately on every run, and does
+> so silently.
 
 ### Downward-API Environment Variables
 
@@ -335,33 +321,24 @@ the volume is refreshed.
 
 ### Refresh Delay
 
-The kubelet updates the files on its own sync loop, which adds to the
+The kubelet updates the file on its own sync loop, which adds to the
 controller's own cadence. The warning therefore reaches the container some time
 into the notice period, not at its start: usually about 2 minutes after the
 controller writes it.
 
-Polling every 15 to 30 seconds is sufficient. To watch the files with `inotify`,
-watch the directory rather than the file, because the whole set is swapped
+Polling every 15 to 30 seconds is sufficient. To watch the file with `inotify`,
+watch the directory rather than the file, because the file is swapped
 atomically behind a symlink.
-
-### Projecting the Whole Annotation Map
-
-`fieldPath: metadata.annotations` with no subscript projects the whole
-annotation map into a single file. That file carries every annotation the
-session has, including the reservation behind it, its GPU class, and when it was
-admitted. Each annotation is on its own line as `key="value"`, with quotes and
-escapes that have to be undone. Per-key files need no parser and are sufficient
-for checkpointing.
 
 ### Idle Culler Annotations
 
 The idle culler publishes its own status in the same way.
 `dsmlp/idle-gpu-status` and `dsmlp/idle-gpu-cull-deadline` are annotations on
-the same pod, and an additional `fieldRef` for each projects them alongside the
-four reservation annotations. A job whose GPU is unused between phases can be
-culled on the culler's own timetable, independently of any reservation. Idle
-culling is described in
-[What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle).
+the same pod, and appear in the same `annotations` file. A job whose GPU is
+unused between phases can be culled on the culler's own timetable,
+independently of any reservation.
+[What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle)
+describes idle culling.
 
 ## Acting on the Warning
 
@@ -372,15 +349,16 @@ usually needs only to stop starting new units. Check for the warning between
 units, never inside one:
 
 ```bash
-PODINFO=${PODINFO:-/etc/podinfo}
+ANNOTATIONS=${ANNOTATIONS:-/etc/podinfo/annotations}
 
-# -s is the operator that matters here: the file exists and is empty until the
-# controller warns this pod, so -f and -e would bail on the first shard.
-warned() { [[ -s "$PODINFO/termination-warning-at" ]]; }
+# Prints the value of galends/<name>, or nothing when the annotation is absent.
+# The file exists from the start, so test for the line, never for the file.
+annotation() { sed -n "s|^galends/$1=\"\(.*\)\"\$|\1|p" "$ANNOTATIONS"; }
+warned() { [[ -n "$(annotation termination-warning-at)" ]]; }
 
 for shard in "${SHARDS[@]}"; do
     if warned; then
-        cat "$PODINFO/termination-warning-message" >&2
+        annotation termination-warning-message >&2   # escapes left as written
         printf 'stopped before %s; rerun to pick up the rest\n' "$shard" >&2
         exit 75                 # EX_TEMPFAIL, for whatever submitted the job
     fi
@@ -391,10 +369,10 @@ done
 Re-read the file on every pass through the loop, and do not store the result. A
 warning can be withdrawn when the window is extended, the incoming booking never
 claims its capacity, or the session is re-linked to another reservation. The
-file is then empty again. A job that stored the first warning it saw would stop
-for a warning that had already been withdrawn. A job that is to continue rather
-than hand back its remaining units can make the same test and log the result
-instead of acting on it.
+annotation's line then disappears from the file. A job that stored the first
+warning it saw would stop for a warning that had already been withdrawn. A job
+that is to continue rather than hand back its remaining units can make the same
+test and log the result instead of acting on it.
 
 ### Training Loops
 
@@ -404,17 +382,26 @@ training a save is a collective operation that every rank has to enter in the
 same iteration:
 
 ```python
+import ast
 from datetime import datetime, timezone
 from pathlib import Path
 
-PODINFO = Path("/etc/podinfo")
+ANNOTATIONS = Path("/etc/podinfo/annotations")
 
 def _read(name):
+    """The value of galends/<name>, or None when the annotation is absent."""
     try:
-        raw = (PODINFO / name).read_text().strip()
+        lines = ANNOTATIONS.read_text().splitlines()
     except OSError:
         return None
-    return raw or None
+    prefix = f"galends/{name}="
+    for line in lines:
+        if line.startswith(prefix):
+            try:
+                return ast.literal_eval(line[len(prefix):]) or None
+            except (ValueError, SyntaxError):
+                return None
+    return None
 
 def _instant(name):
     raw = _read(name)
