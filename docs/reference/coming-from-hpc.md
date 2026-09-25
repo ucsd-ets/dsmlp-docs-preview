@@ -19,7 +19,7 @@ familiarity with a Slurm cluster.
 | Walltime (`--time`) | [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit) | The runtime limit is 6 hours by default, up to 12 hours if set at launch. Idle culling and the end of a reservation window can also end a job, as described in [Runtime Limit, Idle Culling, and Reservation Window](#runtime-limit-idle-culling-and-reservation-window). |
 | `--mem`, `--cpus-per-task` | `-m`, `-c` | The number passed is the limit, not the amount reserved, as described in [Resource Requests and Limits](../running-jobs/launch-sh-reference.md#resource-requests-and-limits). |
 | `--gres=gpu:N` | `-g N` | `-g` is the GPU count and `-G` is the group flag, as described in [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags). |
-| `--exclusive`, whole-node jobs | No equivalent | `-n` can place a pod on a named node, but the container is still sized by the resource tiers and runs on a node shared with other users. |
+| `--exclusive`, whole-node jobs | No equivalent | `-n` can place a pod on a named node, but the container is still sized by the resource tiers and runs on a node shared with other users. Use `-n` only for a session launched without a booking; see [Node Selection](../running-jobs/launch-sh-reference.md#node-selection). |
 | MPI, `--nodes`, multi-node | No equivalent | Every job runs in one container on one node. |
 | Job arrays | `--array` | `--array` submits multiple jobs. A concurrency limit such as `%4` is parsed and ignored. |
 | Reservation | [Reservations](../gpu-access/reservations.md) | A reservation guarantees access, not a running job. The session is still launched as usual. |
@@ -94,6 +94,7 @@ around `launch.sh`. There is no Slurm scheduler behind them.
 | `--cpus-per-task` | `-c` |
 | `--mem` | `-m`, rounded up to whole GB |
 | `--gres=gpu:N` | `-g N` |
+| `--gres=gpu:<model>:N` | `-g N` plus `-v <model>`, which also needs `--partition` for the class. Use it only for a job launched without a booking; see [Node Selection](../running-jobs/launch-sh-reference.md#node-selection) |
 | `--time` | `K8S_TIMEOUT_SECONDS`, the container's runtime deadline |
 | `--output`, `--error` | Output files, with `%j`, `%A`, `%u`, `%x` and `%a` substitutions |
 | `--array` | Multiple submissions |

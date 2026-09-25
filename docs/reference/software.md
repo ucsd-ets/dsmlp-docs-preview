@@ -159,6 +159,6 @@ Building an image is covered in
 
 ### Package Lists
 
-Package lists change with every quarterly image build. The current contents of
+Package lists change with every image build. The current contents of
 each image are published from the image repository, as described in
 [Finding the Package List](../environments/standard-images.md#finding-the-package-list).

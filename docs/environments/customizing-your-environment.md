@@ -21,12 +21,17 @@ Personal installs are written to the member's home directory, which is per-user
 and per-workspace and is not large. They count against the quota described in
 [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
 
+Machine-learning packages in particular can be very large. Build a custom image
+rather than installing a private copy of PyTorch, the CUDA libraries, or
+similar packages. See
+[Building & Publishing a Custom Image](building-a-custom-image.md).
+
 ## Installing Python Packages Into a Private Kernel
 
 Install Python packages into a virtual environment with its own Jupyter kernel,
 not into the environment the course ships. Installing into the course
-environment can break it. ITS fully supports the `venv` method. Support for
-conda environments as a customization method is not yet determined.
+environment can break it. ITS supports virtual environments made with
+`python3 -m venv`.
 
 1. Open a terminal from the notebook interface (**File → New → Terminal**).
 
@@ -68,6 +73,17 @@ Libraries installed this way are available only to notebooks using that kernel.
 A notebook on the course kernel is unaffected by anything installed into a
 private one.
 
+### Conda Environments
+
+A member may build a conda environment instead, for example where the course
+staff direct it, but ITS does not support conda environments, because they can
+conflict with the image's own conda environment. The image's conda environment
+is read-only, so `conda install` into it does not work.
+
+An environment used as a Jupyter kernel, whether built with `venv` or with
+conda, must be compatible with the versions of JupyterLab and
+`jupyterhub-singleuser` that the session runs.
+
 ## Installing R Packages
 
 On first use of RStudio, create a personal library from the RStudio Console:
@@ -86,7 +102,11 @@ library, which is not writable.
 Containers run unprivileged, under the member's own UID, in a per-user
 Kubernetes namespace, on a node shared with other users' containers. Root access
 and `sudo` are not available. `sudo apt-get install ...` fails by design, not
-through misconfiguration.
+through misconfiguration. A `sudo` command prints:
+
+```text
+sudo: The "no new privileges" flag is set, which prevents sudo from running as root.
+```
 
 ### Unavailable Operations and Alternatives
 
@@ -95,6 +115,7 @@ through misconfiguration.
 | Any `sudo` command | Work in the member's own home directory, which requires no `sudo` |
 | `apt-get install` a system package | Install it in a custom image, where root is available at build time |
 | Writing to system directories | Install into a virtual environment or a personal R library |
+| `conda install` into the image's conda environment, which is read-only | Install into a virtual environment |
 | Reaching another user's container or namespace | Share through the workspace's `public/` or `teams/` areas |
 
 ### Operations Available Without Root

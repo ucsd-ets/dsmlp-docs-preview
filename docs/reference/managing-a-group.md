@@ -40,7 +40,10 @@ dates, and **Status**, then select **Search**. The **SU** column adds
 `(grp: X)` where the charge to the group pool differs from the member's, and
 `(orig: X)` where the member's charge has changed since booking, for example
 after a cancellation. A red × on a row cancels it, and an amber × waives a
-penalty.
+penalty. Under each row, **Reserved** gives the date and time the reservation
+was made. It is shown in the time zone of the viewer's browser, not in Pacific
+time like the rest of the app. So is the **Created** column on
+**Group Members**.
 
 ### Booking on a Member's Behalf
 
@@ -70,8 +73,9 @@ A penalty can also be waived afterwards, with the amber × on the cancelled
 reservation. This covers a no-show, the member's own late cancellation, and a
 teammate's cancellation in team mode. A manager's waiver clears the member's
 share of the penalty. The group pool's share, where the workspace has a pool,
-is cleared only by an administrator, and a manager's waiver on a reservation
-where only the pool's share remains changes nothing. See
+is cleared only by an administrator. Once only the pool's share remains, a
+manager sees no amber × on the reservation, and the app refuses a manager's
+waiver. See
 [Having a Charge Waived](../gpu-access/service-units-and-budgets.md#having-a-charge-waived).
 
 ### GPU Loans

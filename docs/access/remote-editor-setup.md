@@ -199,9 +199,10 @@ Every launch replaces the container's copy of `authorized_keys` with a fresh
 copy of the login node's. The login node's copy is the only one to edit. A key
 added by hand inside a running container does not survive the next launch.
 
-If the editor does not authenticate after the key has been installed, delete the
-pod and launch it again so that the copy is remade, as described in
-[Launching the Pod](#launching-the-pod).
+Only a launch makes the copy. Connecting to a pod that is already running does
+not, so a key installed after the pod started is not in it. If the editor does
+not authenticate after the key has been installed, delete the pod and launch it
+again so that the copy is remade. See [Launching the Pod](#launching-the-pod).
 
 A session launched without `-W` needs no further step. Its container home
 directory is the personal one, the key is already in it, and the copy is
@@ -218,12 +219,16 @@ this form:
 ```
 Host MYCOURSE
   User USERNAME
+  HostKeyAlias MYCOURSE
+  IdentitiesOnly yes
   IdentityFile ~/.ssh/id_ed25519
   ProxyCommand ssh -i ~/.ssh/id_ed25519 USERNAME@dsmlp-login.ucsd.edu /opt/launch-sh/bin/launch.sh -W MYCOURSE -H -N vscode-dsmlp
 ```
 
 | Part | What it does |
 |---|---|
+| `HostKeyAlias MYCOURSE` | Stores the container's host key under the course's own name, so the entries for different courses do not share one stored key |
+| `IdentitiesOnly yes` | Offers only the key the entry names, not every key the local SSH agent holds |
 | `-i ~/.ssh/id_ed25519` | The client-side private key used to authenticate to both the login node and the container |
 | `/opt/launch-sh/bin/launch.sh` | The same launcher run by hand, called by absolute path |
 | `-W MYCOURSE` | The course workspace, so the course files are there |
@@ -265,7 +270,8 @@ The launcher reports the pod's progress and the node it lands on, then returns.
 ### Resource Flags
 
 Resources are set on the launch line. `-c` and `-m` set CPU cores and gigabytes
-of memory. `-g 1`, with a GPU class the workspace has been granted, adds a GPU:
+of memory. `-c 2 -m 8` is a working size for an editor container. `-g 1`, with a
+GPU class the workspace has been granted, adds a GPU:
 
 ```bash
 # more CPU and memory
@@ -333,11 +339,16 @@ warning rather than as a configuration error.
 
 ### Pod Name Scope
 
-The pod name is scoped to the account, not to the course. Two entries that both
-specify `-N vscode-dsmlp` attach to whichever pod is running under that name,
-whatever workspace it was launched in. Give each course a distinct pod name made
-of lowercase letters, digits, and hyphens, and use the same name in the entry
-and on the launch line.
+The pod name is chosen at launch and is scoped to the account, not to the
+course. Two entries that both specify `-N vscode-dsmlp` attach to whichever pod
+is running under that name, whatever workspace it was launched in. Give each
+course a distinct pod name made of lowercase letters, digits, and hyphens, and
+use the same name in the entry and on the launch line.
+
+With a distinct name per course, editor sessions for several courses can run at
+the same time. Together they must fit the namespace's total CPU, memory, and GPU
+limits. See
+[Running Several Jobs at Once](../running-jobs/job-modes-and-limits.md#running-several-jobs-at-once).
 
 ## Ending the Session
 

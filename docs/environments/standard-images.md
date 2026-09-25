@@ -5,9 +5,11 @@ their registry names and tags, and pinning a workspace to a fixed image.
 
 ## Standard Images
 
-ITS maintains three standard images. They cover most courses and projects,
-receive priority support, and serve as the starting point for a custom image,
-described in [Building & Publishing a Custom Image](building-a-custom-image.md).
+The canonical list of the images ITS maintains, with their current tags, is the
+[`ucsd-ets/datahub-docker-stack`](https://github.com/ucsd-ets/datahub-docker-stack)
+repository. Three standard images cover most courses and projects, receive
+priority support, and serve as the starting point for a custom image, described
+in [Building & Publishing a Custom Image](building-a-custom-image.md).
 
 | Image | What it adds | GPU |
 |---|---|---|
@@ -55,6 +57,8 @@ stack whether or not the course uses it.
 A custom CUDA image is rarely needed. A custom CUDA stack must stay compatible
 with the driver on the node. Custom image builds are covered in
 [Building & Publishing a Custom Image](building-a-custom-image.md).
+[CUDA Versions](../gpu-access/gpu-hardware.md#cuda-versions) gives the CUDA
+versions DSMLP supports.
 
 ## Image Names and Tags
 
@@ -66,10 +70,16 @@ ghcr.io/ucsd-ets/datascience-notebook:stable
 ghcr.io/ucsd-ets/scipy-ml-notebook:2024.4-stable
 ```
 
-The `:stable` tag follows the quarterly update. A dated tag such as
-`:2024.4-stable` does not. A workspace that must not change partway through a
-term uses the dated tag, as described in
-[Pinning a Workspace](#pinning-a-workspace).
+The `:stable` tag follows each update. A dated tag such as `:2024.4-stable`
+does not. A workspace that must not change partway through a term uses the
+dated tag. See [Pinning a Workspace](#pinning-a-workspace).
+
+### Dated Tags
+
+A dated tag names the year and the quarter of the build: `2024.4-stable` is the
+Fall 2024 image, and `2023.2-stable` the Spring 2023 image. The
+[`datahub-docker-stack`](https://github.com/ucsd-ets/datahub-docker-stack)
+repository lists the tags currently published.
 
 ### Legacy Image Names
 
@@ -99,7 +109,7 @@ Wrapper scripts and flags are documented in
 
 ## Finding the Package List
 
-Package lists change with every quarterly image build. The current contents are
+Package lists change with every image build. The current contents are
 published from the image repository:
 
 - The [Stable Tag wiki page](https://github.com/ucsd-ets/datahub-docker-stack/wiki/Stable-Tag)
@@ -110,8 +120,10 @@ published from the image repository:
   This is also where the CUDA toolkit version in `scipy-ml-notebook` is
   recorded.
 
-Adding a package that a standard image lacks is covered in
-[Customizing an Environment](customizing-your-environment.md).
+For a package or CUDA version that no published image carries, write to
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu).
+[Customizing an Environment](customizing-your-environment.md) covers adding a
+package that a standard image lacks.
 
 ### Obsolete GPU Inventory
 
@@ -119,15 +131,18 @@ A `cuda.md` file in the `ucsd-ets/dsc200-notebook` repository publishes a table
 of GPU models, counts and node names dated Fall 2020. It is not current. Do not
 size work from it. GPUs are requested by class label, as described in
 [GPU Classes](../gpu-access/gpu-classes.md).
+[GPU Hardware & CUDA](../gpu-access/gpu-hardware.md) gives the specifications of
+the cards and slices that can back a class.
 
-## The Quarterly Rebuild
+## Image Updates
 
-ITS rebuilds the standard images every quarter. New package versions are added,
-old ones are removed, and behavior occasionally changes with them. An assignment
-validated in week 2 against one version of a library can fail against the next.
+ITS generally updates the standard images ahead of Fall quarter, and again as
+needed during the academic year. New package versions are added, old ones are
+removed, and behavior occasionally changes with them. An assignment validated in
+week 2 against one version of a library can fail against the next.
 
-A workspace may pin its image so that a quarterly update does not move a class
-to different software partway through a term. Members stay on the build the
+A workspace may pin its image so that an update does not move a class to
+different software partway through a term. Members stay on the build the
 course tested until a move is requested. A course that needs a fixed environment
 for the duration of a term requests a pinned tag, as described in
 [Pinning a Workspace](#pinning-a-workspace), rather than relying on `:stable`.
@@ -138,7 +153,7 @@ Workspace settings are described in
 
 | Tag form | Behavior |
 |---|---|
-| `:stable` | Follows the quarterly update. Always the current build. |
+| `:stable` | Follows each update. Always the current build. |
 | A dated tag, e.g. `:2024.4-stable` | Fixed. That build, until a different one is named. |
 | A course image branch tag, e.g. `:wi24` | Rebuilt on every push to that branch. Not fixed. |
 | A course image git tag, e.g. `:fa24` | Fixed at the tagged commit. |
@@ -156,7 +171,9 @@ Course image branches and tags are covered in
 ## Pinning a Workspace
 
 Container tags are a system-side course setting, adjusted by ticket in the same
-way as resource limits and disk quotas. To pin a workspace:
+way as resource limits and disk quotas. ITS staff make the change. Email to
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu) opens a ticket. To pin a
+workspace:
 
 1. Identify the workspace and the exact image and tag it should serve.
 2. Submit a ticket naming both, before instruction begins, during the setup
@@ -194,6 +211,6 @@ the image and is not fixed by a pin.
 ### Moving Off a Pin
 
 A move to a newer base image requires assignments to be re-validated against
-it. Assistance with maintenance following a quarterly image update is within
+it. Assistance with maintenance following an image update is within
 the scope of a 1:1 Consultation, described in
 [Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation).

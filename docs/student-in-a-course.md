@@ -50,7 +50,7 @@ See also: [Concurrent Datahub Sessions](access/datahub-in-the-browser.md#concurr
 |---|---|
 | The course is not listed | Enrollment has not yet propagated. The instructor can check the roster. See [Students Enrolled in a Course](access/when-access-starts-and-ends.md#students-enrolled-in-a-course) |
 | Sign-in fails at the campus sign-on page | A campus credential or Duo problem rather than a Datahub one. The [ITS Service Desk](https://support.ucsd.edu/) handles it |
-| "Spawn failed", or the spinner never completes | A Datahub session may already be running, as described in [One Datahub Session](#one-datahub-session). A stale profile, or a broken package installed into the student's own `.local`, can also prevent a start. The **manual resetter** under the services dropdown is available for these cases. See ["Spawn Failed"](access/sign-in-and-session-problems.md#spawn-failed) |
+| "Spawn failed", or the spinner never completes | A failure within moments can come from a full disk quota or a broken package installed into the student's own `.local`. A failure after a long wait can come from a busy cluster or a slow download of the environment's image. A stale profile can also prevent a start, and the **manual resetter** under the services dropdown clears it. See ["Spawn Failed"](access/sign-in-and-session-problems.md#spawn-failed) |
 | Everything loads but the files are missing | The session may be in a different course's workspace than intended. Check which course was selected |
 
 See also: [Sign-In & Session Problems](access/sign-in-and-session-problems.md)
@@ -115,10 +115,11 @@ Where a course offers a GPU option, selecting it is all that is required.
 > Launching the session is what authorizes that spend, and a session left
 > running costs the same as one in use.
 
-A course budget renews each week. An exhausted budget is a matter for the
-instructor or TA, who may request an increase. A booking the instructor or TA
-makes on a student's behalf is charged to the student's own budget, so it does
-not help a student who has run out.
+A course budget renews each week. Students book their own windows. An
+exhausted budget is a matter for the instructor or TA, who may request an
+increase, or book a window on the student's behalf. A booking the instructor or
+TA makes on a student's behalf is still charged to the student's own budget, and
+can leave it overdrawn until it renews.
 
 See also: [On-Demand Lease Charges](gpu-access/service-units-and-budgets.md#on-demand-lease-charges), [Service Units & Budgets](gpu-access/service-units-and-budgets.md)
 
@@ -154,9 +155,9 @@ the command line. Each is defined in [Reservation Events](reference/reservation-
 - While a session waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
   `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
-  `AnnotationIgnored`.
-- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
-  `BestEffortAdmitted`.
+  `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
+- When it is admitted: `RuntimeGuaranteed`, `ReservationRelinked`,
+  `OverstayRelinked`, `BestEffortAdmitted`.
 - When it is stopped: `Preempted`, `ReservationCancelled`,
   `ReservationReassigned`.
 

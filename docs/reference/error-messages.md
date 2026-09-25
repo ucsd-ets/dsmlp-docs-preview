@@ -9,11 +9,11 @@ not faults.
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| The campus sign-on page returns repeatedly | A campus credential or Duo problem, or another identity signed in to the same browser | Sign out of the other identities, or use a private window. Datahub uses standard UCSD single sign-on, so the [ITS Service Desk](https://support.ucsd.edu/) handles a persistent failure |
-| **Spawn failed**, with no explanation | A Datahub session is already running. A member may have one Datahub session at a time. Shell and VS Code sessions do not count toward that limit and are not the cause | Stop the running session with **File → Hub Control Panel → Stop My Server**, or run **manual-resetter** where the session cannot be reached. See [Concurrent Datahub Sessions](../access/datahub-in-the-browser.md#concurrent-datahub-sessions) |
-| **Spawn failed**, and nothing else is running | A full disk quota. A full quota prevents a session from starting and produces no message stating the cause | Check **Services → disk-quota-service**, then clear space. See [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas) |
-| **Spawn failed**, quota is fine | A stale profile | Run **manual-resetter** from the services dropdown. It stops the account's servers, signs the account out, and resets the profile. Files are preserved. See ["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed) |
-| **Spawn failed**, shortly after a `pip install` | A package in the account's own `.local` loads ahead of the image's version and breaks the environment | From a terminal, run `mv .local/lib .local/lib.old`. See [Customizing an Environment](../environments/customizing-your-environment.md) |
+| The campus sign-on page returns repeatedly | A campus credential or Duo problem. Datahub uses standard UCSD single sign-on | The [ITS Service Desk](https://support.ucsd.edu/) handles it |
+| **Spawn failed** within moments of the start | A full disk quota. A full quota prevents a session from starting and produces no message stating the cause | Check **Services → disk-quota-service**, then clear space. See [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas) |
+| **Spawn failed** within moments of the start, and the quota is fine | A package in the account's own `.local/lib`, often from a `pip install`, loads ahead of the image's version and breaks the environment | From a terminal, run `mv .local/lib .local/lib.old`. See [Customizing an Environment](../environments/customizing-your-environment.md) |
+| **Spawn failed** after a long wait | A busy cluster, or a slow download of the environment's image | Start the session again later. See ["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed) |
+| **Spawn failed**, and none of these applies | A stale profile | Run **manual-resetter** from the services dropdown. It stops the account's servers, signs the account out, and resets the profile. Files are preserved. See ["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed) |
 | The course is not in the list | A provisioning matter, not an access fault. Rosters load one business day before the term, and a TSS change appears by 10am the following day | Ask the instructor or TA to confirm the roster. See [Students Enrolled in a Course](../access/when-access-starts-and-ends.md#students-enrolled-in-a-course) |
 | A **504** shortly after a crash | The pod stopped, from an infinite loop or from running out of memory, and the hub has not yet detected it | Run `kubectl delete pod <pod-id>` from the login node, then run **manual-resetter** |
 | A course `git-pull` link fails and appears broken | The link was clicked before the student signed in. The link needs a session to redirect into | Sign in, start the environment, then click the link again |
@@ -35,9 +35,10 @@ not faults.
 | **"GPU quota exceeded. Wanted 1 but with 1 already in use, the quota of 1 would be exceeded"** | Another pod on the same account already holds the GPU | The earlier pod is usually terminating and clears within a minute or two. If it does not clear, run `kubectl get pods`, then `kubectl delete pod <pod-id>` |
 | The launcher rejects one of the program's own options | A missing `--`. The launcher reads everything before `--` as a launcher flag | Place `--` between the launcher flags and the program: `launch-scipy-ml.sh -g 1 -B -- python train.py --epochs 50` |
 | A GPU was requested and none arrived | `-G` where `-g` was meant. `-g 1` is one GPU; `-G 1` is a team ID | Use `-g` for the GPU count. The failure does not mention capitalization. See [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags) |
-| An `-n` node selection lands somewhere else | `-n` takes a bare node number | Pass the number alone: `-n 30`, not `-n n30`. The leading `n` on the status page is not part of the value |
+| An `-n` node selection lands somewhere else | `-n` takes a bare node number | Pass the number alone: `-n 30`, not `-n n30`. The leading `n` on the status page is not part of the value. Use `-n` only for a session launched without a booking; see [Node Selection](../running-jobs/launch-sh-reference.md#node-selection) |
+| A GPU launch with `-v` waits in `Pending` with no reservation event | `-v` was passed without `-l gpu-class=`. `-v` narrows a GPU class to one model and does not replace the class label | Delete the pod and launch again with both, for example `-l gpu-class=large -v l40s`. Use `-v` only for a session launched without a booking; see [Node Selection](../running-jobs/launch-sh-reference.md#node-selection) |
 | A container starts with far less CPU and memory than expected | `launch.sh` was called directly rather than through a wrapper. Bare `launch.sh` has lower CPU and memory defaults than the wrappers | Use `launch-scipy-ml.sh` or `launch-datascience.sh`, or pass `-c` and `-m`. See [Default Resources](../running-jobs/launch-sh-reference.md#default-resources) |
-| **`sudo: ...`**, or any other refusal of `sudo` | Containers run unprivileged, under the member's own UID, with no root. `sudo apt-get` fails by design | Install a system package in a custom image, where root is available at build time. See [Root Access and System Packages](../environments/customizing-your-environment.md#root-access-and-system-packages) |
+| **`sudo: The "no new privileges" flag is set, which prevents sudo from running as root.`** | Containers run unprivileged, under the member's own UID, with no root. `sudo apt-get` fails by design | Install a system package in a custom image, where root is available at build time. See [Root Access and System Packages](../environments/customizing-your-environment.md#root-access-and-system-packages) |
 | A job keeps running after the pod is exited | Exiting a pod does not stop the processes inside it. `-b` backgrounds the pod, and `&` backgrounds a process | Run `kubectl get pods`, then `kubectl delete pod <pod-id>`. See [Job Modes](../running-jobs/job-modes-and-limits.md#job-modes) |
 
 ## Statuses `kubectl get pods` Reports
@@ -55,7 +56,7 @@ not faults.
 The reservation system writes its own events on GPU pods, such as
 `OnDemandLeaseDenied`, `WaitingForReservation`, `UnknownGpuClass`, and
 `Preempted`. Each is a full sentence that says what to do.
-[Reservation Events](reservation-events.md) lists all 15.
+[Reservation Events](reservation-events.md) lists all 18.
 
 ## Booking Refusals in the Reservation App
 
@@ -104,6 +105,7 @@ timeline while **Next** stays unavailable.
 | `Only an active reservation can be continued` | The reservation was already cancelled or replaced, for example by an earlier **Extend**, or because its job ended |
 | `Only a job that has already started can be continued; book upcoming windows in the wizard` | **Extend** works only on a running job. Book a future window in the wizard |
 | `Only an in-progress booking can be continued` | The booking's window has ended. Book a new window |
+| `This reservation already runs until …; an extension must end at or after that …` | The new end would come before the reservation's current end. Extend cannot shorten a reservation, so nothing changes |
 | `Only reservations that have not ended may be adopted` | The teammate's booking has already ended |
 | `Only active user-scheduled bookings may be adopted` | The reservation is an on-demand lease, or has been cancelled |
 | `Already cancelled` | The reservation was cancelled already, for example by a teammate, a workspace manager, or as a no-show |
@@ -115,9 +117,9 @@ booking refusal, and changes nothing.
 
 | Symptom | Meaning | Fix |
 |---|---|---|
-| The app returns to the login page with no message | The session expired, or **Log out everywhere** was used | Sign in again. See [Reservation App Sign-In](../access/sign-in-and-session-problems.md#reservation-app-sign-in) |
-| A line of text such as `{"detail":"Invalid OAuth state parameter"}` in the browser tab after signing in | Sign-in failed. The text names the reason | See [Sign-In Errors Shown as Text](../access/sign-in-and-session-problems.md#sign-in-errors-shown-as-text) |
-| `HTTP 422` | The app rejected a value in the form, such as a blank field | Fill in every field and try again |
+| `Your session has expired. Please sign in again.` on the login page | The session expired, or **Log out everywhere** was used on another device | Sign in again. See [Expired Reservation App Sessions](../access/sign-in-and-session-problems.md#expired-reservation-app-sessions) |
+| A notice on the login page after signing in, such as `Your sign-in attempt expired or was started in another browser window. Please try again.` | Sign-in failed. The notice names the reason | See [Sign-In Failure Notices](../access/sign-in-and-session-problems.md#sign-in-failure-notices) |
+| A message of the form `field: problem`, such as `gpu_count: Input should be a valid integer` | The app rejected a value in the form. The message names the field | Correct the named field and try again. See [Form Errors in the Reservation App](../access/sign-in-and-session-problems.md#form-errors-in-the-reservation-app) |
 
 ## Errors From Code & Notebooks
 
@@ -136,6 +138,10 @@ the usual remedies in this order:
 3. Move to the next GPU class up if the model does not fit, and request the
    smallest class it fits in. Classes are listed in
    [GPU Classes](../gpu-access/gpu-classes.md).
+
+A run that succeeds in some sessions and fails in others of the same class can
+be landing on a card or slice with less memory. See
+[Differences Within a Class](../gpu-access/workloads-by-gpu-class.md#differences-within-a-class).
 
 ### PyTorch GPU Detection
 

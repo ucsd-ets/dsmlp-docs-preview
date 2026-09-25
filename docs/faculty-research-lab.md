@@ -13,9 +13,9 @@ Researchers working on their own are covered in
 ### Suitable Workloads
 
 The platform suits single-node GPU work at every size from a slice of a GPU to
-a full H100, interactive analysis, long-running batch jobs, and a shared
-software environment that an entire group can rely on. Lab members receive the
-same tooling that students use.
+a full H100 or RTX PRO 6000, interactive analysis, long-running batch jobs, and
+a shared software environment that an entire group can rely on. Lab members
+receive the same tooling that students use.
 
 ### Unsuitable Workloads
 
@@ -127,6 +127,8 @@ workspace request rather than later.
 GPUs are allocated in five size classes, described in
 [GPU Classes](gpu-access/gpu-classes.md). Each workspace is given access to one
 or more classes, matching its anticipated work.
+[Workloads by GPU Class](gpu-access/workloads-by-gpu-class.md) gives examples of
+research work at each class.
 
 ### Group Quota
 
@@ -188,9 +190,9 @@ gone. Each is defined in [Reservation Events](reference/reservation-events.md):
 - While a session waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
   `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
-  `AnnotationIgnored`.
-- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
-  `BestEffortAdmitted`.
+  `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
+- When it is admitted: `RuntimeGuaranteed`, `ReservationRelinked`,
+  `OverstayRelinked`, `BestEffortAdmitted`.
 - When it is stopped: `Preempted`, `ReservationCancelled`,
   `ReservationReassigned`.
 
@@ -245,8 +247,8 @@ standard image where possible, which is the supported path, as described in
 
 ### Image Pinning
 
-A workspace may pin an image so that members are not moved by a quarterly
-update partway through a project, as described in
+A workspace may pin an image so that members are not moved by an image update
+partway through a project. See
 [Pinning a Workspace](environments/standard-images.md#pinning-a-workspace).
 
 ### Unprivileged Containers

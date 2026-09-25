@@ -32,8 +32,10 @@ every build during development.
 
 `scipy-ml-notebook` already carries a CUDA toolkit with a matching PyTorch and
 TensorFlow. A custom CUDA toolkit must be kept compatible with the driver on the
-node indefinitely. The supported CUDA version is recorded in the
-`scipy-ml-notebook` Dockerfile.
+node indefinitely. The `scipy-ml-notebook` Dockerfile records the toolkit
+version that image carries, and
+[CUDA Versions](../gpu-access/gpu-hardware.md#cuda-versions) gives the versions
+DSMLP supports.
 
 ### Experimental Images
 
@@ -90,6 +92,9 @@ Each `RUN` step becomes a layer. Concatenate `RUN` steps to keep the image
 small. If a conda install takes an unreasonable amount of time, `mamba` performs
 the same installation faster.
 
+An image larger than about 15 GB becomes unwieldy to pull and run. The hard
+limit is 30 GB.
+
 ### Additional Kernels
 
 To offer a second environment as its own notebook kernel, create it as a conda
@@ -105,6 +110,13 @@ image on each push and tags it with the branch name. A push to `main` produces
 1. Commit the changes and push them.
 2. Follow the workflow run under the repository's **Actions** tab.
 3. After a successful run, find the image under **Packages**.
+
+### Public Images
+
+The published image must be public. ITS does not manage credentials for
+pulling a private custom image. Publishing from a public GitHub repository is
+the simplest way to get a public image, but the repository itself does not have
+to be public if the image is.
 
 ### Local Builds
 
@@ -134,9 +146,10 @@ ITS configures the repository and build process for a course image.
 
 ### Requesting a Course Image
 
-Request a course image in the course request or by updating the course's
-support ticket. Include the packages to be added and the email addresses of
-everyone who should be able to maintain the repository.
+Request a course image in the Specialized Instructional Computing Course Request
+form, or by updating the course's support ticket. Include the packages to be
+added and the email addresses of everyone who should be able to maintain the
+repository. See [Requesting a Course](../instructor-or-ta.md#requesting-a-course).
 
 ### Branches and Docker Tags
 
@@ -190,14 +203,34 @@ place to look
 ### Forcing a Fresh Pull
 
 `-P Always` forces a fresh pull. Without it, the node may run a cached copy of
-an older build. Remove the flag once development is finished.
+an older build. Remove the flag once development is finished. `-P` takes
+`Always`, `IfNotPresent`, or `Never`, spelled exactly so. See
+[Image Pull Policy](../running-jobs/launch-sh-reference.md#image-pull-policy).
 
 ### First Pull and Node Reuse
 
 A large image must be downloaded to the node a session is placed on before
 anything in the session starts, so the first launch on a node is slow. A second
 launch on the same node does not download the image again. While iterating,
-reuse one node with `-n` and a bare node number, for example `-n 30`.
+reuse one node with `-n` and a bare node number, for example `-n 30`, in a
+session launched without a booking. Do not pin a node for a session that runs
+under a booking; see [Node Selection](../running-jobs/launch-sh-reference.md#node-selection).
+
+GitHub often throttles the first download of a new image into the UCSD image
+cache. If a launch reports an error pulling the image, try again in an hour or
+two.
+
+### Pulling a Large Image Ahead of a Session
+
+A Datahub session or an interactive launch can time out while a large image is
+still downloading. A background job that only runs `sleep 10` lets the download
+finish without either timeout:
+
+```bash
+launch.sh -i <image>:<tag> -b -- sleep 10
+```
+
+Then launch the session as usual.
 
 ### Replacing the Notebook Server with a Shell
 

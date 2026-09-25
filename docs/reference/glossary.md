@@ -36,7 +36,7 @@ alphabetical order. Each entry links to the page that covers the term in full.
 | `dsmlp-login.ucsd.edu` | The hostname of the login node. | [Connecting over SSH](../access/the-login-node.md#connecting-over-ssh) |
 | Duo | The campus two-factor prompt, which applies to both web and SSH access. | [Duo Authentication](../access/the-login-node.md#duo-authentication) |
 | Eviction | The deletion of a running session because its reservation was cancelled or given to another user, with no warning beforehand. | [Eviction](../gpu-access/what-ends-a-session.md#eviction) |
-| Extend | The reservation app's action that starts a new booking now for a running job and moves the job onto it; called "continue" in the reservation system's interface. | [Extend](../gpu-access/reservations.md#extend) |
+| Extend | The reservation app's action that adds time to a running job's guarantee: it starts a new booking now, ending later than the job's current reservation, and moves the job onto it; called "continue" in the reservation system's interface. | [Extend](../gpu-access/reservations.md#extend) |
 | GHCR | The GitHub Container Registry, where the standard images are published as `ghcr.io/ucsd-ets/<image>:<tag>`. | [Standard Images, Tags, and Pinning](../environments/standard-images.md) |
 | `git-pull` link | A URL that fetches a repository into an environment, commonly used to distribute course materials. | [Sign-In & Session Problems](../access/sign-in-and-session-problems.md) |
 | Globus | A transfer service for moving large volumes of data in and out of the platform. | [Moving & Sharing Data](../workspaces-and-storage/moving-and-sharing-data.md) |
@@ -66,6 +66,7 @@ alphabetical order. Each entry links to the page that covers the term in full.
 |---|---|---|
 | Manual resetter | A service under the **services** dropdown at `datahub.ucsd.edu` that stops an account's servers, signs it out, and resets its profile while preserving files. | ["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed) |
 | Member | The ordinary privilege tier, held by a student in a course or a member of a lab. | [Managing a Group](managing-a-group.md) |
+| MIG slice | An isolated share of one GPU card's memory and compute, created with NVIDIA Multi-Instance GPU (MIG). A session on a slice can use only that slice. | [MIG Slices](../gpu-access/gpu-hardware.md#mig-slices) |
 | Namespace | The per-user Kubernetes namespace that pods run in, and the unit against which one of the resource tiers applies across everything running at once. | [Resource Tiers](../running-jobs/launch-sh-reference.md#resource-tiers) |
 | nbgrader | The in-platform tool for distributing, collecting, and grading assignments, from which grade export to Canvas is manual. | [Grading](../grading/README.md) |
 | No-show | A booking cancelled and charged because no matching session was waiting or running when its claim window closed, or soon after the last session under it ended. | [The Claim Window](../gpu-access/reservations.md#the-claim-window) |
@@ -76,7 +77,7 @@ alphabetical order. Each entry links to the page that covers the term in full.
 | `OOMKilled` | The pod status reported when a container reaches its memory limit. | [Resource Requests and Limits](../running-jobs/launch-sh-reference.md#resource-requests-and-limits) |
 | Otter-Grader, Gradescope | Grading tools used on the platform alongside nbgrader. | [Choosing a Grading Tool & Interface](../grading/choosing-a-grading-tool.md) |
 | Overstay | Running a session past the end of its runtime guarantee, unprotected but not charged. | [Overstay](../gpu-access/what-ends-a-session.md#overstay) |
-| Pinning | Fixing a workspace to a dated image tag so that its members are not moved by a quarterly image update mid-term. | [Pinning a Workspace](../environments/standard-images.md#pinning-a-workspace) |
+| Pinning | Fixing a workspace to a dated image tag so that its members are not moved by an image update mid-term. | [Pinning a Workspace](../environments/standard-images.md#pinning-a-workspace) |
 | Pod | One running container as Kubernetes represents it; `kubectl get pods` lists the pods in an account's own namespace. | [Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md) |
 | Pod label (`-l key=value`) | A repeatable attribute attached to a pod at launch, and the means by which `gpu-class` is set. | [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags) |
 | Preemption | The ending of a session past its runtime guarantee because its GPU is needed, for a booking or to keep a share of the class free. | [Preemption](../gpu-access/what-ends-a-session.md#preemption) |

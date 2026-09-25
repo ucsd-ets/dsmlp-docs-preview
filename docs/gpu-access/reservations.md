@@ -22,11 +22,14 @@ Workspace managers see further pages, described in
 researcher mode also see **Group Reservations**; see
 [Researcher Mode](#researcher-mode).
 
-Times in the app are Pacific time. No time zone is shown next to them.
+Times in the app are Pacific time, wherever the viewer is. No time zone is shown
+next to them. The booking wizard also uses Pacific time to decide which hours
+have passed. Two times on the manager pages follow the viewer's browser
+instead; see
+[Viewing the Group's Reservations](../reference/managing-a-group.md#viewing-the-groups-reservations).
 
 [Reservation App Sign-In](../access/sign-in-and-session-problems.md#reservation-app-sign-in)
-covers sign-in problems, including being returned to the login page without a
-message.
+covers sign-in problems, including an expired session.
 
 ## Reservation Types
 
@@ -50,9 +53,10 @@ the usual way and is admitted onto the booking. See
 3. On **Select GPU Class**, choose the class. Each card shows the class's SU
    rate per GPU-hour and how many GPUs are free today and tomorrow.
 4. On **Select Date & Time**, set the number of GPUs and drag across the
-   timeline to choose the hours. Hours with too few free GPUs are dimmed, and an
-   amber strip marks discounted off-peak hours. The line below the timeline shows
-   the hours and the SU cost. Select **Next**.
+   timeline to choose the hours. Hours with too few free GPUs, or with no quota
+   left for the workspace, are dimmed and cannot be booked. An amber strip marks
+   discounted off-peak hours. The line below the timeline shows the hours and
+   the SU cost. Select **Next**.
 5. On **Confirm Reservation**, add notes if needed and select
    **Confirm Reservation**.
 
@@ -71,10 +75,13 @@ in between.
 | Earliest start | At least 15 minutes from now. This rule is separate from the claim window |
 | Across midnight | Allowed. The timeline shows the chosen day and the next, and the booking must start on the chosen day |
 | Longest selection in the wizard | 48 hours, for everyone. A workspace's own length cap, 12 hours by default, is shorter; see [Reservation Length Caps](#reservation-length-caps) |
-| Changing a booking | Not possible. Cancel it and book again |
+| Changing a booking | Not possible before it starts: cancel it and book again. Once it has started, [Extend](#extend) replaces it with a new booking |
+| Back-to-back bookings | Allowed. A booking that starts when another ends, for the same class, number of GPUs, and workspace, extends a running session's guarantee through both. The two stay separate reservations. See [Back-to-Back Bookings](what-ends-a-session.md#back-to-back-bookings) |
 | Several bookings at once | Allowed, including overlapping ones, within the budget and the capacity available |
+| GPUs in use at once | 1 per account by default, however many are booked. Using overlapping bookings together, or a booking of more than 1 GPU, needs ITS to raise the account's limit first. See [Resource Tiers](../running-jobs/launch-sh-reference.md#resource-tiers) |
 
-A booking's SU cost is fixed when it is made.
+A booking's SU cost is fixed when it is made. A booking stands once it is made,
+even if the workspace's quota is later reduced.
 
 ### Notes and Emails
 
@@ -180,9 +187,13 @@ Select **Filter** to apply a change. The list is ordered oldest first.
 
 A GPU session is given an on-demand lease when the member has no matching
 booking open, or opening within 30 minutes. Every GPU session that carries a
-class label qualifies. The lease covers the session's declared runtime plus 10
-minutes. A session that declares no runtime is given 1 hour, so a session
-launched with the defaults holds a lease of 1 hour 10 minutes. The declared
+class label qualifies. A session limited to a node with `-n`, or to a GPU model
+with `-v`, is given its lease only once a node it allows has a free GPU, and is
+not charged before then; see
+[Node Selection](../running-jobs/launch-sh-reference.md#node-selection). The
+lease covers the session's declared runtime plus 10 minutes. A session that
+declares no runtime is given 1 hour, so a session launched with the defaults
+holds a lease of 1 hour 10 minutes. The declared
 runtime is separate from the runtime limit in
 [Reservation Length and Session Runtime](#reservation-length-and-session-runtime),
 which stops the pod.
@@ -214,8 +225,12 @@ pod. Its leases appear in **My Reservations** like any other.
 A lease is refused when the class has no free GPU, the workspace holds its GPU
 limit for the class, or the budget cannot cover it. The pod then stays
 `Pending` with an `OnDemandLeaseDenied` event, and the request is retried until
-it succeeds or the pod is deleted. Datahub shows the event while the session is
-starting. See
+it succeeds or the pod is deleted. The event says whether waiting can help. A
+lease can also be refused for the request itself, such as a class the workspace
+was not granted, and waiting does not change that. The pod stays `Pending` until
+it is deleted and launched again with the request corrected, or until an
+administrator changes the setting that refused it. Nothing fails the pod or
+deletes it. Datahub shows the event while the session is starting. See
 [Waiting for an On-Demand Lease](quotas-and-availability.md#waiting-for-an-on-demand-lease)
 and [Reservation Events](../reference/reservation-events.md).
 
@@ -270,7 +285,7 @@ course booking. `kubectl describe pod` lists a pod's labels.
 | Session started | What happens |
 |---|---|
 | Up to 30 minutes before the start | The pod waits, with a `WaitingForReservation` event, and is admitted within about 5 minutes of the opening. The waiting pod claims the booking |
-| Earlier | The session starts on an on-demand lease and is charged for it. When the booking opens, the session moves onto the booking with an `OverstayRelinked` event, and the lease is retired without penalty. The charge is for the early time only |
+| Earlier | The session starts on an on-demand lease and is charged for it. When the booking opens, the session moves onto the booking with a `ReservationRelinked` event, and the lease is retired without penalty. The charge is for the early time only |
 
 ### Relaunching Inside a Booked Window
 
@@ -301,20 +316,26 @@ belongs to team mode.
 ### Extend
 
 Extend keeps a running job protected for longer. On **My Reservations** or the
-**Dashboard**, select **Extend** on the job's reservation, choose a length under
-**Guaranteed for**, and select **Extend**.
+**Dashboard**, select **Extend** on the job's reservation, choose how much time
+to add under **Extend by**, and select **Extend**.
 
-- Extend starts a new booking now, for 1, 2, 4, 8, or 24 hours, and moves the
-  running job onto it. The old reservation is marked **Superseded** and charged
-  only for the time used, with no penalty.
+- Extend adds 1, 2, 4, 8, or 24 hours after the end of the job's reservation,
+  or after the current time if that end has passed. Each choice shows the new
+  end time and an SU estimate for the added time.
+- Extend starts a new booking now that runs to the new end, and moves the
+  running job onto it. A reservation that still has time left is marked
+  **Superseded** and charged only for the time used, with no penalty, so the
+  net charge is for the added time.
 - The new booking is charged when it is made. The estimate in the dialog is at
   the full rate and does not include off-peak discounts.
 - Extend is offered on a booking that is in progress, and on an on-demand lease
   during or after its window. Only the job's owner sees **Extend**. A teammate
   cannot Extend another member's job.
-- The workspace length cap applies, so a workspace with the default cap refuses
-  24 hours. The 48-hour member cap does not apply.
-- A length shorter than the time left on a booking shortens the booking.
+- The workspace length cap applies to the whole new booking, from now to the new
+  end, so the time left on the old reservation counts toward it. A workspace
+  with the default cap refuses 24 hours. The 48-hour member cap does not apply.
+- Extend cannot shorten a reservation. The reservation system refuses a new end
+  earlier than the current one, and leaves the reservation unchanged.
 - Extend can be refused for capacity or budget. A refused Extend changes nothing.
 
 > [!WARNING]
@@ -349,11 +370,14 @@ stopped when a booking needs its GPU, or to keep part of the class free. See
 
 ### Bookings by a Workspace Manager
 
-An instructor, TA, or PI can book on a member's behalf. The booking is charged
-to the member's budget. The manager skips only the check that the member can
-afford it, so the booking can leave the member at or over budget, which blocks
-the member's own bookings and on-demand leases until the budget window renews.
-See [Managing a Group](../reference/managing-a-group.md).
+In a course, students book their own windows. An instructor, TA, or PI can
+book on a member's behalf when the member cannot, such as when the member's
+budget is spent or the window is beyond the booking horizon. The booking is
+charged to the member's budget. The manager skips only the check that the member
+can afford it, so the booking can leave the member at or over budget, which
+blocks the member's own bookings and on-demand leases until the budget window
+renews. The workspace length cap applies to a manager's booking as to any
+other. See [Managing a Group](../reference/managing-a-group.md).
 
 ## Best-Effort Reservations
 

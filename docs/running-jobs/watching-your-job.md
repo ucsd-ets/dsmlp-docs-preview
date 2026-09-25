@@ -120,27 +120,6 @@ close the tunnel. At the end of a session, stop the session with
 then close the tunnel. Logging out does not stop the session, as described in
 [Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session).
 
-### Publishing a Port with `IDENTITY_PROXY_PORTS`
-
-As an alternative to a tunnel into the container, setting
-`IDENTITY_PROXY_PORTS=1` before launching requests that a container port be
-mapped to the login node.
-
-> [!NOTE]
-> This option is documented but has not been verified against the current
-> launcher. Report discrepancies to [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
-
-```bash
-IDENTITY_PROXY_PORTS=1 launch-scipy-ml.sh -g 1
-```
-
-The launch output then includes a line reading
-`Identity port map 1: Container port 12345 mapped to dsmlp-login.ucsd.edu:12345`.
-TensorBoard started on that port is reached at `dsmlp-login.ucsd.edu` on the
-same port, from the campus VPN or through a tunnel to the login node. VPN
-requirements are described under
-[Connecting over SSH](../access/the-login-node.md#connecting-over-ssh).
-
 ## Checking On a Detached Job
 
 Exiting a background pod does not stop the work running inside it. The work

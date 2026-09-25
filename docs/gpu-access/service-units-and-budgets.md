@@ -72,6 +72,11 @@ and is charged like one.
 - A pod left waiting for a lease starts, and is charged, whenever the lease is
   granted. See
   [Waiting for an On-Demand Lease](quotas-and-availability.md#waiting-for-an-on-demand-lease).
+- A pod limited with `-n` or `-v` to a node or GPU model that has no free GPU
+  is given no lease, and is not charged, until a node it allows has one. Under
+  a booking, the same pod holds the booking, which is already charged, while it
+  waits. See
+  [Node Selection](../running-jobs/launch-sh-reference.md#node-selection).
 
 ## Limiting the Spend
 
@@ -134,11 +139,11 @@ The rates in force for Fall 2026:
 
 | Class | SU per GPU per hour | Off-peak |
 |---|---|---|
-| `extra-small` | 0.25 | 0.125 |
+| `xsmall` | 0.25 | 0.125 |
 | `small` | 0.5 | 0.25 |
 | `medium` | 1 | 0.5 |
 | `large` | 2 | 1 |
-| `extra-large` | 4 | 2 |
+| `xlarge` | 4 | 2 |
 
 For example, 3 hours of two `medium` GPUs at the full rate costs 6 SU. The
 **Rates** page in the reservation app is the authority on current rates; see
@@ -312,6 +317,9 @@ what the cancellation will cost:
 
 - For a booking that starts within 24 hours:
   `Late cancellation: X SU will be charged for reserved hours within the next 24 h (part is exempt).`
+  When the cancellation costs nothing, no notice appears. When the app
+  cannot work out the charge, the notice reads
+  `Late cancellation: an SU penalty may apply for reserved hours within the next 24 h.`
 - For a booking in progress: `You will be credited X SU.`, and a warning that
   pods running under the booking will be stopped.
 - For a booking more than 24 hours away: no notice, because nothing is charged.
@@ -351,7 +359,7 @@ was assessed in circumstances that warrant relief, write to
 
 A spent budget blocks the member's bookings and on-demand leases until the
 window renews. A pending GPU session waits with an `OnDemandLeaseDenied` event
-that quotes the budget; see
+that quotes the budget and names the time it renews; see
 [Reservation Events](../reference/reservation-events.md#ondemandleasedenied).
 
 A budget on the default weekly window renews each Monday. In a course, the

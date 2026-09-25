@@ -75,6 +75,12 @@ namespace total. The namespace allowance may be spent across several
 containers, not in one. Requests for the third tier are made as described in
 [Administrative Requests](../reference/getting-help.md#administrative-requests).
 
+The GPU default is a limit per account: 1 GPU at a time, across every pod the
+account runs. It applies on top of the reservation system's limits, so a booking
+for several GPUs, or several overlapping bookings, does not raise it. For
+multi-GPU work, the member, or a TA for a course, asks ITS to raise the
+account's limit, by ticket to [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
+
 An older article or course README that describes 8 CPU / 64 GB / 1 GPU or
 8 CPU / 16 GB / 1 GPU as the platform maximum is describing a default. The
 8 CPU / 16 GB / 1 GPU figure is out of date.
@@ -103,6 +109,7 @@ request and limit are the same number.
 | `-m <n>` | RAM in GB | `-m 32` |
 | `-g <n>` | GPU count | `-g 1` |
 | `-l <key=value>` | Apply a pod label. Repeatable | `-l gpu-class=medium` |
+| `-v <model>` | GPU model, within the class `-l gpu-class=` names. Use it only for a session launched without a booking | `-v l40s` |
 
 > [!WARNING]
 > Launching a GPU session draws on the workspace's Service Unit budget whether
@@ -111,8 +118,10 @@ request and limit are the same number.
 
 ### GPU Class
 
-`-l gpu-class=<class>` requests a GPU size band, and is the way to request a
-GPU. [GPU Classes](../gpu-access/gpu-classes.md) lists the classes.
+`-l gpu-class=<class>` requests a GPU size band, and every GPU request needs it.
+[GPU Classes](../gpu-access/gpu-classes.md) lists the classes. `-v` narrows a
+class to one GPU model and does not replace the label; see
+[Node Selection](#node-selection).
 
 Every GPU class is managed by the reservation system, which admits only pods
 that carry the `gpu-class` label. A GPU request that omits the label waits in
@@ -156,13 +165,13 @@ See also: [Belonging to Several Workspaces](../workspaces-and-storage/what-a-wor
 | Flag | Effect | Example |
 |---|---|---|
 | `-i <image>` | Alternate container image | `-i ghcr.io/ucsd-ets/scipy-ml-notebook:2024.4-stable` |
-| `-P <policy>` | Image pull policy: `ifnotpresent`, `always`, `never` | `-P Always` |
+| `-P <policy>` | Image pull policy: `Always`, `IfNotPresent`, or `Never` | `-P Always` |
 | `-E` | Add image pull secrets, for a private image. Use with `-i` | |
 | `-W <workspace>` | Launch into a workspace, which becomes `$HOME`, and charge GPU time to it | `-W DSC10_FA26_A00` |
 | `-M <mntspec>` | Subpath-mount an existing filesystem elsewhere in the pod | |
 | `-F <mntspec>` | NFS-mount additional filesystems, as `/mnt:server_fqdn:/path` | |
 | `-x` | Patch a writeable directory onto the conda package cache | |
-| `-n <node>` | Run on a specific node, by number or hostname | `-n 30` |
+| `-n <node>` | Run on a specific node, by number or hostname. Use it only for a session launched without a booking | `-n 30` |
 | `-N <name>` | Give the pod a chosen name | `-N vscode-dsmlp` |
 | `-t <toleration>` | Apply a `NoSchedule` toleration. Repeatable | |
 | `-A <key=value>` | Apply a pod annotation. Repeatable | |
@@ -174,6 +183,10 @@ For an image under development, as described in
 pass `-i <image> -P Always`. Without `-P Always`, a node already holding that
 tag keeps using its copy.
 
+`-P` passes its value to Kubernetes, which accepts only `Always`,
+`IfNotPresent`, and `Never`, with that capitalization. A lowercase value such as
+`always` is rejected.
+
 ### Mounts and Package Cache
 
 `-x` is used only at the request of ITS. Describe the data to ITS before using
@@ -181,11 +194,44 @@ tag keeps using its copy.
 
 ### Node Selection
 
+`-n` and `-v` each limit the nodes a session can run on. `-n` names one node.
+`-v` names a GPU model, and limits the session to the nodes that carry it.
+
 `-n` takes a bare number: `-n 30`, not `-n n30`. The leading `n` shown on
 [The Status Page](../gpu-access/quotas-and-availability.md#the-status-page) is
 not part of the value. A pod whose named node is full waits for that node and
-does not take an equivalent GPU elsewhere. To choose a GPU size, use
+does not take the same GPU elsewhere. To choose a GPU size, use
 `-l gpu-class=`.
+
+`-v` narrows a GPU class and does not replace it. Pass the class label as well,
+and name a model that backs that class in
+[GPU Class Sizes](../gpu-access/gpu-classes.md#gpu-class-sizes):
+
+```bash
+launch-scipy-ml.sh -g 1 -l gpu-class=large -v l40s
+```
+
+The `-h` summary lists the model names. A pod whose model has no free GPU waits
+for one and does not take another model of its class. A GPU launch with `-v`
+and no class label waits in `Pending` with no event from the reservation
+system; see
+[Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label).
+
+> [!WARNING]
+> Use `-n` or `-v` only for a session launched without a booking. A booking is
+> charged when it is made, and a session limited to a node or a GPU model
+> claims its booking while it waits for that node or model. A busy node or
+> model can therefore use up the whole window before the session starts. See
+> [The Claim Window](../gpu-access/reservations.md#the-claim-window).
+
+Without a booking, a session limited with `-n` or `-v` is given no on-demand
+lease, and is not charged, until a node it allows has a free GPU. It records a
+[`WaitingForNode`](../reference/reservation-events.md#waitingfornode) event
+while it waits. A session whose `-n` or `-v` matches no node of its GPU class
+records a [`NoMatchingNode`](../reference/reservation-events.md#nomatchingnode)
+event and is given no lease. The usual causes are a node that does not exist,
+is out of service, or belongs to another class, and a model that does not back
+the class.
 
 The launch output names the node the pod was assigned to, in a line such as
 `INFO pod assigned to node: its-dsmlp-n04.ucsd.edu`. Include that line in a

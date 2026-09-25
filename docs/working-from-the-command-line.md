@@ -127,6 +127,12 @@ smallest class the model fits within, as described in
 [Choosing a Class](gpu-access/gpu-classes.md#choosing-a-class). A larger class
 is not faster for a model that fits in a smaller one, and it is scarcer and
 draws more budget.
+[Workloads by GPU Class](gpu-access/workloads-by-gpu-class.md) gives examples of
+the work each class suits.
+
+`-v` limits a session to one GPU model within its class, and is for a session
+launched without a booking only; see
+[Node Selection](running-jobs/launch-sh-reference.md#node-selection).
 
 ### Workspace Class Grants
 
@@ -275,9 +281,9 @@ is defined in [Reservation Events](reference/reservation-events.md):
 - While a session waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
   `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
-  `AnnotationIgnored`.
-- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
-  `BestEffortAdmitted`.
+  `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
+- When it is admitted: `RuntimeGuaranteed`, `ReservationRelinked`,
+  `OverstayRelinked`, `BestEffortAdmitted`.
 - When it is stopped: `Preempted`, `ReservationCancelled`,
   `ReservationReassigned`.
 

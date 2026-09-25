@@ -159,8 +159,11 @@ access are described in
 - The course home directory: notebooks, code, results, and figures. No copy of
   it is kept anywhere else.
 - `teams/`, when a project's shared work is kept there.
-- `private/`. It follows a member between workspaces. Its retention after
-  access ends is not published.
+
+`private/` follows a member between workspaces and is kept after a course's
+access ends, until the account itself is removed. Copy it out before the
+account is removed. See
+[The Personal Area After a Course](../access/when-access-starts-and-ends.md#the-personal-area-after-a-course).
 
 `public/` usually holds the instructor's course material rather than a member's
 own work. Re-obtain large shared datasets from their source rather than copying

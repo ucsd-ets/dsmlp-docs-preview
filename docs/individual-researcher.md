@@ -143,9 +143,9 @@ is defined in [Reservation Events](reference/reservation-events.md):
 - While a session waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
   `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
-  `AnnotationIgnored`.
-- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
-  `BestEffortAdmitted`.
+  `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
+- When it is admitted: `RuntimeGuaranteed`, `ReservationRelinked`,
+  `OverstayRelinked`, `BestEffortAdmitted`.
 - When it is stopped: `Preempted`, `ReservationCancelled`,
   `ReservationReassigned`.
 
@@ -170,6 +170,8 @@ equitably among the researchers drawing on it.
 Select the smallest GPU class the model fits within. Five classes are available. A larger class is not faster for a
 model that fits in a smaller one. It is scarcer and more expensive. The classes
 are described in [GPU Classes](gpu-access/gpu-classes.md).
+[Workloads by GPU Class](gpu-access/workloads-by-gpu-class.md) gives examples of
+research work at each class, and the cards and slices behind it.
 
 ### Multi-Day Reservations
 

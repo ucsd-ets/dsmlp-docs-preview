@@ -7,6 +7,8 @@ causes of a session ending.
 | Page | Covers |
 |---|---|
 | [GPU Classes](gpu-classes.md) | GPU class sizes, choosing and requesting a class, preset classes on Datahub, a missing or misspelled class label, and confirming the allocation. |
+| [Workloads by GPU Class](workloads-by-gpu-class.md) | Estimating GPU memory, differences within a class, and example course and research work for each class, with the cards and slices behind it. |
+| [GPU Hardware & CUDA](gpu-hardware.md) | Specifications of the cards and MIG slices that can back a GPU class, how MIG slices divide a card, supported CUDA versions, and CUDA profiling. |
 | [Reservations](reservations.md) | Reservation types, booking ahead and launching without a booking, the claim window, length caps, best-effort reservations, team mode, and routes to more time. |
 | [Service Units & Budgets](service-units-and-budgets.md) | What spends Service Units, hourly rates, budget sizes and windows, the cancellation penalty, and the routes available when a budget runs out. |
 | [Quotas, Cohorts & Availability](quotas-and-availability.md) | GPU quotas, borrowing beyond quota, cohorts, the symptoms of a full cluster, the status page, and requesting a quota increase. |

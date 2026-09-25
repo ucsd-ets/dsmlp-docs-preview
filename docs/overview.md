@@ -74,6 +74,8 @@ GPUs are organized into five classes by size rather than by hardware model.
 Each workspace is given access to one or more classes, matching its anticipated
 work. The classes are listed in
 [GPU Class Sizes](gpu-access/gpu-classes.md#gpu-class-sizes).
+[Workloads by GPU Class](gpu-access/workloads-by-gpu-class.md) gives examples of
+the work each class suits.
 
 ### Storage
 

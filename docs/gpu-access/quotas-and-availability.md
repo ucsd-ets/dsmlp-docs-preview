@@ -12,12 +12,11 @@ its limit means that other members hold the capacity. The quota sets how much
 capacity the workspace has, and Service Units divide it fairly between members.
 See [Service Units & Budgets](service-units-and-budgets.md).
 
-Quotas are set per GPU class. A workspace at its Medium limit may still have
-Small headroom. A workspace is granted particular classes, and a request for a
+Quotas are set per GPU class. A workspace at its `medium` limit may still have
+`small` headroom. A workspace is granted particular classes, and a request for a
 class it was not granted is refused whatever is idle. Spare capacity in one
-class cannot be lent to another, so a busy Medium class says nothing about
-Large. The classes are described in
-[GPU Classes](gpu-classes.md).
+class cannot be lent to another, so a busy `medium` class says nothing about
+`large`. [GPU Classes](gpu-classes.md) describes the classes.
 
 ## Date-Based Quota Changes
 
@@ -84,7 +83,7 @@ The word appears only in some refusals, such as
 
 The reservation calendar can offer nothing even where a workspace has quota to
 spare. This is not a fault. A quota is a ceiling on what a group may hold, not a
-set of GPUs held aside for it. For example, a workspace whose Medium quota is
+set of GPUs held aside for it. For example, a workspace whose `medium` quota is
 four and which currently holds none can be offered nothing on a Thursday
 evening, because the other groups in its cohort hold the hardware, as they are
 entitled to.
@@ -99,7 +98,7 @@ available:
   available and is cheaper under
   [Peak & Off-Peak Hours](service-units-and-budgets.md#peak--off-peak-hours).
 - Request a smaller class. Classes do not share spare capacity with one
-  another, so a full Medium class says nothing about Small.
+  another, so a full `medium` class says nothing about `small`.
 - Borrow inside 12 hours. Last-minute jobs may pick up capacity that is idle at
   the time, including capacity beyond the group's own quota; see
   [Borrowing Beyond Quota](#borrowing-beyond-quota).
@@ -153,9 +152,10 @@ The table lists the symptoms of a launch that cannot obtain a GPU.
 | Symptom | Meaning |
 |---|---|
 | A session takes a long time to start | The request is waiting for capacity. It has not failed. |
-| An `OnDemandLeaseDenied` event | The on-demand lease the launch asked for was refused. The pod waits, and the request is retried. See [Waiting for an On-Demand Lease](#waiting-for-an-on-demand-lease). |
+| An `OnDemandLeaseDenied` event | The on-demand lease the launch asked for was refused. The pod waits, and the request is retried. The event says whether waiting can help. See [Waiting for an On-Demand Lease](#waiting-for-an-on-demand-lease). |
 | The same event on Datahub | Datahub shows the pod's events while a session is starting, including `OnDemandLeaseDenied`. |
 | An `OnDemandAdmissionPaused` event | On-demand admission is paused for the whole class, for example while its nodes are down. Leave the pod in place. |
+| A `WaitingForNode` event | The pod was launched with `-n` or `-v`, and no node it allows has a free GPU. No lease is requested, and nothing is charged, until one does. See [Node Selection](../running-jobs/launch-sh-reference.md#node-selection). |
 | A GPU class shows no availability for a date | The class is fully booked, or capacity has been withdrawn for maintenance. See [Maintenance Closures](what-ends-a-session.md#maintenance-closures). |
 | `FailedScheduling` about untolerated taints | Normal for every GPU pod that has not yet been admitted. Read the reservation events beside it. See [Missing or Misspelled Class Label](gpu-classes.md#missing-or-misspelled-class-label). |
 
@@ -172,18 +172,37 @@ while one of its groups still has headroom on paper. See
 ### Queue Position and Wait Time
 
 A reservation admits a session ahead of the walk-up queue. The walk-up queue
-itself is not visible: the platform reports no queue position, no estimated
-wait, and no notification as a turn approaches. A waiting launch shows only
-that it is waiting. A GPU needed at a particular time is obtained by booking it
-through [Reservations](reservations.md).
+itself is not visible: the platform reports no queue length, no queue position,
+no estimated wait, and no notification as a turn approaches. A waiting launch
+shows only that it is waiting.
+
+The wait depends on demand and can be much longer than a few minutes. If a
+launch has not obtained a GPU within 5 to 10 minutes, book a window in the
+reservation app instead. A GPU needed at a particular time is obtained by
+booking it through [Reservations](reservations.md).
 
 ### Waiting for an On-Demand Lease
 
 Every GPU session that carries a class label, and has no booking to wait for,
-asks for an on-demand lease. A refused request is retried every 2 to 5 minutes
-for as long as the pod exists. It never fails outright. Waiting pods are served
-in the order the pods were created, so deleting and recreating a pod moves it to
-the back.
+asks for an on-demand lease. The reservation system retries a refused request
+for as long as the pod exists, and the `OnDemandLeaseDenied` event says whether
+waiting can help:
+
+| Refusal | Retried |
+|---|---|
+| Capacity or budget that can free up | Every 2 to 5 minutes |
+| A refusal the reservation app expects to clear at a known time, such as a budget renewal | At that time, or every 30 minutes until then |
+| A refusal of the request itself, such as a class the workspace was not granted | At lengthening intervals, up to every 30 minutes |
+
+The request never fails outright, and nothing deletes the pod. A refusal of the
+request itself does not clear by waiting: delete the pod and launch again with
+the request corrected, or ask for the workspace setting that refused it to be
+changed.
+[`OnDemandLeaseDenied`](../reference/reservation-events.md#ondemandleasedenied)
+gives the event text.
+
+Waiting pods are served in the order the pods were created, so deleting and
+recreating a pod moves it to the back.
 
 > [!WARNING]
 > A forgotten pending GPU pod starts, and is charged, as soon as capacity or
@@ -200,7 +219,8 @@ only for the length of the script. The flag is covered in
 ## Obtaining Capacity When the Cluster Is Busy
 
 - Check [The Status Page](#the-status-page) before launching. It shows the GPU
-  models on each node and how many GPUs are free.
+  models on each node and how many GPUs are free. For free GPUs by class, see
+  [Upcoming Availability in the Reservation App](#upcoming-availability-in-the-reservation-app).
 - Book a window instead of retrying. Repeated launches into a full cluster do
   not obtain a GPU, and each on-demand launch that succeeds spends Service
   Units; see
@@ -228,14 +248,20 @@ only for the length of the script. The flag is covered in
 view of the cluster. It lists the compute nodes, the GPU models on each node,
 and how many GPUs on each node are currently free.
 
-The status page may require a signed-in session, so it is not a reliable way to
-tell a sign-in problem from a capacity problem. Sign-in problems are covered in
-[Sign-In & Session Problems](../access/sign-in-and-session-problems.md).
+The status page can be read without signing in, so it stays available while a
+Datahub sign-in is failing.
+[Sign-In & Session Problems](../access/sign-in-and-session-problems.md) covers
+sign-in problems.
+
+The current capacity of each GPU class, as the reservation system counts it, is
+in the reservation app at
+[reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/); see
+[Upcoming Availability in the Reservation App](#upcoming-availability-in-the-reservation-app).
 
 | Information | Use |
 |---|---|
-| GPU models | The hardware behind each class at the moment. A GPU is requested by class, with `-l gpu-class=`, because GPU access is granted by class. |
-| Node numbers | The `-n` flag takes a bare number: `-n 30`, not `-n n30`. The leading `n` shown on the status page is not part of the value. Pinning a node is not recommended: a pod pinned to a full node waits for that node rather than taking an equivalent GPU elsewhere. |
+| GPU models | The hardware behind each class at the moment. A GPU is requested by class, with `-l gpu-class=`, because GPU access is granted by class. `-v` limits a session to one model within its class, and is for a session launched without a booking only. See [Node Selection](../running-jobs/launch-sh-reference.md#node-selection). |
+| Node numbers | The `-n` flag takes a bare number: `-n 30`, not `-n n30`. The leading `n` shown on the status page is not part of the value. A pod pinned to a full node waits for that node rather than taking the same GPU elsewhere. Pin a node only for a session launched without a booking; see [Node Selection](../running-jobs/launch-sh-reference.md#node-selection). |
 | Demand over the day | Peak evening demand is predictable and is visible on the status page. |
 
 During instructional maintenance, the status page may show less hardware than

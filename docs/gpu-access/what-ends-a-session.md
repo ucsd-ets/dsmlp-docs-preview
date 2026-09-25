@@ -158,11 +158,11 @@ session runs without it.
 
 ### The Countdown
 
-The Fall 2026 standard images include a Jupyter widget that counts down the
-time left on the session's guarantee. Instructions for VS Code are scheduled for
-Winter 2027. From the command line, `kubectl describe pod` shows the end of the
-guarantee in the pod's annotations; see
-[Reservation Annotations](../running-jobs/kubernetes.md#reservation-annotations).
+In the Fall 2026 standard images, a Jupyter session shows an alert as the end
+of its guarantee approaches. Instructions for a similar popup in VS Code and
+other remote editors are planned for Winter 2027. From the command line,
+`kubectl describe pod` shows the end of the guarantee in the pod's annotations;
+see [Reservation Annotations](../running-jobs/kubernetes.md#reservation-annotations).
 
 A checkpoint written before the guarantee ends survives the end of the window.
 From that point, the session can be stopped, extended, or left running.
@@ -171,17 +171,17 @@ From that point, the session can be stopped, extended, or left running.
 
 A booking that starts exactly when the current one ends, for the same GPU
 class, the same number of GPUs, and the same workspace, extends the guarantee at
-once.
+once. The two bookings stay separate reservations in the reservation app.
 
 Any other later booking protects a running session only once it opens. A
-session on an on-demand lease moves onto the booking as soon as it opens. A
-session on another booking moves onto it once the booking is open and the
-session's own guarantee has ended. Either move records an `OverstayRelinked`
-event. Between the end of the
-guarantee and the opening of the later booking, the session is unprotected,
-and another member's booking that starts in that gap can stop it up to 15
-minutes before that booking starts. [Extend](reservations.md#extend) is the
-reliable way to keep a running session guaranteed.
+session on an on-demand lease moves onto the booking as soon as it opens, and
+records a `ReservationRelinked` event. A session on another booking moves onto
+it once the booking is open and the session's own guarantee has ended, and
+records an `OverstayRelinked` event. Between the end of the guarantee and the
+opening of the later booking, the session is unprotected, and another member's
+booking that starts in that gap can stop it up to 15 minutes before that
+booking starts. [Extend](reservations.md#extend) is the reliable way to keep a
+running session guaranteed.
 
 See also: [Checkpointing & Logging Long Runs](../running-jobs/checkpointing.md)
 
@@ -255,8 +255,9 @@ A running session is deleted, with no warning beforehand, in two cases:
 
 Before deleting a session for a cancellation, the reservation system moves it
 onto another open booking of the same member, where one matches and has room.
-Both events are type `Normal`, and the pod is gone by the time they can be read,
-so read them with `kubectl get events`.
+A session moved that way keeps running and records a `ReservationRelinked`
+event instead. Both eviction events are type `Normal`, and the pod is gone by
+the time they can be read, so read them with `kubectl get events`.
 
 See also: [Reservation Events](../reference/reservation-events.md#events-when-a-pod-is-stopped)
 

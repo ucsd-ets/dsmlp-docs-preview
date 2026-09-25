@@ -128,6 +128,8 @@ nav:
   - GPUs:
       - gpu-access/README.md
       - gpu-access/gpu-classes.md
+      - gpu-access/workloads-by-gpu-class.md
+      - gpu-access/gpu-hardware.md
       - gpu-access/quotas-and-availability.md
       - gpu-access/reservations.md
       - gpu-access/service-units-and-budgets.md

@@ -352,7 +352,7 @@ written elsewhere in the container does not survive it, as described in
 
 A personal copy of a wrapper is not a supported interface. When ITS changes a
 wrapper, such as the image it points at or a default, a copy does not change
-with it. Re-copy the wrapper at the start of each term, particularly after a
-quarterly image update.
+with it. Re-copy the wrapper at the start of each term, particularly after an
+image update.
 
 See also: [Pinning a Workspace](../environments/standard-images.md#pinning-a-workspace)

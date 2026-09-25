@@ -35,7 +35,8 @@ Request access through the
 who is sponsoring the work, what will be run, the resources required, and for
 how long. A request that names a faculty sponsor and a concrete workload is
 provisioned considerably faster than one that describes the work only in general
-terms.
+terms. Setting up access takes up to 5 business days from the request. See
+[Independent Study, Capstones & Special Projects](access/when-access-starts-and-ends.md#independent-study-capstones--special-projects).
 
 ## How Project Access Differs from Course Access
 
@@ -53,10 +54,9 @@ Demand is generally lower during the day than in the evening.
 
 Project work has no instructor or TA as a first tier of support. Support
 questions go directly to the ITS Service Desk, whose staff have no prior
-knowledge of the project. Project issues carry the same response target as any
-other individual user issue, as given in
-[Response Targets](reference/getting-help.md#response-targets). Contacts are
-listed in [Support](#support).
+knowledge of the project. Project issues may take longer to answer than issues
+in a course. See [Individual User Issues](reference/getting-help.md#individual-user-issues).
+[Support](#support) lists the contacts.
 
 ### Duration of Access
 
@@ -145,9 +145,9 @@ Datahub while a session starts. Each is defined in
 - While a session waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
   `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
-  `AnnotationIgnored`.
-- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
-  `BestEffortAdmitted`.
+  `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
+- When it is admitted: `RuntimeGuaranteed`, `ReservationRelinked`,
+  `OverstayRelinked`, `BestEffortAdmitted`.
 - When it is stopped: `Preempted`, `ReservationCancelled`,
   `ReservationReassigned`.
 

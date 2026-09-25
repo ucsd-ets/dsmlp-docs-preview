@@ -34,7 +34,8 @@ An event about a pod that is still waiting is repeated every 30 minutes while
 its message stays the same, and written again at once when the message changes.
 Each repeat is a separate line. An `OnDemandLeaseDenied` for lack of capacity
 names the current time, so its message changes on every retry and it is written
-every 2 to 5 minutes. An event that suggests contacting support names
+at every retry, usually every 2 to 5 minutes. An event that suggests contacting
+support names
 [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
 
 ## Events at a Glance
@@ -50,8 +51,11 @@ every 2 to 5 minutes. An event that suggests contacting support names
 | [`UnknownGpuClass`](#unknowngpuclass) | Warning | Waiting | The pod's `gpu-class` label is not a known class |
 | [`NoReservation`](#noreservation) | Warning | Waiting | Nothing matches the pod, and it cannot have an on-demand lease |
 | [`AnnotationIgnored`](#annotationignored) | Warning | Waiting | An annotation on the pod was ignored, which changed the outcome |
+| [`NoMatchingNode`](#nomatchingnode) | Warning | Waiting | The node or GPU model the pod names is not in its GPU class, so it cannot have an on-demand lease |
+| [`WaitingForNode`](#waitingfornode) | Normal | Waiting | The node or GPU model the pod names has no free GPU, so no on-demand lease is requested yet |
 | [`RuntimeGuaranteed`](#runtimeguaranteed) | Normal | Admitted | The pod was admitted, and its GPU is guaranteed until the time shown |
-| [`OverstayRelinked`](#overstayrelinked) | Normal | Admitted | The running pod was moved onto a newer reservation and is guaranteed again |
+| [`ReservationRelinked`](#reservationrelinked) | Normal | Admitted | The running pod was moved onto another reservation, because its lease merged into a booking or its reservation was replaced |
+| [`OverstayRelinked`](#overstayrelinked) | Normal | Admitted | The pod was running past its guarantee, and was moved onto a newer booking and is guaranteed again |
 | [`BestEffortAdmitted`](#besteffortadmitted) | Normal | Admitted | The pod was admitted with no guarantee and no charge |
 | [`Preempted`](#preempted) | Normal | Stopped | The pod was past its guarantee and was stopped to free its GPU |
 | [`ReservationCancelled`](#reservationcancelled) | Normal | Stopped | The reservation the pod ran under was cancelled, and the pod was deleted |
@@ -90,6 +94,11 @@ that still does not fit its booking is then given an on-demand lease, charged
 separately. Stop one of the named pods with `kubectl delete pod <pod-name>` to
 free a GPU for the booking.
 
+An account can hold 1 GPU at a time by default, across all its pods, and a
+launch that would take it past that is refused. This event therefore arises
+only where ITS has raised the account's GPU limit. See
+[Resource Tiers](../running-jobs/launch-sh-reference.md#resource-tiers).
+
 ### `ReservationTooSmall`
 
 Type `Warning`. The pod requests more GPUs than its booking holds, so the
@@ -102,35 +111,52 @@ holds is given an on-demand lease, charged separately, instead of waiting. See
 
 Type `Warning`. The pod has no booking open, so the reservation system asked
 the reservation app for an on-demand lease, and the app refused. The message
-quotes the app's reason word for word:
+quotes the app's reason word for word, then says whether waiting can help:
 
 ```text
-On-demand GPU lease for 2 x medium was denied by the reservation service: Only 1 GPU(s) available at 2026-09-23 19:07. The pod stays Pending; the controller will keep retrying.
+On-demand GPU lease for 1 x medium was denied by the reservation service: Only 0 GPU(s) available at 2026-09-23 19:07. The pod stays Pending; the controller will keep retrying.
 ```
 
-The request is retried every 2 to 5 minutes for as long as the pod exists. The
-message always ends "will keep retrying", including for reasons that waiting
-cannot fix.
+```text
+On-demand GPU lease for 1 x medium was denied by the reservation service: This lease costs 1.16667 SU but user 'jsmith' has only 0.5 of 10 SU remaining (currently using 9.5). The pod stays Pending; the controller will keep retrying, and the reservation service expects this to clear by 2026-09-28 00:00:00 PDT.
+```
+
+```text
+On-demand GPU lease for 1 x medium was denied by the reservation service: GPU class not accessible under this group. Waiting will not change this: the pod stays Pending until its request changes or an administrator changes what refused it. If the reason looks wrong, contact support: datahub@ucsd.edu
+```
+
+| Message ends | Meaning | The request is retried |
+|---|---|---|
+| `will keep retrying.` | The refusal can clear by itself, as GPUs or budget free up | Every 2 to 5 minutes |
+| `expects this to clear by <time>.` | The refusal clears at a known time, such as the start of the next budget window | At that time, or every 30 minutes until then |
+| `Waiting will not change this: …` | The request itself is refused, whatever else is running | At lengthening intervals, up to every 30 minutes |
+
+In every case the pod stays `Pending`. Nothing fails the pod or deletes it.
 
 | Reason quoted | Meaning | Waiting helps |
 |---|---|---|
-| `Only N GPU(s) available at …` | The class has too few free GPUs at that time | Yes |
-| `Only N GPU(s) available for this group at … (group ceiling: …)` | The workspace already holds its GPU limit for the class. Figures such as `borrowed` and `buffer` in the brackets describe idle capacity the workspace could borrow | Yes, as other members' jobs end |
-| `Only N GPU(s) available for this cohort at … (cohort ceiling: …)` | The workspaces that share capacity with this one hold all of it. See [Cohorts](../gpu-access/quotas-and-availability.md#cohorts) | Yes |
+| `Only N GPU(s) available at …` | The class has too few free GPUs at that time | Yes, unless the pod asks for more GPUs than the class has |
+| `Only N GPU(s) available for this group at … (group ceiling: …)` | The workspace already holds its GPU limit for the class. Figures such as `borrowed` and `buffer` in the brackets describe idle capacity the workspace could borrow | Yes, as other members' jobs end, unless the pod asks for more GPUs than the limit and the idle capacity together |
+| `Only N GPU(s) available for this cohort at … (cohort ceiling: …)` | The workspaces that share capacity with this one hold all of it. See [Cohorts](../gpu-access/quotas-and-availability.md#cohorts) | Yes, unless the pod asks for more GPUs than the ceiling and the idle capacity together |
 | `This lease costs X SU but user '…' has only Y of Z SU remaining …` | The Service Unit (SU) budget cannot cover the lease | Yes, when the budget window renews, unless X is more than Z |
-| `This lease costs X SU but the group pool only has …` | The workspace's shared SU pool is spent | Yes, when the budget window renews |
+| `This lease costs X SU but the group pool only has …` | The workspace's shared SU pool is spent | Yes, when the budget window renews, unless the lease costs more than the whole pool |
 | `User '…' is not a member of group '…'` | The user is not enrolled in the workspace the pod named | No. Launch with `-W` naming a workspace the user belongs to, or ask the instructor or TA to check the roster |
 | `GPU class not accessible under this group` | The workspace was not granted this class | No. Use a class the workspace was granted |
 | `Exceeds limit of N GPU(s) per reservation` | The pod asks for more GPUs than the class allows in one reservation | No. Launch with fewer GPUs |
 | `This lease runs H hours but group '…' limits a single reservation to N hours.` | The lease would be longer than the workspace's length cap | No |
-| `Group '…' is not active on …` | The workspace is outside its active dates. The message can show `{group.name}` and `{start_date}` in place of the name and date | Only if the workspace's dates have not started yet |
+| `Group '…' is not active on …` | The workspace named is outside its active dates on the date named | Only if the workspace's dates have not started yet. The message then names when the refusal clears |
 
-Where waiting cannot help, delete the pod with `kubectl delete pod <pod-name>`.
+Where the message says waiting will not change the outcome, delete the pod with
+`kubectl delete pod <pod-name>` and launch again with the request corrected, for
+example with `-W` naming the right workspace, another class, or fewer GPUs.
+Where the refusal comes from a workspace setting, such as its class grant or its
+length cap, an administrator can change the setting instead. The waiting pod is
+then checked again within 30 minutes, and can start without a new launch.
 
 > [!WARNING]
-> A pod left `Pending` keeps being retried. When the lease is granted, the pod
-> starts and Service Units are charged, even if nobody is waiting for it any
-> more. Delete a pending GPU pod that is no longer wanted.
+> A pod left `Pending` keeps being retried, whatever its message says. When the
+> lease is granted, the pod starts and Service Units are charged, even if nobody
+> is waiting for it any more. Delete a pending GPU pod that is no longer wanted.
 
 See also: [Waiting for an On-Demand Lease](../gpu-access/quotas-and-availability.md#waiting-for-an-on-demand-lease)
 
@@ -154,7 +180,9 @@ lease is requested. The message gives one of three causes:
 - The class has fewer GPUs online than the reservation app expects, for example
   when a node is down.
 - Pods that already hold a reservation for the class are still waiting to be
-  placed. Pods with a reservation go first.
+  placed. Pods with a reservation go first. A pod waiting only for a node or
+  GPU model it named, while other nodes of the class have room, does not cause
+  this pause.
 
 Nothing about the pod needs to change. Leave it in place. The on-demand queue is
 ordered by pod creation time, so deleting and recreating the pod moves it to the
@@ -168,7 +196,7 @@ knows, so nothing can admit the pod. The message lists the known classes.
 Labels are case-sensitive. Correct the label and recreate the pod.
 
 ```text
-This pod's gpu-class label is Medium, which is not a GPU class the reservation service knows, so no reservation can match it and it cannot be admitted on demand. Known classes: extra-large, extra-small, large, medium, small. Correct the label and recreate the pod; if it is right, contact support: datahub@ucsd.edu
+This pod's gpu-class label is Medium, which is not a GPU class the reservation service knows, so no reservation can match it and it cannot be admitted on demand. Known classes: large, medium, small, xlarge, xsmall. Correct the label and recreate the pod; if it is right, contact support: datahub@ucsd.edu
 ```
 
 ### `NoReservation`
@@ -189,6 +217,43 @@ request for best-effort admission, which is not enabled on DSMLP: the pod is
 admitted on an ordinary on-demand lease and charged for it. See
 [Best-Effort Reservations](../gpu-access/reservations.md#best-effort-reservations).
 
+### `NoMatchingNode`
+
+Type `Warning`. The pod has no booking and names a node or a GPU model, with
+`-n`, `-v`, or a node selector in a manifest, and no node of its GPU class
+matches. No on-demand lease is requested. The usual causes are a node number
+that does not exist, a node that belongs to another GPU class, a node that is
+out of service, and a GPU model that does not back the class. The message
+quotes the node selection and names any other GPU class whose nodes it matches.
+Correct the node, the model, or the `gpu-class` label, and recreate the pod. The
+reservation system checks the pod again about every 5 minutes, so a pod that
+names a node out of service starts once the node returns. If the node selection
+is right, contact [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
+
+A `medium` pod launched with `-n 30`, when node 30 is a `large` node, records:
+
+```text
+This pod's node selector kubernetes.io/hostname=its-dsmlp-n30.ucsd.edu matches none of the N schedulable node(s) of GPU class medium, so it could not start on any of them and no on-demand lease is being requested for it. It does match nodes of GPU class large, so the pod's gpu-class label may be what is wrong. Correct the node selector or affinity and recreate the pod; if it is right, the nodes it names may be cordoned or out of service, so contact support: datahub@ucsd.edu
+```
+
+### `WaitingForNode`
+
+Type `Normal`. The pod has no booking and was launched with `-n` or `-v`, or
+with a node selector in a manifest, and no node it allows has the GPUs it asks
+for free. No on-demand lease is requested until one does, so nothing is charged
+while the pod waits. The reservation system checks the pod again about every 5
+minutes. Other nodes of the class may be free: launching without `-n` or `-v`
+lets the pod use them. A pod that names a node or a GPU model and runs under a
+booking gets no such event. It holds the booking while it waits. See
+[Node Selection](../running-jobs/launch-sh-reference.md#node-selection).
+
+A 1-GPU `medium` pod launched with `-n 30`, while node 30 has no free GPU,
+records:
+
+```text
+No node of GPU class medium that this pod's node selector kubernetes.io/hostname=its-dsmlp-n30.ucsd.edu allows has 1 GPU(s) free, so no on-demand lease is being requested yet: one would be charged while the pod waited. It is retried until one of those nodes has room. Widening or removing the node selector or affinity would let it use the class's other nodes.
+```
+
 ## Events When a Pod Is Admitted
 
 ### `RuntimeGuaranteed`
@@ -207,20 +272,41 @@ is written again each time the pod moves onto another reservation. After the
 time shown, the pod keeps running unless its GPU is needed. See
 [Overstay](../gpu-access/what-ends-a-session.md#overstay).
 
+### `ReservationRelinked`
+
+Type `Normal`. The running pod was moved onto another of its owner's
+reservations, and is guaranteed until the time shown. The pod was not past its
+guarantee. The message gives one of two causes:
+
+- An on-demand lease merged into the owner's booking when the booking opened,
+  and the lease was released. This usually follows a launch made more than 30
+  minutes before a booked window. See
+  [Launching Before the Window Opens](../gpu-access/reservations.md#launching-before-the-window-opens).
+- The pod's reservation was cancelled or replaced while its window was open,
+  usually by an **Extend** in the reservation app, and the pod was carried onto
+  another open booking of the same owner instead of being deleted.
+
+```text
+Pod re-linked to GPU reservation #4213: the on-demand lease #4198 it started under was merged into it now that the reservation's window has opened, and the lease released. GPU access guaranteed until 2026-09-23 17:00:00 PDT.
+```
+
+```text
+Pod re-linked to GPU reservation #4213: its previous reservation #4127 was cancelled or replaced. GPU access guaranteed until 2026-09-23 17:00:00 PDT.
+```
+
+A new `RuntimeGuaranteed` event comes with it. Nothing needs to change.
+
 ### `OverstayRelinked`
 
-Type `Normal`. The running pod was moved onto a newer reservation, and is
-guaranteed again until the time shown. This follows an **Extend** in the
-reservation app, a new booking that opened for the same user and class, or an
-on-demand lease being merged into the user's booking when the booking opened.
-A new `RuntimeGuaranteed` event comes with it.
+Type `Normal`. The pod was running past its guarantee, and has been moved onto
+an open booking of the same owner, class, and workspace. It is guaranteed again
+until the time shown. The booking is usually one that opened while the pod was
+overstaying, or one made by an **Extend** of an on-demand lease whose window
+had already ended. A new `RuntimeGuaranteed` event comes with it.
 
 ```text
 Pod re-linked to GPU reservation #4213; no longer overstay. GPU access guaranteed until 2026-09-23 17:00:00 PDT.
 ```
-
-The message says "no longer overstay" even where the pod was still inside its
-guarantee.
 
 ### `BestEffortAdmitted`
 
@@ -264,6 +350,12 @@ was open, and the pod was deleted. There is no warning beforehand.
 | `Pod evicted: GPU reservation cancelled by another user.` | A workspace manager, an administrator, or a teammate in team mode |
 | `Pod evicted: GPU reservation cancelled by user (reason: superseded).` | An **Extend** replaced the reservation, and the pod could not be moved onto the new one |
 
+Before deleting the pod, the reservation system moves it onto another open
+booking of the same owner, where one matches and has room. A pod moved that way
+keeps running and records [`ReservationRelinked`](#reservationrelinked) instead.
+After an **Extend**, that is the usual outcome, and the `superseded` form above
+is the exception.
+
 Cancelling an in-progress booking in the reservation app deletes its pods. The
 reservation shows as cancelled in **My Reservations**. For a cancellation that
 was not expected, ask the workspace manager.
@@ -290,7 +382,7 @@ The reservation system writes no event in these cases. Only the scheduler's
 | The pod has no `gpu-class` label. The reservation system never sees it | Recreate the pod with the label. See [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label) |
 | The pod is seconds old, and the scheduler has not yet ruled on it | Wait a minute |
 | The scheduler reports a shortage the reservation system cannot fix, such as `Insufficient memory` | Launch with smaller CPU or memory requests |
-| The pod asks for 2 or more GPUs, and no single node has that many free | Wait, or ask for fewer GPUs. A pod runs on one node |
+| The pod asks for 2 or more GPUs, which needs a raised GPU limit, and no single node has that many free | Wait, or ask for fewer GPUs. A pod runs on one node |
 | The reservation app cannot be reached | Wait. If it lasts, contact [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
 
 A termination warning is not an event. It is a set of annotations on the pod,

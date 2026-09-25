@@ -8,16 +8,19 @@ the physical card that provides it.
 
 | Class | Memory | Typically backed by |
 |---|---|---|
-| `extra-small` | ~6 GB | A slice of an A30 |
-| `small` | ~12 GB | RTX 2080Ti, or a slice of an A30 or H100 |
-| `medium` | ~24 GB | A30, A5000, or a slice of an H100 or RTX 6000 |
-| `large` | ~48 GB | L40S, or a slice of an H100 or RTX 6000 |
-| `extra-large` | ~96 GB | A full H100 or RTX PRO 6000 Blackwell |
+| `xsmall` | ~6 GB | A slice of an A30 |
+| `small` | 10-12 GB | RTX 2080 Ti, or a slice of an A30 or H100 |
+| `medium` | 20-24 GB | A30, A5000, Titan RTX, or a slice of an H100 or RTX PRO 6000 |
+| `large` | 40-48 GB | L40S, or a slice of an H100 or RTX PRO 6000 |
+| `xlarge` | 80-96 GB | A full H100 or RTX PRO 6000 Blackwell |
 
 Plan against the memory column. The hardware column is context. Both columns
 are approximate and subject to change. A class specifies roughly how much GPU
 memory a session has, not which card it runs on, and two sessions in the same
 class on the same afternoon may run on different hardware.
+[Workloads by GPU Class](workloads-by-gpu-class.md) lists every card and slice
+that can back each class, and [GPU Hardware & CUDA](gpu-hardware.md) gives their
+specifications.
 
 ## Choosing a Class
 
@@ -32,6 +35,9 @@ optimizer state, and the activations for one batch must all fit on the card at
 once. A run that fails with a CUDA out-of-memory error has two usual remedies,
 applied in this order: a smaller batch size, then the next class up.
 
+[Workloads by GPU Class](workloads-by-gpu-class.md) gives examples of course and
+research work that fits each class, with approximate memory figures.
+
 ### Multiple GPUs
 
 One GPU is the normal case. Single-GPU work mostly consists of moving a model
@@ -40,10 +46,11 @@ code change rather than a launch flag. In PyTorch, this means
 `nn.parallel.DistributedDataParallel` or a library such as Hugging Face
 Accelerate.
 
-The default GPU limits per pod and per namespace are listed under
-[Defaults and Resource Tiers](../running-jobs/launch-sh-reference.md#defaults-and-resource-tiers).
-More than the default is available by arrangement. Requests go to
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) and state what the work is.
+An account can hold 1 GPU at a time by default, whatever it has booked; see
+[Resource Tiers](../running-jobs/launch-sh-reference.md#resource-tiers). For
+multi-GPU work, the member, or a TA for a course, asks ITS to raise the
+account's limit. Requests go to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) and
+state what the work is.
 
 ## Requesting a Class
 
@@ -54,7 +61,7 @@ launch-scipy-ml.sh -g 1 -l gpu-class=medium
 ```
 
 `-g` sets the GPU count and `-l gpu-class=` sets the class. The five values are
-`extra-small`, `small`, `medium`, `large`, and `extra-large`. Always pass the
+`xsmall`, `small`, `medium`, `large`, and `xlarge`. Always pass the
 class label on a GPU request. A GPU request without it cannot be scheduled, as
 described under
 [Missing or Misspelled Class Label](#missing-or-misspelled-class-label).
@@ -83,7 +90,7 @@ stopped explicitly. Logging out does not stop it. See
 Each workspace is granted access to one or more classes, chosen when the
 workspace was provisioned to match the work it was expected to do. An
 introductory course may see `small` or `medium`. A lab fine-tuning large models
-may see `extra-large`. A request for a class the workspace was not granted is
+may see `xlarge`. A request for a class the workspace was not granted is
 refused, however idle the hardware is. Access to a further class is requested
 by the instructor or PI. The grant is part of the workspace, described in
 [What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md).
@@ -94,6 +101,14 @@ with `-W`, as described under
 The launch uses that workspace's class grant and Service Unit budget. A GPU
 launch without `-W` is charged to `ORG_ON_DEMAND`; see
 [The Default Workspace](reservations.md#the-default-workspace).
+
+### Requesting a GPU Model
+
+`-v <model>` limits a GPU session to one model within its class, for example
+`-l gpu-class=large -v l40s`. The class label is still needed, and the model
+must be one that backs the class in [GPU Class Sizes](#gpu-class-sizes). Use
+`-v` only for a session launched without a booking; see
+[Node Selection](../running-jobs/launch-sh-reference.md#node-selection).
 
 ### Slurm Partition Mapping
 
@@ -155,7 +170,9 @@ listed under
 
 The second command, `nvidia-smi`, names the GPU model and how much memory it
 has. This confirms that the session is on the expected class rather than an
-adjacent one.
+adjacent one. A session on a Multi-Instance GPU (MIG) slice can use only the
+slice's memory, which is less than the card's; see
+[MIG Slices](gpu-hardware.md#mig-slices).
 
 The GPU models present on each node, and how many are free, are listed on the
 page described under [The Status Page](quotas-and-availability.md#the-status-page).

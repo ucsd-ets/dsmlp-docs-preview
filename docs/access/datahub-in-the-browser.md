@@ -120,11 +120,11 @@ and the cluster status page in
 
 ## Sign-In Failures
 
-Most failures to reach a session resolve to one of three conditions:
+Most failures to reach a session resolve to one of these conditions:
 
 - The course does not appear in the course list.
-- The disk quota is full.
-- A Datahub session is already running.
+- The disk quota is full, or a package in `.local` breaks the environment.
+- The cluster is busy, or the environment's image is slow to download.
 
 Each condition is covered in
 [Sign-In & Session Problems](sign-in-and-session-problems.md).

@@ -194,17 +194,17 @@ cluster.
 
 ## Reservation Events
 
-The reservation system writes 15 events of its own about GPU pods. Each is a
+The reservation system writes 18 events of its own about GPU pods. Each is a
 full sentence that states what happened and what to do, and the **From** column
-of `kubectl describe pod` reads `gpu-reservation-controller`. All 15 are
+of `kubectl describe pod` reads `gpu-reservation-controller`. All 18 are
 defined in [Reservation Events](../reference/reservation-events.md):
 
 - While a pod waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
   `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
-  `AnnotationIgnored`.
-- When a pod is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
-  `BestEffortAdmitted`.
+  `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
+- When a pod is admitted: `RuntimeGuaranteed`, `ReservationRelinked`,
+  `OverstayRelinked`, `BestEffortAdmitted`.
 - When a pod is stopped: `Preempted`, `ReservationCancelled`,
   `ReservationReassigned`.
 

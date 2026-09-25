@@ -51,7 +51,7 @@ generating them from a roster.
 ### Image Pinning
 
 A workspace may **pin** a container image. Pinning keeps the workspace's
-members from being moved by a quarterly image update mid-quarter. The request
+members from being moved by an image update mid-quarter. The request
 is described in
 [Pinning a Workspace](../environments/standard-images.md#pinning-a-workspace).
 

@@ -83,8 +83,10 @@ a broad incident from an individual report such as "my notebook will not start".
 ### Individual User Issues
 
 ITS targets resolution of individual user issues within 1-2 business days. The
-target applies to all users: students, project users, researchers, and
-instructors.
+target applies to students in a course, researchers, and instructors.
+
+A problem report from an independent study or project user, whose access came
+through the Independent Study Request form, may take up to 5 days to answer.
 
 ### Instructor Incident Tier
 

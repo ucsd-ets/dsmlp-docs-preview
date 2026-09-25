@@ -152,8 +152,8 @@ system-specific procedures.
 
 ### Pinning an Image
 
-A course may pin a specific image so that students are not moved by a quarterly
-update partway through a project, as described in
+A course may pin a specific image so that students are not moved by an image
+update partway through a project. See
 [Pinning a Workspace](environments/standard-images.md#pinning-a-workspace).
 
 ## Support & Technical Consultation
@@ -199,7 +199,7 @@ experimental features. Topics include:
   errors and version conflicts
 - Questions and training on the customization process, such as the use of git,
   GitHub, tags, and Actions, or the installation of language and system packages
-- Maintenance following quarterly updates to the standard software images
+- Maintenance following updates to the standard software images
 
 At Spring 2026 staffing levels, each course may request up to 6 hours of 1:1
 Consultation per term. Availability is reduced in the final weeks of each term.
@@ -265,6 +265,8 @@ project deadline and revert afterward, as described in
 The quarterly survey asks instructors and TAs about assignment scope, GPU sizes,
 and deadlines. The responses allow a course's quota to be raised in advance, for
 example for week 9. Report assignment deadlines in the survey.
+[Workloads by GPU Class](gpu-access/workloads-by-gpu-class.md) gives examples of
+course work at each GPU size.
 
 ### Course Calendar
 
@@ -279,7 +281,9 @@ managers.
 
 Request a budget change by ticket to
 [datahub@ucsd.edu](mailto:datahub@ucsd.edu). The change itself is an
-administrative action.
+administrative action. Students normally book their own windows. Booking on a
+student's behalf is the other route, and goes through even when the student's
+budget is spent, though not past the group pool or the workspace length cap.
 
 > [!WARNING]
 > A booking made on a student's behalf is charged to that student's budget. It
@@ -316,9 +320,9 @@ is defined in [Reservation Events](reference/reservation-events.md):
 - While a session waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
   `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
-  `AnnotationIgnored`.
-- When it is admitted: `RuntimeGuaranteed`, `OverstayRelinked`,
-  `BestEffortAdmitted`.
+  `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
+- When it is admitted: `RuntimeGuaranteed`, `ReservationRelinked`,
+  `OverstayRelinked`, `BestEffortAdmitted`.
 - When it is stopped: `Preempted`, `ReservationCancelled`,
   `ReservationReassigned`.
 

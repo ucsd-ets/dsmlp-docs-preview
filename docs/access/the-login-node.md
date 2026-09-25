@@ -21,11 +21,15 @@ the AD password.
 Duo follows the password and is challenged once every 8 hours. A second
 connection within that window does not prompt again.
 
+The challenge arrives as a Duo push. Where a push cannot be approved and a
+passcode is needed instead, write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu)
+for a workaround.
+
 ### VPN Requirement
 
 The VPN is not required for SSH to the login node. `ssh` to
-`dsmlp-login.ucsd.edu` works from anywhere, on or off campus. The VPN or an SSH
-tunnel is required only to reach a port inside a container, such as a Jupyter
+`dsmlp-login.ucsd.edu` works from anywhere, on or off campus. An SSH tunnel or
+the VPN is needed only to reach a port inside a container, such as a Jupyter
 server started by a launch script.
 
 See also: [Reaching a Notebook or a Service](#reaching-a-notebook-or-a-service)
@@ -54,7 +58,15 @@ conversions.
 Running an editor's server component on `dsmlp-login` is not permitted. Running
 VS Code directly on the login node is specifically prohibited. The supported
 configuration places VS Code in a container, as described in
-[Remote Editor Setup](remote-editor-setup.md).
+[Remote Editor Setup](remote-editor-setup.md). Automated jobs find and stop VS
+Code and other remote-editor processes on the login node.
+
+### CPU Limit on the Login Node
+
+CPU-intensive work on the login node is throttled to at most 10% of one CPU
+core, so it runs slowly. Move work that runs slowly there into a container. Do
+data processing, compiling, and debugging in a container. See
+[Running Work in a Container](#running-work-in-a-container).
 
 ## The Login Node & the Cluster Nodes
 
@@ -219,17 +231,13 @@ tunnel is required. Either route works. The VPN involves fewer steps to
 remember. A tunnel involves less to install and does not route the rest of the
 machine's traffic through campus.
 
-The VPN or a tunnel is needed only for container ports, such as a Jupyter
+A tunnel or the VPN is needed only for container ports, such as a Jupyter
 server started by `launch.sh`. Neither is needed for `ssh` to the login node or
 for Datahub in a browser.
 
 See also: [Datahub in the Browser](datahub-in-the-browser.md)
 
 ## Reaching a Port From the Login Node
-
-Two mechanisms make a port inside a container available on the login node.
-
-### Forwarding with `kubectl port-forward`
 
 `kubectl port-forward` connects the login node to a port inside a pod. It
 covers the case where the container publishes nothing itself, such as a custom
@@ -243,22 +251,8 @@ Combined with a
 [Tunnel to a Port on the Login Node](#tunnel-to-a-port-on-the-login-node), the
 port is reachable from a local machine.
 
-See also: [Building & Publishing a Custom Image](../environments/building-a-custom-image.md)
-
-### Publishing a Port with `IDENTITY_PROXY_PORTS`
-
-Setting `IDENTITY_PROXY_PORTS=1` before launching asks for a container port to
-be published on the login node. The launch output then names the port that was
-mapped. This is the documented route for TensorBoard and similar dashboards:
-
-```bash
-IDENTITY_PROXY_PORTS=1 launch-scipy-ml.sh -g 1
-```
-
-This behavior is documented but not confirmed against the current launcher.
-Report discrepancies to [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
-
-See also: [TensorBoard & Other Dashboards](../running-jobs/watching-your-job.md#tensorboard--other-dashboards)
+See also: [Building & Publishing a Custom Image](../environments/building-a-custom-image.md) ·
+[TensorBoard & Other Dashboards](../running-jobs/watching-your-job.md#tensorboard--other-dashboards)
 
 ## Connection Failures
 
@@ -282,11 +276,3 @@ forwarded page, usually has one of two causes:
 - The remote port is wrong. The port in a Jupyter URL is assigned at launch
   and is unlikely to be the same twice. The current launch output carries the
   current port. A command from an earlier session does not.
-
-### Numeric Address Workaround
-
-If the hostname form fails but the login node is reachable, some course guides
-substitute the login node's numeric address on both sides of the command.
-`nslookup dsmlp-login.ucsd.edu` returns it. This is a workaround for a routing
-problem, not the normal connection path. Report cases that require it to
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu).

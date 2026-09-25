@@ -228,7 +228,17 @@ Four annotations are relevant to a long-running job:
 | `galends/guaranteed-until` | UTC instant, `YYYY-MM-DDTHH:MM:SSZ` | The end of the protected period. It can move **later** while the session runs, when an abutting follow-on window is booked |
 | `galends/termination-warning-at` | UTC instant, same format | The **earliest** moment the session could be stopped. Never earlier than `guaranteed-until`. Present only while the session is at risk |
 | `galends/termination-warning-risk` | Decimal between 0 and 1, two places, e.g. `0.33` | The share of the candidates that has to be stopped. `1.00` means all of them |
-| `galends/termination-warning-message` | A sentence | The same thing in prose, in Pacific time. Written to be displayed as it stands, and not to be parsed. Its wording refers to "a reservation starting then" even for a stop 15 minutes before a booking starts, and for a headroom warning |
+| `galends/termination-warning-message` | A sentence | The same thing in prose, in Pacific time, naming the cause: a reservation starting at a given time, or GPUs kept free for on-demand jobs. Written to be displayed as it stands, and not to be parsed |
+
+The message takes one of two forms:
+
+```text
+At risk of preemption: this pod is at or nearing the end of its GPU runtime guarantee and may be terminated as early as 2026-09-23 11:45:00 PDT to free GPUs for a reservation starting at 2026-09-23 12:00:00 PDT (risk 0.50). Extend or re-book the reservation to retain capacity.
+```
+
+```text
+At risk of preemption: this pod is at or nearing the end of its GPU runtime guarantee and may be terminated as early as 2026-09-23 11:45:00 PDT to keep GPUs free for on-demand jobs (risk 1.00). Extend or re-book the reservation to retain capacity.
+```
 
 `termination-warning-at` is the earliest possible stop, not a scheduled one. The
 shortfall it was computed from may be gone before that moment arrives, in which
@@ -239,10 +249,10 @@ countdown to a certain stop.
 ### Best-Effort Annotations
 
 Every annotation is optional and best-effort. Any of them can be absent at any
-moment, and the three warning annotations are usually removed when the risk
-clears. A warning can also stay on the pod after the risk has passed: a
-`termination-warning-at` in the past, on a session that is still running, is
-stale. The controller does not read any of the annotations back to decide
+moment. The controller removes the three warning annotations once the risk has
+passed, usually within a few minutes. A `termination-warning-at` in the past, on
+a session that is still running, means the session can be stopped at any
+moment. The controller does not read any of the annotations back to decide
 anything. Each decision is recomputed from live reservation state. Code that
 reads the annotations handles each one being missing, ignores a value that does
 not parse rather than failing, and re-reads each value instead of caching it at

@@ -71,9 +71,14 @@ For-credit independent study and research (for example, 199/299),
 thesis-related research, and certain departmentally sponsored student projects
 are requested through the
 [Independent Study Request](https://go.ucsd.edu/2wc5gH0) form. The form asks
-about the project, its resource requirements, and its sponsorship.
-Non-instructional activities such as clubs and personal projects may be approved
-case by case, as resources allow.
+about the project, its resource requirements, and its sponsorship. Setting up
+access takes up to 5 business days from the request. Non-instructional
+activities such as clubs and personal projects may be approved case by case, as
+resources allow.
+
+The Independent Study Request form is for individuals. Access for a course is
+requested separately, through the Specialized Instructional Computing Course
+Request form. See [Course Timeline](../instructor-or-ta.md#course-timeline).
 
 ### Eligibility Limits
 
@@ -99,6 +104,12 @@ Research IT handles platform selection. Support for the Research Cluster and
 Universal Scale Storage is through
 [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
 
+## Service Units for New Members
+
+A new member of a workspace receives the full Service Unit (SU) budget for the
+current week. The budget is not prorated for a member added late. See
+[The Size of a Budget](../gpu-access/service-units-and-budgets.md#the-size-of-a-budget).
+
 ## Reporting Missing Access
 
 Most reports of missing access concern a roster change that has not yet reached
@@ -122,10 +133,8 @@ additional quarter is Fall.
 | Winter 2027 | Spring 2027 | 19 June 2027 |
 | Spring 2027 | Fall 2027 (Summer is not counted) | 18 December 2027 |
 
-> [!NOTE]
-> A day-based retention schedule is also in effect and has not been reconciled
-> with the quarter-based schedule. It is set out in
-> [Day-Based Retention Schedule](#day-based-retention-schedule).
+The course's shared grader account and TA access to the course environment
+follow the same schedule.
 
 ## Extending Access for an Individual
 
@@ -174,6 +183,13 @@ and course-wide files can be archived on request, as set out in
 Methods for copying files out are in
 [Retrieving Work Before Access Ends](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends).
 
+### The Personal Area After a Course
+
+The personal area, `private/`, belongs to the account rather than to a course,
+and it is not removed when course access ends. It persists until the account
+itself is removed: at graduation, at separation from the university, or, for a
+student, after more than two quarters without registration.
+
 ## The Retention Timeline
 
 Course environments are purged one quarter after account deactivation, which is
@@ -212,25 +228,6 @@ Student home directories are not archived. Archiving covers instructor and
 course-wide files, and an extension covers an individual account. Neither
 preserves a student's own work by default. A student who needs to keep
 notebooks copies them out of the environment while it is still reachable.
-
-## Day-Based Retention Schedule
-
-A second, day-based retention schedule is also in effect. It counts days from
-the last day of class rather than quarters.
-
-| After the last day of class | Event |
-|---|---|
-| 11 days | The course's Service Desk ticket is closed |
-| 45 days | Shared nbgrader/TA access to the course environment is removed |
-| 90 days | Instructor and student access to the course environment is removed; instructors retain platform access with a generic environment |
-
-The quarter-based schedule in [One Additional Quarter](#one-additional-quarter)
-and [The Retention Timeline](#the-retention-timeline) has no milestone that
-removes shared nbgrader/TA access before instructor and student access. For a
-Fall or Winter course, the two schedules end instructor and student access
-within weeks of each other. For a Spring course, 90 days after the last day of
-class falls in Summer, while the quarter-based schedule does not count Summer
-and retains access through Fall. The two schedules have not been reconciled.
 
 ## Session Length
 

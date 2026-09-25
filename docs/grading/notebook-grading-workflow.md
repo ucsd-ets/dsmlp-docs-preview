@@ -222,8 +222,11 @@ and run the export again. Recovery is covered in
 
 ### Exporting Before Access Ends
 
-Access to the grader account ends after the term. Export grades and any other
-grading data that must be kept well before that date, following
+Access to the grader account ends on the same date as instructor and student
+access to the course. See
+[One Additional Quarter](../access/when-access-starts-and-ends.md#one-additional-quarter).
+Export grades and any other grading data that must be kept well before that
+date, following
 [Retrieving Work Before Access Ends](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends).
 
 ### Handling the Exported CSV

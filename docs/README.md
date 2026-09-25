@@ -28,7 +28,7 @@ area. The audience pages link to it.
 | [Access](access/README.md) | Datahub in the browser, the login node, remote editor setup, sign-in and session problems, and when access starts and ends |
 | [Workspaces & Storage](workspaces-and-storage/README.md) | Workspaces and what they control, directories and quotas, moving and sharing data, and datasets |
 | [Running Jobs](running-jobs/README.md) | `launch.sh` options, job modes and the runtime limit, monitoring a running job, checkpointing and logging, and direct Kubernetes use |
-| [GPU Access](gpu-access/README.md) | GPU classes, reservations, Service Units and budgets, quotas and availability, and the causes of a session ending |
+| [GPU Access](gpu-access/README.md) | GPU classes and the work each suits, GPU hardware and CUDA, reservations, Service Units and budgets, quotas and availability, and the causes of a session ending |
 | [Environments](environments/README.md) | Standard images and pinning, customizing an environment, and building a custom image |
 | [Grading](grading/README.md) | Grading tools and interfaces, the nbgrader workflow through Canvas import, and common grading failures |
 | [Reference](reference/README.md) | Error messages, support routing, the glossary, HPC vocabulary, group management, policy, and software |

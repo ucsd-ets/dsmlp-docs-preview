@@ -43,19 +43,16 @@ project. Access for this work is obtained by request, as described in
 ## "Spawn Failed"
 
 The account is signed in and an environment has been selected, but the
-environment does not start. Check four causes in order: a Datahub session
-already running, a full disk quota, a stale profile, and a broken package in
-`.local`.
+environment does not start. How long the failure takes to appear narrows down
+the cause:
 
-### Datahub Session Already Running
+| When the failure appears | Possible causes |
+|---|---|
+| Within moments of the start | A full disk quota, or a broken package in `.local/lib` |
+| After a long wait | A busy cluster, or a slow download of the environment's image |
 
-A member may have one Datahub session at a time, and shell, VS Code, and batch
-jobs do not count toward that limit, as described in
-[Concurrent Datahub Sessions](datahub-in-the-browser.md#concurrent-datahub-sessions).
-A session left running, for this course or another, must be stopped before a
-new one starts. Stop it with **File → Hub Control Panel → Stop My Server**.
-Where the running session cannot be reached, use the manual resetter described
-in [Stale Profile and the Manual Resetter](#stale-profile-and-the-manual-resetter).
+A stale profile can also stop a session from starting. The manual resetter
+clears it.
 
 ### Full Disk Quota
 
@@ -64,15 +61,6 @@ message. The quota is shown at
 [datahub.ucsd.edu/hub/spawn](https://datahub.ucsd.edu/hub/spawn) → **Services** →
 **disk-quota-service**. Storage quotas are described in
 [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
-
-### Stale Profile and the Manual Resetter
-
-The **manual resetter** is provided for a stale profile. It stops any running
-servers, signs the account out, and resets the profile. Files are preserved.
-
-1. Open [datahub.ucsd.edu](https://datahub.ucsd.edu).
-2. Open the **services** dropdown and choose **manual-resetter**.
-3. Click reset.
 
 ### Broken Package in `.local`
 
@@ -91,12 +79,36 @@ Install packages into a virtual environment rather than into `.local`.
 Installing packages is described in
 [Customizing an Environment](../environments/customizing-your-environment.md).
 
+### Busy Cluster
+
+On a busy cluster, a session can wait for CPU, memory, or a GPU until the start
+fails. A GPU session started without a booking also waits for an on-demand
+lease, which may not be granted in time. Start the session again later. See
+[When the Cluster Is Full](../gpu-access/quotas-and-availability.md#when-the-cluster-is-full).
+
+### Slow Image Download
+
+A session cannot start until its environment's image is on the cluster. When
+the image has to be downloaded in full, the start can fail before the download
+finishes. A full download of the `scipy-ml-notebook` image can take about 20
+minutes. Start the session again later.
+
+### Stale Profile and the Manual Resetter
+
+The **manual resetter** is provided for a stale profile. It stops any running
+servers, signs the account out, and resets the profile. Files are preserved.
+
+1. Open [datahub.ucsd.edu](https://datahub.ucsd.edu).
+2. Open the **services** dropdown and choose **manual-resetter**.
+3. Click reset.
+
+The manual resetter also stops a running session that cannot be reached from
+the browser.
+
 ### Unexplained Spawn Failures
 
-The cause of a spawn failure not explained by a running session, a full quota, a
-stale profile, or a broken `.local` package is not yet documented. Report such a
-failure with the time and the course, as described in
-[Reporting a Problem](#reporting-a-problem).
+Report a spawn failure that none of these causes explains, with the time and
+the course. See [Reporting a Problem](#reporting-a-problem).
 
 ## Links Clicked Before Sign-In
 
@@ -179,25 +191,35 @@ sign-on, like Datahub, but keeps its own session.
 ### Expired Reservation App Sessions
 
 A reservation app session ends after 8 hours without use, and 24 hours after
-sign-in in any case. **Log out everywhere** ends it on every device at once. The
-app then returns to its login page with no message, and a booking that was
-being made in the wizard is lost. Sign in again and start the booking again.
+sign-in in any case. The app then returns to its login page with the notice
+`Your session has expired. Please sign in again.` A booking that was being made
+in the wizard is lost. Sign in again and start the booking again.
 
-### Sign-In Errors Shown as Text
+**Log out everywhere** ends the session on every device at once. Each other
+device shows the same notice at its next request to the app, such as opening
+another of the app's pages. The device where **Log out everywhere** was selected
+returns to the login page with no notice.
 
-A failed sign-in shows a line of text in the browser tab rather than a page:
+### Sign-In Failure Notices
 
-| Text | Meaning | Fix |
+A failed sign-in returns to the login page with one of these notices:
+
+| Notice | Meaning | Fix |
 |---|---|---|
-| `{"detail":"Invalid OAuth state parameter"}` | Sign-in took more than 10 minutes, or **Back** or **Refresh** was used during it | Start again from the login page |
-| `{"detail":"Your account domain is not permitted to access this application"}` | A non-UCSD account was used | Sign in with a UCSD account |
-| `{"detail":"Account is deactivated"}` | The reservation app account is deactivated | Write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
-| `{"detail":"SAML authentication failed"}` | Campus sign-in did not complete | Start again from the login page. If it happens again, write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| `Your sign-in attempt expired or was started in another browser window. Please try again.` | Sign-in took more than 10 minutes, or **Back** or **Refresh** was used during it | Start again from the login page |
+| `Your sign-in provider did not complete the sign-in. Please try again.` | Campus sign-in did not complete | Start again from the login page. If it happens again, write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| `Your sign-in provider did not return your account details. Please try again, and contact an administrator if this keeps happening.` | Campus sign-in completed but did not pass the account to the app | Start again from the login page. If it happens again, write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| `Your account's domain is not permitted to use this service.` | A non-UCSD account was used | Sign in with a UCSD account |
+| `Your account has been deactivated. Contact an administrator if you believe this is a mistake.` | The reservation app account is deactivated | Write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| `Sign-in failed. Please try again.` | Sign-in failed for another reason | Start again from the login page. If it happens again, write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
 
-### `HTTP 422` in the Reservation App
+### Form Errors in the Reservation App
 
-`HTTP 422` in a form means the app rejected one of the values sent, most often a
-blank field. Fill in every field and try again.
+When the app rejects a value sent from a form, the message names the field and
+the problem, as `field: problem`. The app joins several problems with `; `. For
+example, a blank **GPU Count** in the **New Reservation** form on
+**Group Reservations** gives `gpu_count: Input should be a valid integer`.
+Correct the named field and try again.
 
 ## End of Course Access
 
