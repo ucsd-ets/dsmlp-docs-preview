@@ -8,13 +8,14 @@ workspace member has a budget of them.
 A **Service Unit** (SU) is a usage credit for GPU time. Each GPU class carries
 an hourly SU rate, and every reservation is priced from that rate. The scheme
 follows the HPC allocation model: a budget of credits, drawn down as GPU time
-is used and renewed on a cycle. HPC terms and their DSMLP equivalents are
-mapped in
-[Coming from HPC](../reference/coming-from-hpc.md).
+is used and renewed on a cycle.
+[Coming from HPC](../reference/coming-from-hpc.md) lists HPC terms and their
+DSMLP equivalents.
 
 Service Units divide capacity and are not billed. Storage is not measured in
-Service Units. Storage charges are covered in
-[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
+Service Units.
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas)
+covers storage charges.
 
 ## What Spends Service Units
 
@@ -64,8 +65,8 @@ and is charged like one.
   for holding the GPU, not for the work done on it.
 - A session that stops using its GPU continues to draw Service Units until
   idle culling reclaims the GPU. Idle culling waits longer on a quiet cluster
-  than on a busy one. The thresholds are listed in
-  [The Timings](what-ends-a-session.md#the-timings).
+  than on a busy one. [The Timings](what-ends-a-session.md#the-timings) lists
+  the thresholds.
 - A script that starts a new GPU session on each iteration, or a job restarted
   repeatedly during debugging, is charged on every launch. Nothing stops the
   repeated charges.
@@ -82,8 +83,9 @@ and is charged like one.
 
 Stop sessions that are not in use. From the browser, use
 **File → Hub Control Panel → Stop My Server**. From a terminal, run
-`kubectl delete pod <pod-id>`. The browser procedure is described in
-[Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session).
+`kubectl delete pod <pod-id>`.
+[Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session)
+describes the browser procedure.
 
 > [!WARNING]
 > Logging out does not stop a session, and closing VS Code does not release a
@@ -91,22 +93,22 @@ Stop sessions that are not in use. From the browser, use
 
 Request the smallest GPU class the work fits in. A larger class is not faster
 for a model that fits in a smaller one, and it costs more per hour; see
-[What an Hour Costs](#what-an-hour-costs). Class selection is covered in
-[Choosing a Class](gpu-classes.md#choosing-a-class).
+[What an Hour Costs](#what-an-hour-costs).
+[Choosing a Class](gpu-classes.md#choosing-a-class) covers class selection.
 
 Check the remaining balance before a long run, not after it; see
 [Remaining Balance](#remaining-balance).
 
 A booked window costs no more than an on-demand lease for the same hours.
-Booking is described in [Reservations](reservations.md). Off-peak hours are
+[Reservations](reservations.md) describes booking. Off-peak hours are
 discounted. See [Peak & Off-Peak Hours](#peak--off-peak-hours).
 
 ## The Size of a Budget
 
 Every workspace gives each member 10 SU per week by default, in course and
 research workspaces alike, and in `ORG_ON_DEMAND`, the default workspace. The
-instructor or researcher can ask for a different figure. The routes for
-changing a budget are listed in [Changing a Budget](#changing-a-budget).
+instructor or researcher can ask for a different figure.
+[Changing a Budget](#changing-a-budget) lists the routes for changing a budget.
 
 At the rates in [What an Hour Costs](#what-an-hour-costs), 10 SU buys 10
 GPU-hours of `medium` at the full rate, or 20 off-peak.
@@ -123,9 +125,9 @@ an on-demand lease, the workspace the pod's `dsmlp/course` label names.
 
 ### Budgets and Workspace Quotas
 
-A budget limits how much GPU time a member may spend. A workspace's quota,
-described in [Quotas, Cohorts & Availability](quotas-and-availability.md),
-limits how many GPUs of a class the workspace may hold at once. Either can stop
+A budget limits how much GPU time a member may spend. A workspace's quota
+limits how many GPUs of a class the workspace may hold at once. See
+[Quotas, Cohorts & Availability](quotas-and-availability.md). Either can stop
 a launch, for different reasons. Remaining budget does not mean a GPU is free.
 
 A budget window and a workspace quota are independent. A quota can change from
@@ -161,14 +163,14 @@ busy deadline evening there is a walk-up queue; at midday there usually is not.
 
 Batch and background jobs, which run unattended, are the work most easily
 moved off-peak, for example by starting them overnight. An interactive
-debugging session is not easily moved. Job modes are described in
-[Job Modes](../running-jobs/job-modes-and-limits.md#job-modes),
-and long unattended runs in
-[Checkpointing & Logging Long Runs](../running-jobs/checkpointing.md).
+debugging session is not easily moved.
+See [Job Modes](../running-jobs/job-modes-and-limits.md#job-modes).
+[Checkpointing & Logging Long Runs](../running-jobs/checkpointing.md) covers long
+unattended runs.
 
 Availability that reads zero in the evening often reads differently in the
-morning, particularly for a workspace in an overcommitted cohort, as described
-in [Cohorts](quotas-and-availability.md#cohorts).
+morning, particularly for a workspace in an overcommitted cohort. See
+[Cohorts](quotas-and-availability.md#cohorts).
 
 An off-peak booking is otherwise identical to a peak booking. The GPU hardware
 is the same, and the runtime guarantee,
@@ -205,8 +207,9 @@ budget, not the current one's.
   does not change that price.
 
 Whether a course budget continues to renew after the instructional term is not
-yet published. Access after the term is described in
-[One Additional Quarter](../access/when-access-starts-and-ends.md#one-additional-quarter).
+yet published.
+[One Additional Quarter](../access/when-access-starts-and-ends.md#one-additional-quarter)
+describes access after the term.
 
 ### Anchor Modes
 
@@ -256,13 +259,13 @@ state whether the group has one configured.
 
 Budgets are set administratively. A workspace manager (an instructor, TA, or
 PI) may not edit any budget, including that of the workspace they manage.
-Manager privileges are listed in
-[Managing a Group](../reference/managing-a-group.md).
+[Managing a Group](../reference/managing-a-group.md) lists manager privileges.
 
 To change a budget, the manager requests it by ticket to
 [datahub@ucsd.edu](mailto:datahub@ucsd.edu), stating the workspace, what the
-work is, and the date by which it matters. The request format is described in
-[Administrative Requests](../reference/getting-help.md#administrative-requests).
+work is, and the date by which it matters.
+[Administrative Requests](../reference/getting-help.md#administrative-requests)
+describes the request format.
 
 A booking a manager makes on a member's behalf does not add to the member's
 budget. It is charged to the member.
@@ -370,5 +373,5 @@ the member's behalf is charged to the member, so it does not help.
 
 In a research workspace, write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu),
 naming the work and the date by which it must be done. Where the deadline
-permits, waiting for the budget window to renew is also an option, as described
-in [Budget Windows & Cadences](#budget-windows--cadences).
+permits, waiting for the budget window to renew is also an option. See
+[Budget Windows & Cadences](#budget-windows--cadences).

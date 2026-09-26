@@ -27,8 +27,8 @@ alphabetical order. Each entry links to the page that covers the term in full.
 | Term | Definition | Reference |
 |---|---|---|
 | Datahub | The browser interface at [`datahub.ucsd.edu`](https://datahub.ucsd.edu), comprising JupyterHub, the environment menu, and the services attached to it. | [Datahub in the Browser](../access/datahub-in-the-browser.md) |
-| `datahub-base-notebook` | The smallest image in the standard image hierarchy, below `datascience-notebook`, and the base to derive from when build time matters. | [Standard Images, Tags, and Pinning](../environments/standard-images.md) |
-| `datascience-notebook` | The standard CPU image, containing widely used data analysis libraries from the Python, R, and Julia communities. | [Standard Images](../environments/standard-images.md#standard-images) |
+| `datahub-base-notebook` | A former base image, no longer built or updated. Derive from `datascience-notebook` instead. | [Legacy Image Names](../environments/standard-images.md#legacy-image-names) |
+| `datascience-notebook` | The standard CPU image, containing widely used data analysis libraries from the Python, R, and Julia communities, and the base of the other standard images. | [Image Inheritance](../environments/standard-images.md#image-inheritance) |
 | `/datasets` | The cluster-wide directory tree where shared corpora are staged, to be read in place rather than copied. | [Datasets](../workspaces-and-storage/datasets.md) |
 | `DeadlineExceeded` | The pod status reported when a container reaches the runtime limit, which does not indicate an error in the code. | [The `DeadlineExceeded` Status](../running-jobs/job-modes-and-limits.md#the-deadlineexceeded-status) |
 | disk-quota-service | The service under the **Services** tab at [`datahub.ucsd.edu/hub/spawn`](https://datahub.ucsd.edu/hub/spawn) that reports usage against quota and displays the workspace ID. | [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas) |

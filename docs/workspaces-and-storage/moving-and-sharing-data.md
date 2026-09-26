@@ -16,7 +16,7 @@ the transfer is repeated.
 | Globus | Large unattended transfers, and transfers between institutions |
 
 Transfers run through the login node, `dsmlp-login`. Moving files and launching
-jobs are its two purposes, as described in
+jobs are its two purposes. See
 [What the Login Node Is For](../access/the-login-node.md#what-the-login-node-is-for).
 
 ## In the Browser
@@ -67,7 +67,7 @@ rsync -avr <directory> <username>@dsmlp-login.ucsd.edu                   # uploa
 rsync -avr <username>@dsmlp-login.ucsd.edu:<remote-path> <local-path>    # download
 ```
 
-These tools run over `ssh` and do not require the VPN, as described in
+These tools run over `ssh` and do not require the VPN. See
 [Connecting over SSH](../access/the-login-node.md#connecting-over-ssh).
 
 ### Pod Messages During a Transfer
@@ -93,8 +93,9 @@ workspace -l     # prints each workspace and the path to its home directory
 
 Workspace home paths have the form
 `/dsmlp/workspaces-fs0*/<WORKSPACE>/home/<username>`. Team directories use the
-same prefix, with `/teams` in place of `/home`. The directory layout is
-described in [Where Files Live](your-files-and-quotas.md#where-files-live).
+same prefix, with `/teams` in place of `/home`.
+[Where Files Live](your-files-and-quotas.md#where-files-live) describes the
+directory layout.
 
 ## Globus
 
@@ -140,15 +141,14 @@ terminal opened in the environment.
 the simplest way to download a public dataset directly onto the cluster. Check
 the size of a dataset before downloading it. Where the data is large and more
 than one person needs it, request that it be staged once instead of each person
-keeping a copy, as described in
+keeping a copy. See
 [Asking for a Dataset to Be Staged](datasets.md#asking-for-a-dataset-to-be-staged).
 
 ## Retrieving Work Before Access Ends
 
 Files become unreachable when access ends, not when they are purged. Copy them
 out before access ends. Once the environment no longer appears for a member, the
-work in it can be retrieved only by request to ITS. The effects of the end of
-access are described in
+work in it can be retrieved only by request to ITS. See
 [Effects of the End of Access](../access/when-access-starts-and-ends.md#effects-of-the-end-of-access).
 
 > [!WARNING]
@@ -190,8 +190,8 @@ The `public/` directory is the sanctioned way to share files with a whole
 workspace. Every member can read everything in it. In a course, the shared
 grader account holds write permission and stages the material. In other
 workspaces, the person the workspace was set up around holds write permission.
-The directory is described in
-[The Shared Workspace Area](your-files-and-quotas.md#the-shared-workspace-area).
+[The Shared Workspace Area](your-files-and-quotas.md#the-shared-workspace-area)
+describes the directory.
 
 `teams/` shares files with one group within the workspace instead of the whole
 workspace, such as a capstone group, a project team, or a group within a lab.
@@ -208,7 +208,7 @@ chmod -R u+rwX,go+rXs,go-w ~/public
 
 The command removes write permission for everyone other than the owner and adds
 the execute bit on directories so that they can be entered. Other permission
-changes are made by the Service Desk on request, as described in
+changes are made by the Service Desk on request. See
 [Ownership and Permission Changes](#ownership-and-permission-changes).
 
 ## Teams and Canvas Groups
@@ -226,7 +226,7 @@ Multiple group sets in one Canvas course may not work correctly. Use one group
 set per course.
 
 Group storage is provisioned separately from personal storage. Additional space
-is requested from ITS, as described in
+is requested from ITS. See
 [Asking for More Space](your-files-and-quotas.md#asking-for-more-space).
 
 ### Team Data on the Command Line
@@ -241,7 +241,7 @@ launch-scipy-ml.sh -W <WORKSPACE> -G <teamid>  # launch with that team's data
 ## Ownership and Permission Changes
 
 The Service Desk adjusts file ownership and permissions on request, alongside
-resource limits and disk quotas, as listed in
+resource limits and disk quotas. See
 [Administrative Requests](../reference/getting-help.md#administrative-requests).
 Submit a ticket when files are owned by the wrong account or are unreadable by
 the people who need them.
@@ -293,6 +293,6 @@ or projects. Sharing data is supported; running a public service is not.
 
 Sharing data requires a classification decision before any technical step.
 Licensed data, protected data, and data under a data use agreement do not become
-shareable by being copied into a shared directory. These categories are
-described in
-[Restricted & Licensed Datasets](datasets.md#restricted--licensed-datasets).
+shareable by being copied into a shared directory.
+[Restricted & Licensed Datasets](datasets.md#restricted--licensed-datasets)
+describes these categories.

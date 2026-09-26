@@ -36,23 +36,24 @@ Each audience has its own starting page.
 | Faculty arranging access for a research group | [Setting Up a Research Lab](faculty-research-lab.md) | Some steps are performed by ITS staff |
 
 Coursework and a personal project are two separate workspaces, with different
-eligibility, different resources, and different access lifetimes. Coursework is
-covered in [Using Datahub in a Course](student-in-a-course.md) and
-[Working from the Command Line](working-from-the-command-line.md), and a
-personal project in [Projects & Independent Study](student-project.md).
+eligibility, different resources, and different access lifetimes.
+[Using Datahub in a Course](student-in-a-course.md) and
+[Working from the Command Line](working-from-the-command-line.md) cover
+coursework. [Projects & Independent Study](student-project.md) covers a
+personal project.
 
 ## Workspaces
 
 Users are divided into groups called **workspaces**: one per course, one per
 lab, or one general catch-all population. A workspace anchors all cluster
 configuration: rosters, storage, container images, GPU access, and storage and
-GPU quotas, as described in
+GPU quotas. See
 [What a Workspace Is and What It Controls](workspaces-and-storage/what-a-workspace-is.md).
 
 A member may belong to several workspaces at once, for example as a TA for one
 course, a student in another, and a member of a lab, and chooses the workspace
 to work in at launch. A member of more than one workspace has a home directory
-in each, as described in
+in each. See
 [Belonging to Several Workspaces](workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces).
 
 See also: [Workspaces & Storage](workspaces-and-storage/README.md)
@@ -64,7 +65,7 @@ See also: [Workspaces & Storage](workspaces-and-storage/README.md)
 All jobs, whether browser-based Jupyter sessions, command-line jobs, or batch
 jobs, run in a compute environment derived from the member's account and
 workspace together with any job-specific configuration. A course session in the
-browser typically begins at 2 CPU cores and 4GB RAM, as described in
+browser typically begins at 2 CPU cores and 4GB RAM. See
 [The Browser Session](access/datahub-in-the-browser.md#the-browser-session).
 Upper limits are based on class size, demand, and capacity.
 
@@ -72,8 +73,8 @@ Upper limits are based on class size, demand, and capacity.
 
 GPUs are organized into five classes by size rather than by hardware model.
 Each workspace is given access to one or more classes, matching its anticipated
-work. The classes are listed in
-[GPU Class Sizes](gpu-access/gpu-classes.md#gpu-class-sizes).
+work. [GPU Class Sizes](gpu-access/gpu-classes.md#gpu-class-sizes) lists the
+classes.
 [Workloads by GPU Class](gpu-access/workloads-by-gpu-class.md) gives examples of
 the work each class suits.
 
@@ -81,11 +82,12 @@ the work each class suits.
 
 Each member has a per-user, per-workspace home directory; a shared area readable
 by everyone in the workspace; and a per-user, cluster-wide private area
-available in every workspace. The directories are listed in
-[Where Files Live](workspaces-and-storage/your-files-and-quotas.md#where-files-live),
-and the quotas for course and research home directories in
-[Workspace and Personal Quotas](workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
-Optional mounts of external storage are available, as described in
+available in every workspace.
+[Where Files Live](workspaces-and-storage/your-files-and-quotas.md#where-files-live)
+lists the directories.
+[Workspace and Personal Quotas](workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas)
+gives the quotas for course and research home directories.
+Optional mounts of external storage are available. See
 [Mounting External Storage](workspaces-and-storage/your-files-and-quotas.md#mounting-external-storage).
 
 ### Standard Software Images
@@ -93,14 +95,14 @@ Optional mounts of external storage are available, as described in
 Curated images cover the widely used Python, R, and Julia data analysis stacks.
 They include a CUDA/GPU-enabled image with TensorFlow and PyTorch, and an
 RStudio image. Courses and labs may further customize or pin their own images.
-The images are described in
-[Standard Images, Tags, and Pinning](environments/standard-images.md).
+[Standard Images, Tags, and Pinning](environments/standard-images.md) describes
+the images.
 
 ### Ways to Work
 
 Work is done in a browser, at a terminal over SSH, or in a desktop editor such
-as VS Code connected to a cluster container. Each route is described in
-[Access](access/README.md).
+as VS Code connected to a cluster container. [Access](access/README.md)
+describes each route.
 
 ## GPU Reservations
 
@@ -109,10 +111,10 @@ made in the reservation app at
 [reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/), holds capacity for a
 specific window, and for the length of that window sessions are admitted ahead
 of the walk-up queue. Ad-hoc,
-on-demand use without a booking is also supported. Booking is described
-in [Reservations](gpu-access/reservations.md). Reservations, per-group quotas,
-and Service Unit budgets are the mechanisms that manage contention for GPUs, as
-described in [GPU Access](gpu-access/README.md).
+on-demand use without a booking is also supported.
+[Reservations](gpu-access/reservations.md) describes booking. Reservations,
+per-group quotas, and Service Unit budgets are the mechanisms that manage
+contention for GPUs. See [GPU Access](gpu-access/README.md).
 
 > [!WARNING]
 > An on-demand launch draws on the Service Unit budget as a booked window does,
@@ -124,7 +126,7 @@ described in [GPU Access](gpu-access/README.md).
 ### Root Access
 
 Containers run unprivileged, under the member's own UID, with no root or sudo
-inside the container, as described in
+inside the container. See
 [Root Access and System Packages](environments/customizing-your-environment.md#root-access-and-system-packages).
 `sudo apt-get install` fails by design, and the failure is not a fault to
 report.
@@ -132,13 +134,13 @@ report.
 ### Computation on the Login Node
 
 The login node is for launching jobs and moving files, and running computation
-on it is prohibited, as described in
+on it is prohibited. See
 [What the Login Node Is For](access/the-login-node.md#what-the-login-node-is-for).
 
 ### Idle GPU Sessions
 
 An idle GPU session still holds its GPU, and the session is reclaimed once it
-has been idle long enough, as described in
+has been idle long enough. See
 [What Counts as Idle](gpu-access/what-ends-a-session.md#what-counts-as-idle).
 
 ## Support
@@ -154,33 +156,34 @@ Questions and feedback go to the contact for the topic.
 | 1:1 Consultation, for instructors, TAs, and Technical Points of Contact (TPOCs) | [ucsd-datahub.youcanbook.me](https://ucsd-datahub.youcanbook.me/) |
 
 Urgent or broadly scoped problems may be escalated through the ITS Service
-Desk. A ticket for such a problem states what is affected and how many people,
-as described in
+Desk. A ticket for such a problem states what is affected and how many people.
+See
 [Incidents Affecting More Than One Person](reference/getting-help.md#incidents-affecting-more-than-one-person).
-ITS response targets are given in
-[Response Targets](reference/getting-help.md#response-targets), the terms of
-1:1 Consultation in
-[Support & Technical Consultation](instructor-or-ta.md#support--technical-consultation),
-and all support routes in [Getting Help](reference/getting-help.md).
+[Response Targets](reference/getting-help.md#response-targets) gives ITS
+response targets.
+[Support & Technical Consultation](instructor-or-ta.md#support--technical-consultation)
+sets out the terms of 1:1 Consultation.
+[Getting Help](reference/getting-help.md) lists all support routes.
 
 ## Policy
 
-Conditions of use are set out in [Policy](reference/policy.md).
+[Policy](reference/policy.md) sets out the conditions of use.
 
 - Highly sensitive data (P4), such as clinical records or export-controlled
   information, must not be used on Datahub or DSMLP, and legally or
-  contractually protected information (P3) may be permitted after review, as
-  described in [Data Classification](reference/policy.md#data-classification).
+  contractually protected information (P3) may be permitted after review. See
+  [Data Classification](reference/policy.md#data-classification).
 - Datahub and DSMLP system resources are shared among all courses and research
   groups, and demand, in particular for GPUs, may exceed capacity at peak hours
-  during 10th and Finals Weeks or at assignment deadlines, as described in
+  during 10th and Finals Weeks or at assignment deadlines. See
   [Use of Shared Resources](reference/policy.md#use-of-shared-resources).
 - Datahub may be unavailable during scheduled maintenance for time-sensitive
-  updates or security patches, on the schedule given in
-  [Scheduled Maintenance](reference/policy.md#scheduled-maintenance).
+  updates or security patches.
+  [Scheduled Maintenance](reference/policy.md#scheduled-maintenance) gives the
+  schedule.
 - Datahub and DSMLP are not to be used to host externally available services or
-  applications except as required for coursework or projects, as described in
+  applications except as required for coursework or projects. See
   [Hosting Externally Available Services](reference/policy.md#hosting-externally-available-services)
   and [Availability and Reliability](reference/policy.md#availability-and-reliability).
-- The campus-wide IT policy on acceptable use applies to Datahub and DSMLP, as
-  described in [Appropriate Use](reference/policy.md#appropriate-use).
+- The campus-wide IT policy on acceptable use applies to Datahub and DSMLP. See
+  [Appropriate Use](reference/policy.md#appropriate-use).

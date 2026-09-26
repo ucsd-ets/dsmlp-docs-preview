@@ -5,28 +5,28 @@ course builds when a standard image does not meet its needs, most often because
 the course requires an operating-system package that cannot be installed from
 inside a running container
 ([Root Access and System Packages](customizing-your-environment.md#root-access-and-system-packages)).
-A Python or R package for personal use does not require a custom image and is
-covered in [Customizing an Environment](customizing-your-environment.md).
+A Python or R package for personal use does not require a custom image. See
+[Customizing an Environment](customizing-your-environment.md).
 
 ## Choosing a Base Image
 
 Derive a custom image from a standard image. A derived image inherits a working
-Jupyter installation, a working kernel set, and the platform's conventions. The
-contents of each standard image are listed in
-[Standard Images](standard-images.md#standard-images).
+Jupyter installation, a working kernel set, and the platform's conventions.
+[Standard Images](standard-images.md#standard-images) lists the contents of each
+standard image.
 
 | Start from | When |
 |---|---|
-| `datahub-base-notebook` | A small, well-defined set of tools is being added. It is the smallest image ITS publishes and the fastest to build. |
-| `datascience-notebook` | The standard Python, R, and Julia analysis stack is wanted beneath the additions. |
-| `scipy-ml-notebook` | CUDA, TensorFlow, or PyTorch is required. |
-| `rstudio-notebook` | RStudio is required. The image is not GPU-enabled ([RStudio and GPU Support](standard-images.md#rstudio-and-gpu-support)). |
+| `datascience-notebook` | The custom image needs neither CUDA nor RStudio. This base is the smallest standard image and the fastest to build, with the standard Python, R, and Julia analysis stack. |
+| `scipy-ml-notebook` | The custom image needs CUDA, TensorFlow, or PyTorch. |
+| `rstudio-notebook` | The custom image needs RStudio. This base is not GPU-enabled ([RStudio and GPU Support](standard-images.md#rstudio-and-gpu-support)). |
 
 ### Base Image and Build Time
 
-Where build time matters, derive from the smaller base. An image built on
-`scipy-ml-notebook` inherits the entire CUDA stack, which adds to the time of
-every build during development.
+Where build time matters, derive from `datascience-notebook` rather than
+`scipy-ml-notebook`. An image built on `scipy-ml-notebook` inherits the entire
+CUDA stack, which adds to the time of every build during development. See
+[Image Inheritance](standard-images.md#image-inheritance).
 
 ### Custom CUDA Toolkits
 
@@ -57,7 +57,10 @@ FROM $BASE_CONTAINER
 # become root to install system packages
 USER root
 
-RUN apt-get -y install htop
+# the base image ships without apt package lists, so update them in the same step
+RUN apt-get update && \
+    apt-get -y install htop && \
+    rm -rf /var/lib/apt/lists/*
 
 # drop back to the notebook user for everything else
 USER jovyan
@@ -72,6 +75,14 @@ notebook user after the root steps, as the example does with `USER jovyan`. A
 container started from the image runs as the member who launched it, not as
 root
 ([Root Access and System Packages](customizing-your-environment.md#root-access-and-system-packages)).
+
+### System Packages
+
+Install system packages with `apt-get` under `USER root`. Put `apt-get update`
+at the start of the `RUN` step that runs `apt-get install`. The standard images
+ship without apt package lists, so `apt-get install` alone fails with
+`E: Unable to locate package` for any package not already installed. End the
+step by removing `/var/lib/apt/lists/*`, which keeps the lists out of the image.
 
 ### Python Packages
 
@@ -140,6 +151,10 @@ Two mistakes account for most build failures:
 - Windows CRLF line endings in a file the build reads. `dos2unix` corrects the
   line endings.
 
+`E: Unable to locate package` appears when the `RUN` step does not start with
+`apt-get update`, and when the package name is wrong. See
+[System Packages](#system-packages).
+
 ## Course Images
 
 ITS configures the repository and build process for a course image.
@@ -164,7 +179,7 @@ FROM ghcr.io/ucsd-ets/datascience-notebook:2024.4-stable
 
 1. Create a `dev` or `test` branch and commit to it. The build publishes the
    branch's tag, such as `{image}:test`.
-2. Test the branch image as described in
+2. Test the branch image. See
    [Testing a Custom Image on DSMLP](#testing-a-custom-image-on-dsmlp).
 3. When the image works, open a pull request into the branch the course uses.
 4. Have a team member review the pull request.
@@ -173,16 +188,16 @@ FROM ghcr.io/ucsd-ets/datascience-notebook:2024.4-stable
 ### Preserving a Build with a Git Tag
 
 A branch tag is overwritten on every push. A git tag such as `fa24` freezes that
-build, and the course can then be pointed at it, as described in
+build, and the course can then be pointed at it. See
 [Pinning a Workspace](standard-images.md#pinning-a-workspace).
 
 ### Instructor and ITS Responsibilities
 
 For course-specific customization, the instructor or a designated Technical
 Point of Contact leads installation, configuration, and student use. ITS staff
-support this work through 1:1 Consultation, described in
-[Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation),
-rather than by building the image.
+support this work through 1:1 Consultation rather than by building the image.
+See
+[Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation).
 
 ## Testing a Custom Image on DSMLP
 
@@ -228,7 +243,7 @@ finish without either timeout. `-B` queues the job and returns without waiting
 for it:
 
 ```bash
-launch.sh -i <image>:<tag> -B -- sleep 10
+launch.sh -i <image>:<tag> -W <workspace-id> -B -- sleep 10
 ```
 
 The pull has finished when `kubectl get pods` shows the job as `Completed`. The
@@ -240,7 +255,7 @@ faster but not instant. Then launch the session as usual.
 
 A final `CMD ["/bin/bash"]` in the Dockerfile suppresses the notebook server
 and starts a plain shell instead. A service in the pod is still reachable with
-`kubectl port-forward pods/<POD_NAME> <PORT>:8888`, as described in
+`kubectl port-forward pods/<POD_NAME> <PORT>:8888`. See
 [Reaching a Notebook or a Service](../access/the-login-node.md#reaching-a-notebook-or-a-service).
 
 ### Final Test from Datahub

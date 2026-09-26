@@ -57,7 +57,7 @@ conversions.
 
 Running an editor's server component on `dsmlp-login` is not permitted. Running
 VS Code directly on the login node is specifically prohibited. The supported
-configuration places VS Code in a container, as described in
+configuration places VS Code in a container. See
 [Remote Editor Setup](remote-editor-setup.md). Automated jobs find and stop VS
 Code and other remote-editor processes on the login node.
 
@@ -138,9 +138,9 @@ was set.
 A remote editor requires a key pair. VS Code connects through a ProxyCommand
 that cannot prompt for a password, and the editor's connection terminates
 inside the container rather than on the login node. `launch.sh -H` carries the
-key installed on the login node into the container at launch. The Windows
-commands, the local file permissions, the SSH agent, and the `IdentityFile`
-directive are documented in [The Key Pair](remote-editor-setup.md#the-key-pair).
+key installed on the login node into the container at launch.
+[The Key Pair](remote-editor-setup.md#the-key-pair) covers the Windows commands,
+the local file permissions, the SSH agent, and the `IdentityFile` directive.
 
 ## Running a Launch Script over SSH
 

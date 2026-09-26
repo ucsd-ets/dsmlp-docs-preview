@@ -41,10 +41,10 @@ ITS documentation gives these examples:
 
 For instruction and coursework, email
 [datahub@ucsd.edu](mailto:datahub@ucsd.edu). For research, email Research IT at
-[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu). Restricted and licensed
-datasets are covered in
-[Restricted & Licensed Datasets](../workspaces-and-storage/datasets.md#restricted--licensed-datasets),
-and other support routes in [Getting Help](getting-help.md).
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
+See
+[Restricted & Licensed Datasets](../workspaces-and-storage/datasets.md#restricted--licensed-datasets).
+[Getting Help](getting-help.md) lists other support routes.
 
 ## Appropriate Use
 
@@ -62,7 +62,7 @@ relax it.
 Access is granted to an individual, not to that individual's collaborators. An
 account, its home directory, and any dataset granted with it are for the account
 holder's own use and are not passed on. The workspace's `public/` and `teams/`
-areas are the sanctioned route for sharing, as described in
+areas are the sanctioned route for sharing. See
 [Inside the Workspace](../workspaces-and-storage/moving-and-sharing-data.md#inside-the-workspace).
 
 ## Hosting Externally Available Services
@@ -71,9 +71,9 @@ Datahub and DSMLP should not be used to host externally available services or
 applications, except as required for coursework or projects. A class demo, a
 project web application, or a service an assignment requires is in scope. A
 production service, a persistent public endpoint, or anything whose outage
-someone outside the University would notice is out of scope. Access to a service
-running in a container is described in
-[Reaching a Notebook or a Service](../access/the-login-node.md#reaching-a-notebook-or-a-service).
+someone outside the University would notice is out of scope.
+[Reaching a Notebook or a Service](../access/the-login-node.md#reaching-a-notebook-or-a-service)
+describes access to a service running in a container.
 
 ### Availability and Reliability
 
@@ -93,55 +93,54 @@ of the prohibition in
 Sessions that are not in use are expected to be stopped. GPU cards are assigned
 to containers exclusively, and a card attached to an idle session is unusable by
 any other user. Logging out, closing the tab, or closing a laptop leaves a
-session running; stop it with **File → Hub Control Panel → Stop My Server**, as
-described in
-[Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session), or
-delete the pod from the login node.
+session running; stop it with **File → Hub Control Panel → Stop My Server**, or
+delete the pod from the login node. See
+[Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session).
 
 Idle culling is not a substitute for stopping a session. On a quiet cluster, the
-delay before it acts is measured in hours. The idle criteria are described in
-[What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle).
+delay before it acts is measured in hours.
+[What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle)
+describes the idle criteria.
 
 ### Debugging on CPU
 
 Code is expected to be debugged on CPU before a GPU is requested. PyTorch and
-TensorFlow both switch easily between CPU and GPU. The ways to start a session
-are described in [Access](../access/README.md).
+TensorFlow both switch easily between CPU and GPU. [Access](../access/README.md)
+describes the ways to start a session.
 
 ### Sizing Resource Requests
 
 Requests are expected to name the smallest resources that work: the smallest GPU
 class a model fits in, the memory a job needs rather than the maximum permitted,
 and the hours the job actually takes. A larger GPU class is not faster for a
-model that already fits in a smaller one. The classes are described in
-[GPU Classes](../gpu-access/gpu-classes.md).
+model that already fits in a smaller one.
+[GPU Classes](../gpu-access/gpu-classes.md) describes the classes.
 
 ### Computation on the Login Node
 
 Running computation on the login node, such as a training script, a build, or a
 long analysis, is prohibited; the login node is for launching jobs and moving
-files, as described in
+files. See
 [What the Login Node Is For](../access/the-login-node.md#what-the-login-node-is-for).
 
 ### Personal Copies of Shared Datasets
 
 A shared dataset is expected to be read where it lives rather than copied. A
-per-student copy of a large corpus exhausts a home quota. Shared datasets are
-described in
-[Datasets](../workspaces-and-storage/datasets.md).
+per-student copy of a large corpus exhausts a home quota.
+[Datasets](../workspaces-and-storage/datasets.md) describes shared datasets.
 
 ### Canceling Unused Bookings
 
 A booking that will not be used is expected to be canceled. Canceling at least
-24 hours ahead costs nothing, and the capacity returns to the pool. Penalties are
-described in
-[The Cancellation Penalty](../gpu-access/service-units-and-budgets.md#the-cancellation-penalty).
+24 hours ahead costs nothing, and the capacity returns to the pool.
+[The Cancellation Penalty](../gpu-access/service-units-and-budgets.md#the-cancellation-penalty)
+describes penalties.
 
 ### Peak GPU Demand
 
 Demand for GPUs may exceed capacity at peak hours during 10th and Finals Weeks,
 or at assignment deadlines. Work shifted to a daytime or off-peak hour costs
-less, as described in
+less. See
 [Peak & Off-Peak Hours](../gpu-access/service-units-and-budgets.md#peak--off-peak-hours).
 
 ## Self-Supporting Programs
@@ -152,8 +151,8 @@ such as MAS and MBA may use Datahub and DSMLP for coursework or projects.
 requires ITS to recover the associated direct and indirect costs. To discuss
 cost recovery, email [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
 
-Charges for storage are set out in
-[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas)
+sets out charges for storage.
 
 See also: [Mounting External Storage](../workspaces-and-storage/your-files-and-quotas.md#mounting-external-storage)
 
@@ -170,6 +169,6 @@ as soon as is practical.
 ### Research Cluster Maintenance
 
 The Research Cluster maintenance window is quarterly, at the break between
-terms, with about 7 days' notice. All running jobs are terminated. The effect on
-sessions is described in
-[Maintenance Closures](../gpu-access/what-ends-a-session.md#maintenance-closures).
+terms, with about 7 days' notice. All running jobs are terminated.
+[Maintenance Closures](../gpu-access/what-ends-a-session.md#maintenance-closures)
+describes the effect on sessions.

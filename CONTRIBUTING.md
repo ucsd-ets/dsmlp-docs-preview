@@ -33,10 +33,11 @@ A few conventions the pages follow. Match them if you are proposing wording:
 - **"Workspace", not "usage group".** A workspace is the unit a person has
   access to; "usage group" is internal vocabulary and does not appear in
   reader-facing pages.
-- **Third person, present tense.** Write about the system and the people who
-  use it, not to the reader: "A launch creates a container", not "you launch
-  a container". Instructions are imperative: "Stop the session before
-  launching another."
+- **"You" for the reader, present tense.** Instructions are imperative:
+  "Stop the session before launching another." Otherwise address the reader
+  as "you": "You can have one Datahub session running at a time." Name anyone
+  else who acts, such as ITS or the instructor, and do not write "we" for
+  ITS.
 - **Headings name a topic.** A noun phrase such as "Idle Culling" or "Stopping
   a Session", not a sentence, a question or a slogan.
 - **Warnings are callouts.** `> [!WARNING]` or `> [!CAUTION]` for anything that

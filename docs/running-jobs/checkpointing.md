@@ -27,18 +27,18 @@ generally leaves running jobs alone.
 
 Preemption and idle culling are announced on the pod, where a running program
 can read them. The reservation controller marks a session it may need to stop
-minutes before stopping it, as described in
+minutes before stopping it. See
 [The Termination Warning](#the-termination-warning). The idle culler records a
-status and a projected deadline in the same way, as described in
+status and a projected deadline in the same way. See
 [Idle Culler Annotations](#idle-culler-annotations).
 
 ## Checkpointing
 
 A **checkpoint** is a saved copy of enough state to resume a run, written on a
 chosen schedule. For a training run, that usually means the model weights, the
-optimizer state, and the epoch or step counter. The full set of components is
-listed in
-[What a Resumable Checkpoint Contains](#what-a-resumable-checkpoint-contains).
+optimizer state, and the epoch or step counter.
+[What a Resumable Checkpoint Contains](#what-a-resumable-checkpoint-contains)
+lists the full set of components.
 A job that cannot resume from a checkpoint restarts from the beginning after an
 interruption.
 
@@ -47,9 +47,9 @@ interruption.
 Write checkpoints to a home directory. Home persists between containers, and the
 container and the login node share a filesystem, so a checkpoint written by a
 job is readable from the login node after the pod is gone. A path inside the
-container that is not a mounted directory is lost with the pod. Directory
-locations are described in
-[Where Files Live](../workspaces-and-storage/your-files-and-quotas.md#where-files-live).
+container that is not a mounted directory is lost with the pod.
+[Where Files Live](../workspaces-and-storage/your-files-and-quotas.md#where-files-live)
+describes directory locations.
 
 Do not write checkpoints into a shared or course-wide directory unintentionally.
 Its quota serves the whole class, not one run.
@@ -70,7 +70,7 @@ be supplied by hand at each restart.
 
 ### Number of Checkpoints Kept
 
-Checkpoints are large, and home directories have quotas, as described in
+Checkpoints are large, and home directories have quotas. See
 [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
 Bound the number of checkpoints kept. The last two and the best one are usually
 enough. Delete an old checkpoint only after the new one is complete. A job that
@@ -161,7 +161,7 @@ set from `C` alone. A common target is checkpoint overhead below about 5% of ste
 time, which for a synchronous save means an interval of roughly `20 × C`. That
 interval covers interruptions that are not announced, such as a node failure, an
 out-of-memory kill, or a collective that times out. Announced interruptions are
-covered by the warning described in
+covered by the warning in
 [The Termination Warning](#the-termination-warning). A checkpoint written on the
 warning limits the loss to one step rather than one interval.
 
@@ -211,8 +211,9 @@ capacity the cluster is. The mark can still appear during the guarantee, when
 the booking that needs the capacity starts after the guarantee ends. The warning
 then states that the reclaim is queued for the moment the guarantee ends. A
 warning of this kind arrives while the guarantee is still running, which leaves
-the most time to checkpoint. The end of a guaranteed window is described in
-[End of a Reservation Window](../gpu-access/what-ends-a-session.md#end-of-a-reservation-window).
+the most time to checkpoint.
+[End of a Reservation Window](../gpu-access/what-ends-a-session.md#end-of-a-reservation-window)
+describes the end of a guaranteed window.
 
 A job is not stopped at `guaranteed-until`. It keeps running until another
 reservation needs the capacity, so exiting at the guarantee gives up run time
@@ -484,7 +485,7 @@ for a preemption the warning comes earlier. Checkpoint on the warning first.
 ### Selecting the Checkpoint to Load
 
 Load the newest complete checkpoint, which is not always the newest path. The
-marker written by the save path distinguishes the two, as described in
+marker written by the save path distinguishes the two. See
 [Atomic Checkpoint Writes](#atomic-checkpoint-writes). On any load error, fall
 back to the previous checkpoint. That fallback is the reason for keeping more
 than one checkpoint.
@@ -493,8 +494,8 @@ than one checkpoint.
 
 Restore everything that was saved, in particular the scheduler and the data
 position. A resume that restores only the weights is visible in the loss curve.
-The components are listed in
-[What a Resumable Checkpoint Contains](#what-a-resumable-checkpoint-contains).
+[What a Resumable Checkpoint Contains](#what-a-resumable-checkpoint-contains)
+lists the components.
 
 ### Loading with `torch.load`
 
@@ -593,10 +594,10 @@ A file in a home directory persists after the pod is deleted. For unattended
 work, redirect output into one:
 
 ```bash
-launch-scipy-ml.sh -g 1 -B -- bash -c 'python -u ./train.py > run.log 2>&1'
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -B -- bash -c 'python -u ./train.py > run.log 2>&1'
 ```
 
 `run.log` is then readable from the login node while the job is still running,
-and after it is gone. Batch mode is described in
-[Job Modes](job-modes-and-limits.md#job-modes), and monitoring a job in progress
-in [Watching a Running Job](watching-your-job.md).
+and after it is gone. [Job Modes](job-modes-and-limits.md#job-modes) describes
+batch mode. [Watching a Running Job](watching-your-job.md) describes monitoring
+a job in progress.

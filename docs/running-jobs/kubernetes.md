@@ -15,8 +15,9 @@ and gets none of the rest. Use `launch.sh` wherever it can do the job.
 
 ITS supports the platform, not arbitrary Kubernetes. Before substantial work on
 a set of hand-written manifests begins, describe to ITS what the manifests are
-meant to do. A supported route often exists. Requests to ITS are described in
-[Administrative Requests](../reference/getting-help.md#administrative-requests).
+meant to do. A supported route often exists.
+[Administrative Requests](../reference/getting-help.md#administrative-requests)
+describes requests to ITS.
 
 ## The Namespace & `kubectl`
 
@@ -143,9 +144,9 @@ routed like a launched one.
 Pods created from a manifest draw on the same limits as every other pod in the
 namespace. The namespace's totals cover everything running at once, so a
 database pod and a notebook pod share one allowance. A shared allowance is the
-usual reason the second pod does not schedule. Limits on concurrent pods are
-described in
-[Running Several Jobs at Once](job-modes-and-limits.md#running-several-jobs-at-once).
+usual reason the second pod does not schedule.
+[Running Several Jobs at Once](job-modes-and-limits.md#running-several-jobs-at-once)
+describes limits on concurrent pods.
 
 ### Privileges in Manifest Pods
 
@@ -202,8 +203,8 @@ requests and the node assignment.
 
 Kubernetes keeps events for about an hour by default, so a session that ended
 overnight may have no events left to show by morning. For unattended work, a
-log file is the durable record, not the event stream. Logging is covered in
-[Checkpointing & Logging Long Runs](checkpointing.md).
+log file is the durable record, not the event stream.
+[Checkpointing & Logging Long Runs](checkpointing.md) covers logging.
 
 ## Ordinary Pod Events
 
@@ -217,15 +218,15 @@ cluster.
 | `FailedScheduling` | No node could take the pod. For a GPU pod, this event is normal until the reservation system admits the pod ([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)). |
 | `Pulling`, `Pulled` | The image is being fetched. A large custom image can spend minutes in this state. |
 | `Started`, `Killing` | `Started`: the container started. `Killing`: the container is being stopped. |
-| `OOMKilled` (pod status) | The memory limit was reached. Memory requests and limits are described in [Resource Requests and Limits](launch-sh-reference.md#resource-requests-and-limits). |
+| `OOMKilled` (pod status) | The memory limit was reached. [Resource Requests and Limits](launch-sh-reference.md#resource-requests-and-limits) describes memory requests and limits. |
 | `DeadlineExceeded` (pod status) | The runtime limit was reached. See [The Runtime Limit](job-modes-and-limits.md#the-runtime-limit). |
 
 ## Reservation Events
 
 The reservation system writes 18 events of its own about GPU pods. Each is a
 full sentence that states what happened and what to do, and the **From** column
-of `kubectl describe pod` reads `gpu-reservation-controller`. All 18 are
-defined in [Reservation Events](../reference/reservation-events.md):
+of `kubectl describe pod` reads `gpu-reservation-controller`.
+[Reservation Events](../reference/reservation-events.md) defines all 18:
 
 - While a pod waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,

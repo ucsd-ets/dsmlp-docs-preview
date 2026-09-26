@@ -142,9 +142,9 @@ not change the workspace length cap either; see
 
 A manager may request a change to any of these by ticket to
 [datahub@ucsd.edu](mailto:datahub@ucsd.edu). The ticket states what the work
-is and the dates on which it matters. Requests are covered in
-[Administrative Requests](getting-help.md#administrative-requests) and, for
-quotas, in
+is and the dates on which it matters.
+[Administrative Requests](getting-help.md#administrative-requests) covers
+requests. For quotas, see
 [Requesting a Quota Increase](../gpu-access/quotas-and-availability.md#requesting-a-quota-increase).
 
 ## Team Mode Cancellation Charges
@@ -173,8 +173,8 @@ Quotas are date-aware. A course's share may be raised for exactly the span of a
 project deadline and revert automatically afterward. The limit in force in a
 given week is therefore not necessarily the one quoted at provisioning. The
 **Effective GPU Limits by Group** report shows the limit in force on each day.
-Date-ranged changes are covered in
-[Date-Based Quota Changes](../gpu-access/quotas-and-availability.md#date-based-quota-changes).
+[Date-Based Quota Changes](../gpu-access/quotas-and-availability.md#date-based-quota-changes)
+covers date-ranged changes.
 
 ## Cluster-Wide Scope
 
@@ -208,39 +208,40 @@ workspace's own reservations on **Group Reservations**. An example is a
 workspace that reached its ceiling every evening of week 7, with a project due
 in week 9. A survey of student deadlines a few weeks ahead allows cluster
 administrators to raise a quota in advance rather than discover the surge as it
-happens. Requests are covered in
-[Administrative Requests](getting-help.md#administrative-requests).
+happens. [Administrative Requests](getting-help.md#administrative-requests)
+covers requests.
 
 ### Moving Usage Off Peak
 
 Where reserved hours cluster in the evenings, a manager can tell students that
-off-peak time is discounted and generally obtainable. Off-peak discounts are
-covered in
-[Peak & Off-Peak Hours](../gpu-access/service-units-and-budgets.md#peak--off-peak-hours).
+off-peak time is discounted and generally obtainable.
+[Peak & Off-Peak Hours](../gpu-access/service-units-and-budgets.md#peak--off-peak-hours)
+covers off-peak discounts.
 
 ## Limitations of the Reports
 
 The reports are not a bill. Service Units divide capacity and do not cost
-money. Storage charges are covered in
-[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
+money.
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas)
+covers storage charges.
 
 The reports are not a live availability view. What the cluster is holding at
-the current moment is shown on the status page, covered in
+the current moment is shown on the status page. See
 [The Status Page](../gpu-access/quotas-and-availability.md#the-status-page).
 
-The reports are not controls. A manager's actions are those listed in
+The reports are not controls. A manager's actions are those in
 [What a Manager May Do](#what-a-manager-may-do). Every other change is
 administrative and is requested by ticket.
 
 A report shows contention but does not resolve it. A course whose quota never
 fits its roster has a provisioning problem rather than a scheduling one. Report
-such a course to ITS during the term rather than after it. Provisioning is
-covered for courses in
-[Teaching with Datahub and DSMLP](../instructor-or-ta.md)
-and for labs in [Setting Up a Research Lab](../faculty-research-lab.md).
+such a course to ITS during the term rather than after it.
+[Teaching with Datahub and DSMLP](../instructor-or-ta.md) covers provisioning
+for courses. [Setting Up a Research Lab](../faculty-research-lab.md) covers
+provisioning for labs.
 
 Zero availability in a class is not an outage, and a cohort can be fully drawn
-while an individual group still has headroom on paper, as described in
+while an individual group still has headroom on paper. See
 [Cohorts](../gpu-access/quotas-and-availability.md#cohorts).
 
 ## Grader Account, Teams, and Technical Points of Contact
@@ -252,16 +253,18 @@ designation are not privilege tiers.
 
 Each course receives one shared grader account for nbgrader and formgrader. It
 holds write permission on the workspace's `public/` directory. An instructor's
-own account does not inherit its powers. The account is covered in
-[Notebook Grading Workflow](../grading/notebook-grading-workflow.md).
+own account does not inherit its powers.
+[Notebook Grading Workflow](../grading/notebook-grading-workflow.md) covers the
+shared grader account.
 
 ### Teams
 
 A team is a Unix group, not a role. `launch.sh -G list` prints the teams an
 account belongs to, and `-G <teamid>` launches with that team's data visible.
 Team membership changes which files are readable. It does not change what a
-member may do. Team storage is covered in
-[Team Directories](../workspaces-and-storage/your-files-and-quotas.md#team-directories).
+member may do.
+[Team Directories](../workspaces-and-storage/your-files-and-quotas.md#team-directories)
+covers team storage.
 
 See also: [Team Mode](../gpu-access/reservations.md#team-mode)
 
@@ -269,6 +272,6 @@ See also: [Team Mode](../gpu-access/reservations.md#team-mode)
 
 A TPOC is the person a course nominates to lead its customization work. The
 designation is not a permission. It determines whom ITS works with, not what
-the TPOC can do in the interface. Consultation appointments open to TPOCs are
-covered in
-[Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation).
+the TPOC can do in the interface.
+[Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation)
+covers consultation appointments open to TPOCs.

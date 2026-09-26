@@ -14,9 +14,9 @@ instead of flags.
 | Batch | `-B -- <command>` | No interactive session | The command finishes, or the runtime limit is reached |
 
 ```bash
-launch-scipy-ml.sh -g 1                        # interactive
-launch-scipy-ml.sh -g 1 -c 4 -b                # background, reconnect later
-launch-scipy-ml.sh -g 1 -B -- python train.py  # batch, runs and exits
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium                        # interactive
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -c 4 -b                # background, reconnect later
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -B -- python train.py  # batch, runs and exits
 ```
 
 ### Interactive Pods
@@ -34,12 +34,12 @@ Run work that must survive a disconnection with `-b` or `-B`.
 
 `-b` creates the pod and returns a prompt on the login node. The session is not
 placed inside the pod. The launch output names the pod, as in
-`pod/ubellur-27068 created`, and the pod is entered and deleted by that name:
+`pod/<username>-27068 created`, and you enter and delete the pod by that name:
 
 ```bash
-kubesh ubellur-27068               # enter the pod
-kubectl get pods                   # list running pods and their IDs
-kubectl delete pod ubellur-27068   # delete the pod
+kubesh <username>-27068               # enter the pod
+kubectl get pods                      # list running pods and their IDs
+kubectl delete pod <username>-27068   # delete the pod
 ```
 
 Inside, a background pod behaves like an interactive launch, with one
@@ -51,10 +51,12 @@ with `exit` or `CONTROL+D` leaves everything started in the pod running.
 > logout, and it does not stop when its work is finished.
 
 Delete pods that are no longer in use.
+[Checking On a Detached Job](watching-your-job.md#checking-on-a-detached-job)
+shows how to read a pod's status and output.
 
 Backgrounding does not exempt a job from idle culling. The test is whether the
 GPU is doing anything, not whether a session is attached. A background pod whose
-job finished at 2 AM is culled like any other idle GPU container, as described in
+job finished at 2 AM is culled like any other idle GPU container. See
 [Background and Batch Jobs](../gpu-access/what-ends-a-session.md#background-and-batch-jobs).
 
 ### Backgrounding a Pod Versus Backgrounding a Process
@@ -68,8 +70,8 @@ The two can be combined. A long run is usually a background pod with a
 backgrounded process inside it:
 
 ```bash
-launch-scipy-ml.sh -g 1 -c 4 -b     # then: kubesh <pod-id>
-python run.py all > log.txt 2>&1 &  # inside the pod
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -c 4 -b  # then: kubesh <pod-id>
+python run.py all > log.txt 2>&1 &                                     # inside the pod
 exit
 ```
 
@@ -77,10 +79,26 @@ Inside the pod, `ps` lists processes and `kill <pid>` stops one. A process
 backgrounded with `&` inside an interactive pod, launched without `-b`, ends
 with the pod.
 
-`tmux` is sometimes suggested as an alternative to `-b`, and course material
-recommends it. It keeps a shell session alive inside a container that already
-persists, which is a different purpose from `-b`. Its presence in the standard
-images is not confirmed.
+### Shell Sessions with `tmux` or `screen`
+
+The standard images include `tmux` and `screen`. Start either one inside the
+container, and run the work in its session. The work keeps running when the SSH
+connection to the login node drops, and when the login node's connection to the
+container drops. The second connection can drop during a long session even
+while the first holds.
+
+To return to the session, enter the pod again and reattach:
+
+```bash
+kubesh <pod-id>   # enter the pod
+tmux attach       # reattach a tmux session
+screen -r         # or reattach a screen session
+```
+
+Course material sometimes recommends `tmux` in place of `-b`. Neither `tmux`
+nor `screen` keeps the container running, so work in either one lasts only as
+long as the container. Only `-b` or `-B` keeps the container itself running
+after the login-node connection ends.
 
 ### Batch Jobs
 
@@ -88,7 +106,7 @@ images is not confirmed.
 no shell, and nothing to reconnect to. The command to run follows `--`:
 
 ```bash
-launch-scipy-ml.sh -g 1 -B -- python ./train.py
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -B -- python ./train.py
 ```
 
 The launcher confirms submission and names the pod. The pod is then managed with
@@ -115,11 +133,11 @@ directory. The home directory is on the same filesystem as the login node, so
 the file outlives the container:
 
 ```bash
-launch-scipy-ml.sh -g 1 -B -- bash -c 'python ./train.py > out.txt 2>&1'
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -B -- bash -c 'python ./train.py > out.txt 2>&1'
 ```
 
-Logging for long runs is covered in
-[Checkpointing & Logging Long Runs](checkpointing.md).
+[Checkpointing & Logging Long Runs](checkpointing.md) covers logging for long
+runs.
 
 ### Running a Script Non-Interactively
 
@@ -128,7 +146,8 @@ terminal that submitted it, and exits. With the launcher's absolute path, a job
 can be submitted from a personal machine in one command:
 
 ```bash
-ssh <user>@dsmlp-login.ucsd.edu /opt/launch-sh/bin/launch.sh -c 8 -m 16 -g 1 \
+ssh <user>@dsmlp-login.ucsd.edu /opt/launch-sh/bin/launch.sh -W DSC40_FA26_001 \
+    -c 8 -m 16 -g 1 -l gpu-class=medium \
     -i <image> -f ${HOME}/myproject/run-commands.sh
 ```
 
@@ -146,10 +165,9 @@ alongside a Datahub session. Nothing has to be stopped before another job is
 started, and launching from `dsmlp-login` while a browser session is open is not
 a conflict.
 
-Datahub itself allows a member one running session, as described in
-[Concurrent Datahub Sessions](../access/datahub-in-the-browser.md#concurrent-datahub-sessions),
-so switching to a different course environment in the browser requires stopping
-the running session.
+Datahub itself allows a member one running session, so switching to a different
+course environment in the browser requires stopping the running session. See
+[Concurrent Datahub Sessions](../access/datahub-in-the-browser.md#concurrent-datahub-sessions).
 
 ### Aggregate Resource Limits
 
@@ -165,7 +183,7 @@ instead of filing a request. `kubectl get pods` lists what is running, and
 `kubectl delete pod <pod-id>` stops a pod.
 
 Every running pod holds its resources whether or not it is doing anything. A
-pod that holds a GPU draws Service Units for as long as it runs, as described in
+pod that holds a GPU draws Service Units for as long as it runs. See
 [On-Demand Lease Charges](../gpu-access/service-units-and-budgets.md#on-demand-lease-charges).
 
 See also: [Limits That Can Stop a Launch](../gpu-access/quotas-and-availability.md#limits-that-can-stop-a-launch)
@@ -182,8 +200,7 @@ stops, whatever it was doing, and `kubectl get pods` reports `DeadlineExceeded`.
 | Longer than 12 hours | By request to [datahub@ucsd.edu](mailto:datahub@ucsd.edu), stating the purpose |
 
 The runtime limit also applies to a session running under a booking, however
-long the booking. `launch.sh` is scheduled to be corrected for this in Fall
-2026; see
+long the booking. See
 [Reservation Length and Session Runtime](../gpu-access/reservations.md#reservation-length-and-session-runtime).
 
 On the Research Cluster, the same figures apply, and extension requests go to
@@ -197,9 +214,9 @@ to, not how long it may run.
 
 `DeadlineExceeded` means the container reached its runtime limit. It does not
 indicate a fault in the code. Anything written to a home directory survives, and
-anything held only in memory is lost. `DeadlineExceeded` and other pod statuses
-are listed in
-[Error Messages](../reference/error-messages.md).
+anything held only in memory is lost.
+[Error Messages](../reference/error-messages.md) lists `DeadlineExceeded` and
+other pod statuses.
 
 ### Raising the Runtime Limit
 
@@ -209,13 +226,13 @@ variable in the shell before launching:
 
 ```bash
 export K8S_TIMEOUT_SECONDS=$(( 3600 * 12 ))
-launch-scipy-ml.sh -g 1 -b
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -b
 ```
 
 The variable is read at launch and not afterwards. The deadline is fixed when
 the pod is created, and a container that is already running cannot be extended.
 
-A personal launch script can carry the setting, as described in
+A personal launch script can carry the setting. See
 [Copying & Editing a Launch Script](#copying--editing-a-launch-script).
 
 The runtime limit does not set what a GPU session is charged. The charge comes
@@ -238,9 +255,9 @@ Idle culling can end a job well within its runtime limit: a GPU container that
 stops using its GPU is reclaimed, after a warning.
 
 Scheduled maintenance is separate from all three. The schedules are published
-under [Scheduled Maintenance](../reference/policy.md#scheduled-maintenance), and
-the effect on sessions is described in
-[Maintenance Closures](../gpu-access/what-ends-a-session.md#maintenance-closures).
+under [Scheduled Maintenance](../reference/policy.md#scheduled-maintenance).
+[Maintenance Closures](../gpu-access/what-ends-a-session.md#maintenance-closures)
+describes the effect on sessions.
 Instructional maintenance generally leaves running jobs alone. Research Cluster
 maintenance terminates all running jobs. Do not start a 12-hour run that would
 overlap a Research Cluster maintenance window.
@@ -252,8 +269,8 @@ Runs longer than 12 hours are arranged by request, not by a flag. Email
 [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) on the Research Cluster,
 stating what the job is and roughly how long it needs.
 
-A job that checkpoints can be restarted. Checkpointing is covered in
-[Checkpointing & Logging Long Runs](checkpointing.md).
+A job that checkpoints can be restarted.
+[Checkpointing & Logging Long Runs](checkpointing.md) covers checkpointing.
 
 A reservation holds GPU capacity for multi-day work, but does not lift the
 runtime limit. See
@@ -271,7 +288,7 @@ launcher. `launch-scipy-ml.sh` and `launch-datascience.sh` each export several
 ```bash
 export K8S_NUM_CPU=8
 export K8S_GB_MEM=32
-launch-scipy-ml.sh
+launch-scipy-ml.sh -W DSC40_FA26_001
 ```
 
 A value given on the command line overrides the variable. A personal default of
@@ -315,7 +332,7 @@ A minimal script can also be written from scratch:
 export K8S_NUM_CPU=4
 export K8S_GB_MEM=16
 export K8S_TIMEOUT_SECONDS=$(( 3600 * 12 ))
-exec /opt/launch-sh/bin/launch.sh -W DSC180A_FA25_A00 -g 1 -l gpu-class=medium "$@"
+exec /opt/launch-sh/bin/launch.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium "$@"
 ```
 
 The final `"$@"` passes anything typed after the script name through to the
@@ -326,7 +343,7 @@ keeps the `-W` flag.
 
 Keep the script in the home directory. The home directory persists between
 containers and is visible from both the login node and inside the pod. Anything
-written elsewhere in the container does not survive it, as described in
+written elsewhere in the container does not survive it. See
 [Where Files Live](../workspaces-and-storage/your-files-and-quotas.md#where-files-live).
 
 A personal copy of a wrapper is not a supported interface. When ITS changes a

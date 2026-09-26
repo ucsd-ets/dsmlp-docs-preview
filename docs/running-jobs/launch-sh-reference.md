@@ -1,10 +1,11 @@
 # `launch.sh` Reference
 
 This page lists the options `launch.sh` accepts, the resources it provides by
-default, and how the resource values passed to it are applied. Work that
-continues after a terminal session ends is covered in
-[Job Modes](job-modes-and-limits.md#job-modes), and how long a
-container may run in [The Runtime Limit](job-modes-and-limits.md#the-runtime-limit).
+default, and how the resource values passed to it are applied.
+[Job Modes](job-modes-and-limits.md#job-modes) covers work that continues after
+a terminal session ends.
+[The Runtime Limit](job-modes-and-limits.md#the-runtime-limit) covers how long a
+container may run.
 
 ## Location and Invocation
 
@@ -16,14 +17,16 @@ under the member's own UID, and no flag grants root or sudo
 ### Wrapper Scripts
 
 Most work goes through a wrapper. `launch-scipy-ml.sh` starts the GPU-capable
-image and `launch-datascience.sh` starts the CPU image. The images are described
-in [Standard Images, Tags, and Pinning](../environments/standard-images.md). Each
+image and `launch-datascience.sh` starts the CPU image.
+[Standard Images, Tags, and Pinning](../environments/standard-images.md)
+describes the images. Each
 wrapper sets environment variables and then hands off to `launch.sh`, so every
 `launch.sh` flag behaves identically through a wrapper.
 
 Every flag also has an environment-variable equivalent, which is the mechanism
-the wrappers use. The equivalents are covered in
-[Configuring Without Flags](job-modes-and-limits.md#configuring-without-flags).
+the wrappers use.
+[Configuring Without Flags](job-modes-and-limits.md#configuring-without-flags)
+covers the equivalents.
 
 ### Non-Interactive Submission
 
@@ -32,11 +35,12 @@ absolute path, because `ssh` runs a non-login shell in which the launcher is not
 necessarily on the path.
 
 ```bash
-ssh <user>@dsmlp-login.ucsd.edu /opt/launch-sh/bin/launch.sh -c 8 -m 16 -g 1 \
+ssh <user>@dsmlp-login.ucsd.edu /opt/launch-sh/bin/launch.sh -W DSC40_FA26_001 \
+    -c 8 -m 16 -g 1 -l gpu-class=medium \
     -i <image> -f ${HOME}/myproject/run-commands.sh
 ```
 
-The VS Code `ProxyCommand` described in
+The VS Code `ProxyCommand` in
 [Remote Editor Setup](../access/remote-editor-setup.md) uses the same form.
 
 ## Defaults and Resource Tiers
@@ -72,8 +76,9 @@ that does not schedule.
 
 `-m 64` is not a valid request for a single container, although 64 GB is the
 namespace total. The namespace allowance may be spent across several
-containers, not in one. Requests for the third tier are made as described in
-[Administrative Requests](../reference/getting-help.md#administrative-requests).
+containers, not in one.
+[Administrative Requests](../reference/getting-help.md#administrative-requests)
+covers requests for the third tier.
 
 The GPU default is a limit per account: 1 GPU at a time, across every pod the
 account runs. It applies on top of the reservation system's limits, so a booking
@@ -182,9 +187,9 @@ See also: [Belonging to Several Workspaces](../workspaces-and-storage/what-a-wor
 
 ### Image Pull Policy
 
-For an image under development, as described in
-[Building & Publishing a Custom Image](../environments/building-a-custom-image.md),
-pass `-i <image> -P Always`. Without `-P Always`, a node already holding that
+For an image under development, pass `-i <image> -P Always`. See
+[Building & Publishing a Custom Image](../environments/building-a-custom-image.md).
+Without `-P Always`, a node already holding that
 tag keeps using its copy.
 
 `-P` passes its value to Kubernetes, which accepts only `Always`,
@@ -212,7 +217,7 @@ and name a model that backs that class in
 [GPU Class Sizes](../gpu-access/gpu-classes.md#gpu-class-sizes):
 
 ```bash
-launch-scipy-ml.sh -g 1 -l gpu-class=large -v l40s
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=large -v l40s
 ```
 
 The `-h` summary lists the model names. A pod whose model has no free GPU waits
@@ -274,7 +279,7 @@ actually requests.
 it is passed into the container untouched.
 
 ```bash
-launch-scipy-ml.sh -g 1 -B -- python train.py --epochs 50 --lr 0.01
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -B -- python train.py --epochs 50 --lr 0.01
 ```
 
 Without the separator, `launch.sh` reads `--epochs` as one of its own options

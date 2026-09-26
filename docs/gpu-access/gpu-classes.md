@@ -29,7 +29,7 @@ specifications.
 Request the smallest class the work fits within. A larger class is not faster
 for a model that already fits in a smaller one. A larger class is scarcer, so
 the wait for it is longer, and it draws more heavily on the Service Unit budget
-for every hour it is held, as described in
+for every hour it is held. See
 [Service Units & Budgets](service-units-and-budgets.md).
 
 GPU memory, not speed, determines the class. A model's parameters, its
@@ -59,13 +59,12 @@ state what the work is.
 A GPU launch requests two things: the number of GPUs and the class.
 
 ```bash
-launch-scipy-ml.sh -g 1 -l gpu-class=medium
+launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium
 ```
 
 `-g` sets the GPU count and `-l gpu-class=` sets the class. The five values are
 `xsmall`, `small`, `medium`, `large`, and `xlarge`. Always pass the
-class label on a GPU request. A GPU request without it cannot be scheduled, as
-described under
+class label on a GPU request. A GPU request without it cannot be scheduled. See
 [Missing or Misspelled Class Label](#missing-or-misspelled-class-label).
 
 > [!NOTE]
@@ -94,11 +93,11 @@ workspace was provisioned to match the work it was expected to do. An
 introductory course may see `small` or `medium`. A lab fine-tuning large models
 may see `xlarge`. A request for a class the workspace was not granted is
 refused, however idle the hardware is. Access to a further class is requested
-by the instructor or PI. The grant is part of the workspace, described in
+by the instructor or PI. The grant is part of the workspace. See
 [What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md).
 
 A member who belongs to several workspaces selects the one a launch goes into
-with `-W`, as described under
+with `-W`. See
 [Belonging to Several Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces).
 The launch uses that workspace's class grant and Service Unit budget. A GPU
 launch without `-W` is charged to `ORG_ON_DEMAND`; see
@@ -128,8 +127,8 @@ from the spawn menu. There is no control to change it.
 Where a course offers both a CPU option and a GPU option, selecting the GPU
 option also selects its class. Work that needs a different class from the one a
 course publishes is arranged with the instructor or TA. Where a course does not
-publish a GPU environment, the same access can be used from the command line,
-as described in [Working from the Command Line](../working-from-the-command-line.md).
+publish a GPU environment, the same access can be used from the command line.
+See [Working from the Command Line](../working-from-the-command-line.md).
 
 ## Missing or Misspelled Class Label
 
@@ -148,10 +147,9 @@ Read the events from `gpu-reservation-controller` beside it:
 | No event from `gpu-reservation-controller` after a minute or two, and no `gpu-class` under **Labels** | The label is missing. The reservation system never sees the pod | Delete the pod and launch again with `-l gpu-class=<class>` |
 | Any other reservation event | The reservation system is handling the pod | See [Reservation Events](../reference/reservation-events.md) |
 
-A full cluster is covered under
-[When the Cluster Is Full](quotas-and-availability.md#when-the-cluster-is-full),
-and the messages are also listed in
-[Error Messages](../reference/error-messages.md).
+[When the Cluster Is Full](quotas-and-availability.md#when-the-cluster-is-full)
+covers a full cluster. [Error Messages](../reference/error-messages.md) also
+lists the messages.
 
 ## Confirming the Allocation
 
@@ -165,9 +163,10 @@ nvidia-smi
 Run the first command when code reports that no device was found. That symptom
 is more often an environment problem than a scheduling one. For example, an
 image without CUDA tooling cannot see a card that is attached. The
-`rstudio-notebook` image derives from the CPU image and is not GPU-enabled, as
-listed under
+`rstudio-notebook` image derives from the CPU image and is not GPU-enabled. See
 [Standard Images](../environments/standard-images.md#standard-images).
+[PyTorch GPU Detection](../reference/error-messages.md#pytorch-gpu-detection)
+lists the usual causes.
 
 The second command, `nvidia-smi`, names the GPU model and how much memory it
 has. This confirms that the session is on the expected class rather than an
@@ -175,8 +174,8 @@ adjacent one. A session on a Multi-Instance GPU (MIG) slice can use only the
 slice's memory, which is less than the card's; see
 [MIG Slices](gpu-hardware.md#mig-slices).
 
-The GPU models present on each node, and how many are free, are listed on the
-page described under [The Status Page](quotas-and-availability.md#the-status-page).
+The status page lists the GPU models present on each node, and how many are
+free. See [The Status Page](quotas-and-availability.md#the-status-page).
 
 ### Checking GPU Utilization
 

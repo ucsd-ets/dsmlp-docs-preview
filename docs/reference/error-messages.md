@@ -10,7 +10,7 @@ not faults.
 | Symptom | Cause | Fix |
 |---|---|---|
 | The campus sign-on page returns repeatedly | A campus credential or Duo problem. Datahub uses standard UCSD single sign-on | The [ITS Service Desk](https://support.ucsd.edu/) handles it |
-| **Spawn failed** within moments of the start | A full disk quota. A full quota prevents a session from starting and produces no message stating the cause | Check **Services → disk-quota-service**, then clear space. See [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas) |
+| **Spawn failed** within moments of the start | A full disk quota. A full quota prevents a session from starting and produces no message stating the cause | Check **Services → disk-quota-service**, then clear space. See [Recovering from a Full Quota](../workspaces-and-storage/your-files-and-quotas.md#recovering-from-a-full-quota) |
 | **Spawn failed** within moments of the start, and the quota is fine | A package in the account's own `.local/lib`, often from a `pip install`, loads ahead of the image's version and breaks the environment | From a terminal, run `mv .local/lib .local/lib.old`. See [Customizing an Environment](../environments/customizing-your-environment.md) |
 | **Spawn failed** after a long wait | A busy cluster, or a slow download of the environment's image | Start the session again later. See ["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed) |
 | **Spawn failed**, and none of these applies | A stale profile | Run **manual-resetter** from the services dropdown. It stops the account's servers, signs the account out, and resets the profile. Files are preserved. See ["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed) |
@@ -24,7 +24,7 @@ not faults.
 > [!WARNING]
 > Closing the tab, closing the laptop, and signing out all leave the container
 > running and holding its resources. Stop a session with
-> **File → Hub Control Panel → Stop My Server**, as described in
+> **File → Hub Control Panel → Stop My Server**. See
 > [Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session).
 
 ## Launching From the Command Line
@@ -33,7 +33,7 @@ not faults.
 |---|---|---|
 | A GPU pod sits at `Pending` with a `FailedScheduling` event beginning **`0/N nodes are available`** | Normal while the reservation system decides on the pod. The reason is in the event from `gpu-reservation-controller` beside it | Read the events in `kubectl describe pod`; see [Reservation Events](reservation-events.md). With no such event and no `gpu-class` label, the label is missing; see [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label) |
 | **"GPU quota exceeded. Wanted 1 but with 1 already in use, the quota of 1 would be exceeded"** | Another pod on the same account already holds the GPU | The earlier pod is usually terminating and clears within a minute or two. If it does not clear, run `kubectl get pods`, then `kubectl delete pod <pod-id>` |
-| The launcher rejects one of the program's own options | A missing `--`. The launcher reads everything before `--` as a launcher flag | Place `--` between the launcher flags and the program: `launch-scipy-ml.sh -g 1 -B -- python train.py --epochs 50` |
+| The launcher rejects one of the program's own options | A missing `--`. The launcher reads everything before `--` as a launcher flag | Place `--` between the launcher flags and the program: `launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -B -- python train.py --epochs 50` |
 | A GPU was requested and none arrived | `-G` where `-g` was meant. `-g 1` is one GPU; `-G 1` is a team ID | Use `-g` for the GPU count. The failure does not mention capitalization. See [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags) |
 | An `-n` node selection lands somewhere else | `-n` takes a bare node number | Pass the number alone: `-n 30`, not `-n n30`. The leading `n` on the status page is not part of the value. Use `-n` only for a session launched without a booking; see [Node Selection](../running-jobs/launch-sh-reference.md#node-selection) |
 | A GPU launch with `-v` waits in `Pending` with no reservation event | `-v` was passed without `-l gpu-class=`. `-v` narrows a GPU class to one model and does not replace the class label | Delete the pod and launch again with both, for example `-l gpu-class=large -v l40s`. Use `-v` only for a session launched without a booking; see [Node Selection](../running-jobs/launch-sh-reference.md#node-selection) |
@@ -45,10 +45,10 @@ not faults.
 
 | Status | What it means | What to do |
 |---|---|---|
-| **`OOMKilled`** | The container reached its memory limit | Size the job for its guaranteed memory request rather than its limit, as described in [Resource Requests and Limits](../running-jobs/launch-sh-reference.md#resource-requests-and-limits) |
+| **`OOMKilled`** | The container reached its memory limit | Size the job for its guaranteed memory request rather than its limit. See [Resource Requests and Limits](../running-jobs/launch-sh-reference.md#resource-requests-and-limits) and [Memory Limits and `OOMKilled`](../running-jobs/watching-your-job.md#memory-limits-and-oomkilled) |
 | **`DeadlineExceeded`** | The runtime limit was reached. The status does not indicate an error in the code | The runtime limit is 6 hours by default, or 12 hours if set at launch. See [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit) |
-| **`Pending`**, at length | The pod cannot currently be scheduled. A GPU pod may be waiting for its booking to open or for an on-demand lease | Run `kubectl describe pod <pod-id>` and read the events at the bottom of the output. Reservation events are listed in [Reservation Events](reservation-events.md) |
-| **`Error`** | The status does not identify a cause | Report the pod ID, the node named in the launch output, and the approximate time of the failure, as described in [Getting Help](getting-help.md) |
+| **`Pending`**, at length | The pod cannot currently be scheduled. A GPU pod may be waiting for its booking to open or for an on-demand lease | Run `kubectl describe pod <pod-id>` and read the events at the bottom of the output. See [Reservation Events](reservation-events.md) |
+| **`Error`** | The status does not identify a cause | Report the pod ID, the node named in the launch output, and the approximate time of the failure. See [Getting Help](getting-help.md) |
 | The session ended with no status and no error | Almost certainly an idle cull, not a crash. Saved work is preserved | See [What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle) |
 
 ## Reservation Events on a Pod
@@ -136,8 +136,8 @@ the usual remedies in this order:
    ran TensorFlow earlier can leave too little GPU memory for PyTorch later in
    the same session.
 3. Move to the next GPU class up if the model does not fit, and request the
-   smallest class it fits in. Classes are listed in
-   [GPU Classes](../gpu-access/gpu-classes.md).
+   smallest class it fits in. [GPU Classes](../gpu-access/gpu-classes.md) lists
+   the classes.
 
 A run that succeeds in some sessions and fails in others of the same class can
 be landing on a card or slice with less memory. See
@@ -148,8 +148,7 @@ be landing on a card or slice with less memory. See
 `torch.cuda.is_available()` returns `False` when the session has no GPU or is
 running `rstudio-notebook`. A session has no GPU when it was launched without
 `-g` or started from a CPU-only environment on the course's menu.
-`rstudio-notebook` derives from the CPU image and is not GPU-enabled, as
-described in
+`rstudio-notebook` derives from the CPU image and is not GPU-enabled. See
 [Standard Images](../environments/standard-images.md#standard-images).
 Confirm what a session holds from inside the container:
 
@@ -158,25 +157,31 @@ nvidia-smi
 python -c "import torch; print(torch.cuda.get_device_name(0));"
 ```
 
+See also: [Confirming the Allocation](../gpu-access/gpu-classes.md#confirming-the-allocation)
+
 ### Full Storage Quota
 
 A notebook save that fails with `[Errno 122] Disk quota exceeded`, or a "disk
 quota exceeded" email, means the storage quota is full. Files deleted in the
 Jupyter interface move to `.local/share/Trash`, where they continue to count
 against the quota until the automatic purge after 7 days. A deletion in the
-Jupyter interface therefore frees no space before that purge. Storage quotas are
-described in
-[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
+Jupyter interface therefore frees no space before that purge.
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas)
+describes storage quotas.
+
+See also: [Jupyter Trash](../workspaces-and-storage/your-files-and-quotas.md#jupyter-trash), [Recovering from a Full Quota](../workspaces-and-storage/your-files-and-quotas.md#recovering-from-a-full-quota)
 
 ### Grading Validation and Metadata Errors
 
 "Failed to validate", "the source of the following cell has changed", or
 "corrupt metadata" when grading means that a read-only or autograded cell was
-copied, edited, or deleted. Recovery is described in
-[Common Grading Failures & Recovery](../grading/grading-failures.md).
+copied, edited, or deleted.
+[Common Grading Failures & Recovery](../grading/grading-failures.md) describes
+recovery.
 
 ## Resource Tiers
 
 Confusing the per-pod, per-namespace, and on-request resource tiers is the usual
-reason a job does not schedule. The tiers and their figures are listed in
-[Resource Tiers](../running-jobs/launch-sh-reference.md#resource-tiers).
+reason a job does not schedule.
+[Resource Tiers](../running-jobs/launch-sh-reference.md#resource-tiers) lists
+the tiers and their figures.

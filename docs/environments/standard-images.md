@@ -8,8 +8,8 @@ their registry names and tags, and pinning a workspace to a fixed image.
 The canonical list of the images ITS maintains, with their current tags, is the
 [`ucsd-ets/datahub-docker-stack`](https://github.com/ucsd-ets/datahub-docker-stack)
 repository. Three standard images cover most courses and projects, receive
-priority support, and serve as the starting point for a custom image, described
-in [Building & Publishing a Custom Image](building-a-custom-image.md).
+priority support, and serve as the starting point for a custom image. See
+[Building & Publishing a Custom Image](building-a-custom-image.md).
 
 | Image | What it adds | GPU |
 |---|---|---|
@@ -36,27 +36,30 @@ library before `install.packages()` works. The procedure is in
 ## Image Inheritance
 
 ```text
-datahub-base-notebook          Jupyter and common data science tooling
-  └── datascience-notebook     + additional Python and R packages
-        ├── scipy-ml-notebook  + CUDA, TensorFlow, PyTorch
-        └── rstudio-notebook   + RStudio
+quay.io/jupyter/datascience-notebook   Jupyter's Python, R and Julia image
+  └── datascience-notebook             + tools, packages and nbgrader
+        ├── scipy-ml-notebook          + CUDA, TensorFlow, PyTorch
+        └── rstudio-notebook           + RStudio
 ```
 
 A child image contains everything in its parent. A package in
 `datascience-notebook` is also in `scipy-ml-notebook` and `rstudio-notebook`.
 The reverse does not hold.
 
-`datahub-base-notebook` is the parent of `datascience-notebook` and the smallest
-image ITS maintains. It is the base to derive from when build time or image size
-matters. A custom image built on `scipy-ml-notebook` inherits the whole CUDA
-stack whether or not the course uses it.
+`datascience-notebook` is built on the Jupyter project's
+`quay.io/jupyter/datascience-notebook` image, and is the base of the other two
+standard images. It is the smallest standard image, and the base to derive
+from when build time or image size matters. A custom image built on
+`scipy-ml-notebook` inherits the whole CUDA stack whether or not the course uses
+it.
 
 ### Custom CUDA Images
 
 `scipy-ml-notebook` already carries CUDA with a matching PyTorch and TensorFlow.
 A custom CUDA image is rarely needed. A custom CUDA stack must stay compatible
-with the driver on the node. Custom image builds are covered in
-[Building & Publishing a Custom Image](building-a-custom-image.md).
+with the driver on the node.
+[Building & Publishing a Custom Image](building-a-custom-image.md) covers custom
+image builds.
 [CUDA Versions](../gpu-access/gpu-hardware.md#cuda-versions) gives the CUDA
 versions DSMLP supports.
 
@@ -87,6 +90,10 @@ The older `ucsdets/<image>` naming still appears in published articles and in
 course repositories. Where a launch command needs a full image name, prefer the
 `ghcr.io/ucsd-ets/...` form.
 
+`datahub-base-notebook`, which some published articles and course repositories
+name as a base image, is no longer built or updated. Derive from
+`datascience-notebook` instead.
+
 ## Image Selection for a Session
 
 The image a session runs depends on how the session is launched.
@@ -97,15 +104,15 @@ On Datahub, the workspace determines the image. Its spawn menu offers one or
 more configurations, each an image together with CPU, RAM and GPU quantities,
 from which students and instructors choose. A course commonly offers a CPU-only
 environment for most of the term and a GPU environment for its project.
-Workspace settings are described in
-[What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md).
+[What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md)
+describes workspace settings.
 
 ### Command-Line Sessions
 
 From the shell, the wrapper script determines the image unless `-i` overrides
 it. Bare `launch.sh` defaults to `ghcr.io/ucsd-ets/scipy-ml-notebook:stable`.
-Wrapper scripts and flags are documented in
-[`launch.sh` Reference](../running-jobs/launch-sh-reference.md).
+[`launch.sh` Reference](../running-jobs/launch-sh-reference.md) describes
+wrapper scripts and flags.
 
 ## Finding the Package List
 
@@ -129,7 +136,7 @@ package that a standard image lacks.
 
 A `cuda.md` file in the `ucsd-ets/dsc200-notebook` repository publishes a table
 of GPU models, counts and node names dated Fall 2020. It is not current. Do not
-size work from it. GPUs are requested by class label, as described in
+size work from it. GPUs are requested by class label. See
 [GPU Classes](../gpu-access/gpu-classes.md).
 [GPU Hardware & CUDA](../gpu-access/gpu-hardware.md) gives the specifications of
 the cards and slices that can back a class.
@@ -144,10 +151,10 @@ week 2 against one version of a library can fail against the next.
 A workspace may pin its image so that an update does not move a class to
 different software partway through a term. Members stay on the build the
 course tested until a move is requested. A course that needs a fixed environment
-for the duration of a term requests a pinned tag, as described in
-[Pinning a Workspace](#pinning-a-workspace), rather than relying on `:stable`.
-Workspace settings are described in
-[What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md).
+for the duration of a term requests a pinned tag rather than relying on
+`:stable`. See [Pinning a Workspace](#pinning-a-workspace).
+[What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md)
+describes workspace settings.
 
 ### Tag Behavior
 
@@ -165,8 +172,8 @@ Workspace settings are described in
 > so an image set to `wi24` still changes whenever a commit is pushed to `wi24`.
 
 To freeze a course image build, create a git tag and ask that the course use it.
-Course image branches and tags are covered in
-[Course Images](building-a-custom-image.md#course-images).
+[Course Images](building-a-custom-image.md#course-images) covers course image
+branches and tags.
 
 ## Pinning a Workspace
 
@@ -179,10 +186,10 @@ workspace:
 2. Submit a ticket naming both, before instruction begins, during the setup
    window in which assignments are tested and validated.
 
-The ticket process is described in
-[Administrative Requests](../reference/getting-help.md#administrative-requests).
-Course setup timing is described in
-[Instructors, TAs & Course Staff](../access/when-access-starts-and-ends.md#instructors-tas--course-staff).
+[Administrative Requests](../reference/getting-help.md#administrative-requests)
+describes the ticket process.
+[Instructors, TAs & Course Staff](../access/when-access-starts-and-ends.md#instructors-tas--course-staff)
+describes course setup timing.
 A pin applied after students have started is possible, but it changes their
 environment a second time.
 
@@ -191,7 +198,7 @@ environment a second time.
 A command-line launch names the image directly, so a fixed tag pins that launch:
 
 ```bash
-launch.sh -i ghcr.io/ucsd-ets/datascience-notebook:2024.4-stable
+launch.sh -W DSC40_FA26_001 -i ghcr.io/ucsd-ets/datascience-notebook:2024.4-stable
 ```
 
 This affects only that account's own launches. It does not change the image the
@@ -212,5 +219,5 @@ the image and is not fixed by a pin.
 
 A move to a newer base image requires assignments to be re-validated against
 it. Assistance with maintenance following an image update is within
-the scope of a 1:1 Consultation, described in
+the scope of a 1:1 Consultation. See
 [Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation).

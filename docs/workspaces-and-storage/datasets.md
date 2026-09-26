@@ -21,8 +21,9 @@ staged for particular courses. ITS places data there on request. Data under
 
 `public/` is the workspace's own shared area and the most common location for
 course datasets. The instructor or the course grader account stages data there,
-and every member of the workspace can read it. The area is described in
-[The Shared Workspace Area](your-files-and-quotas.md#the-shared-workspace-area).
+and every member of the workspace can read it.
+[The Shared Workspace Area](your-files-and-quotas.md#the-shared-workspace-area)
+describes the area.
 
 ### Choice of Location
 
@@ -50,7 +51,7 @@ catalog entry.
 Do not copy a shared dataset into a home directory. Copying a shared dataset is
 the fastest way to exhaust a quota, and the copy is no closer to the job than
 the original, because the same filesystem is visible from the container and
-from the login node. Common causes of a full quota are listed in
+from the login node. See
 [Common Causes of a Full Quota](your-files-and-quotas.md#common-causes-of-a-full-quota).
 
 Point code at the shared path instead. A notebook written against a local
@@ -77,14 +78,15 @@ Research datasets are handled by Research IT at
 
 > [!NOTE]
 > Raise confidential or licensed data, and data subject to a data use
-> agreement, before it is uploaded. The restrictions are described in
-> [Restricted & Licensed Datasets](#restricted--licensed-datasets).
+> agreement, before it is uploaded.
+> [Restricted & Licensed Datasets](#restricted--licensed-datasets) describes the
+> restrictions.
 
 ### Small Downloads
 
 Small downloads need no request. `wget` and `curl` are available on the login
-node and in the container. Larger transfers are covered in
-[Moving & Sharing Data](moving-and-sharing-data.md).
+node and in the container. [Moving & Sharing Data](moving-and-sharing-data.md)
+covers larger transfers.
 
 ## Restricted & Licensed Datasets
 
@@ -97,7 +99,7 @@ be done with data the campus has already acquired.
 P3 and P4 are protection levels in the University's data classification. P4
 data, such as clinical records or export-controlled material, is prohibited on
 Datahub and DSMLP without review or exception, and P3 data may be permitted
-after review, as stated in
+after review. See
 [Data Classification](../reference/policy.md#data-classification).
 
 Where either level may apply, raise the dataset before any of it reaches the
@@ -119,7 +121,7 @@ are the authority. ITS documentation gives these examples:
 | Contractually protected | Information subject to certain Data Use Agreements |
 
 A TA or grader working with identifiable grades is handling protected data. The
-grading tools are built to hold that material and are described in
+grading tools are built to hold that material. See
 [Grading](../grading/README.md).
 
 ### Licensed and Subscription Data
@@ -129,7 +131,7 @@ terms that limit who may read it and what may be done with the results.
 Licensed corpora are staged read-only and released to an authorized group
 rather than to all users. The Nielsen subscription datasets held for the
 Chicago Booth Kilts Center are an example. They are mounted read-only outside
-the general `/datasets` tree, as described in
+the general `/datasets` tree. See
 [Mounting External Storage](your-files-and-quotas.md#mounting-external-storage).
 
 License terms usually impose the following conditions:
@@ -138,24 +140,24 @@ License terms usually impose the following conditions:
   same terms, and it consumes quota.
 - Do not pass the data on. Access is granted to an individual, not to that
   person's collaborators. Moving the data into a shared or outward-facing
-  location is a licensing decision, not a file operation. Sharing outside the
-  cluster is covered in
-  [Sharing with People Who Have No Cluster Account](moving-and-sharing-data.md#sharing-with-people-who-have-no-cluster-account).
+  location is a licensing decision, not a file operation.
+  [Sharing with People Who Have No Cluster Account](moving-and-sharing-data.md#sharing-with-people-who-have-no-cluster-account)
+  covers sharing outside the cluster.
 - Delete derived subsets and intermediate files that are no longer needed. They
   inherit the terms of their source.
 
 Where a course or lab has acquired data under license terms, state so in the
-request described in
-[Asking for a Dataset to Be Staged](#asking-for-a-dataset-to-be-staged), so that
-the data is scoped correctly from the start.
+request, so that the data is scoped correctly from the start. See
+[Asking for a Dataset to Be Staged](#asking-for-a-dataset-to-be-staged).
 
 ### Publishing Restricted Data Externally
 
 Datahub and DSMLP are not for publishing restricted data outward. The platform
 is not for externally available services or applications except as required for
 coursework or projects, and the limit applies in particular to data held under
-license terms. The hosting rule is stated in
-[Hosting Externally Available Services](../reference/policy.md#hosting-externally-available-services).
+license terms.
+[Hosting Externally Available Services](../reference/policy.md#hosting-externally-available-services)
+sets out the hosting rule.
 
 ## Dataset Retention After a Course
 
@@ -163,5 +165,5 @@ license terms. The hosting rule is stated in
 > Large datasets cannot be archived when a course environment is purged.
 
 Raise the retention of any corpus that must be kept before the term ends.
-Archiving is described in
-[Archiving on Request](../access/when-access-starts-and-ends.md#archiving-on-request).
+[Archiving on Request](../access/when-access-starts-and-ends.md#archiving-on-request)
+describes archiving.

@@ -3,8 +3,8 @@
 This page covers software beyond the contents of the standard images: R and
 RStudio, MATLAB and GNU Octave, Stata, other licensed software, capabilities
 that ITS classes as complex or experimental, and software that members install
-themselves. The standard images cover most courses and projects, receive
-priority support, and are described in
+themselves. The standard images cover most courses and projects and receive
+priority support. See
 [Standard Images, Tags, and Pinning](../environments/standard-images.md).
 
 ## R and RStudio
@@ -33,14 +33,13 @@ dir.create("~/R/library")
 .libPaths("~/R/library")
 ```
 
-The library is stored in the home directory and counts against its quota, as
-described in
+The library is stored in the home directory and counts against its quota. See
 [Storage Quota](../environments/customizing-your-environment.md#storage-quota).
 
 ### RStudio and GPUs
 
 `rstudio-notebook` derives from `datascience-notebook`, the CPU image, rather
-than from `scipy-ml-notebook`, and is therefore not GPU-enabled, as described in
+than from `scipy-ml-notebook`, and is therefore not GPU-enabled. See
 [Standard Images](../environments/standard-images.md#standard-images).
 A course that needs both RStudio and a GPU requires a custom image or a second
 environment.
@@ -51,7 +50,7 @@ See also: [Getting Help](getting-help.md)
 
 MATLAB can be used on the platform but is not a standard feature. The ITS scope
 of support classes MATLAB, as Jupyter kernels or as the Web UI, and GNU Octave
-among the capabilities listed in
+among the capabilities in
 [Complex & Experimental Capabilities](#complex--experimental-capabilities).
 These capabilities are regularly used on the platform but fall outside the
 normal bounds of ITS support, and their use in a course is led by the instructor
@@ -66,7 +65,7 @@ MATLAB headless: with `-nojvm -nodisplay -nosplash` for interactive use, and
 with `-batch` for a script.
 
 MATLAB runs inside a job and never on the login node, where running computation
-is prohibited, as described in
+is prohibited. See
 [What the Login Node Is For](../access/the-login-node.md#what-the-login-node-is-for).
 Scripts are made executable with `chmod` before they are run.
 
@@ -103,7 +102,7 @@ For research use, the contact is
 [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu). For a course, the contact
 is [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
 
-Licensed data is subject to separate rules, described in
+Licensed data is subject to separate rules. See
 [Restricted & Licensed Datasets](../workspaces-and-storage/datasets.md#restricted--licensed-datasets).
 
 ## Complex & Experimental Capabilities
@@ -116,7 +115,7 @@ cluster but outside normal support.
 | MATLAB (Jupyter kernels or Web UI), GNU Octave | [MATLAB, Octave & Other Complex Applications](#matlab-octave--other-complex-applications) |
 | Spark clusters | ITS publishes no documentation. The only description of a multi-node Spark topology on this platform is a DSC 102 assignment, which is course material rather than documentation. |
 | ArcGIS integration | ITS publishes no documentation. |
-| Postgres and other persistent services | Launched from Kubernetes manifests and reached by in-cluster service name, as described in [Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md). |
+| Postgres and other persistent services | Launched from Kubernetes manifests and reached by in-cluster service name. See [Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md). |
 | Background batch processing and analysis pipelines | [Job Modes](../running-jobs/job-modes-and-limits.md#job-modes) |
 | Visual Studio Code integration | [Remote Editor Setup](../access/remote-editor-setup.md) |
 | Containers not derived from a standard image, and student-built containers | [Building & Publishing a Custom Image](../environments/building-a-custom-image.md) |
@@ -135,8 +134,9 @@ in
 ### Feasibility Consultation
 
 Book a 1:1 Consultation at least one full quarter before any planned use of one
-of these capabilities, to discuss feasibility. Consultations are described in
-[Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation).
+of these capabilities, to discuss feasibility.
+[Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation)
+describes consultations.
 
 ## Adding Software Without a Ticket
 
@@ -152,13 +152,13 @@ are in
 
 Software that installs into the operating system requires a custom image. A
 container has no `sudo` and no flag that grants it, and root is available at
-image build time instead, on a different machine, as described in
+image build time instead, on a different machine. See
 [Root Access and System Packages](../environments/customizing-your-environment.md#root-access-and-system-packages).
-Building an image is covered in
-[Building & Publishing a Custom Image](../environments/building-a-custom-image.md).
+[Building & Publishing a Custom Image](../environments/building-a-custom-image.md)
+covers building an image.
 
 ### Package Lists
 
 Package lists change with every image build. The current contents of
-each image are published from the image repository, as described in
+each image are published from the image repository. See
 [Finding the Package List](../environments/standard-images.md#finding-the-package-list).

@@ -16,8 +16,9 @@ get past the campus sign-in page has a credential problem, not a Datahub
 problem, and the [ITS Service Desk](https://support.ucsd.edu/) handles it.
 
 The Active Directory username is required at a different prompt, `ssh` to the
-login node, which does not accept the full address. That prompt is described in
-[Connecting over SSH](the-login-node.md#connecting-over-ssh).
+login node, which does not accept the full address.
+[Connecting over SSH](the-login-node.md#connecting-over-ssh) describes that
+prompt.
 
 ## Selecting a Course & Environment
 
@@ -30,21 +31,21 @@ course, the environments configured for it.
 
 Each Datahub course appears separately and holds its own files. Students and
 instructors enrolled in more than one course select among them in this list.
-Membership in more than one workspace is described in
-[Belonging to Several Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces).
+[Belonging to Several Workspaces](../workspaces-and-storage/what-a-workspace-is.md#belonging-to-several-workspaces)
+describes membership in more than one workspace.
 
 ### Environment Menu
 
 The options in the environment menu are set by the course instructor. The menu
 commonly holds one CPU option, and a GPU option in courses that use GPUs.
-Environments not present in the menu are added by the instructor. The settings a
-course workspace controls are described in
-[What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md).
+Environments not present in the menu are added by the instructor.
+[What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md)
+describes the settings a course workspace controls.
 
 ### Startup Time
 
 An environment takes one to two minutes to start, and longer while the cluster
-is busy. The live state of the cluster is shown on
+is busy. The live state of the cluster is shown on the status page. See
 [The Status Page](../gpu-access/quotas-and-availability.md#the-status-page).
 
 ## The Browser Session
@@ -57,17 +58,17 @@ different object. See
 [Working from the Command Line](../working-from-the-command-line.md).
 
 A session provides JupyterLab, with notebooks, a file browser, a text editor,
-and a terminal. Files persist between sessions. Installing software within an
-environment, and the conditions under which an installation persists, are
-described in
-[Customizing an Environment](../environments/customizing-your-environment.md).
+and a terminal. Files persist between sessions.
+[Customizing an Environment](../environments/customizing-your-environment.md)
+describes installing software within an environment, and the conditions under
+which an installation persists.
 
 ## Concurrent Datahub Sessions
 
 A member may have one Datahub session running at a time. The limit applies to
 Datahub itself, and it counts sessions, not environments or courses. Working in
-a different course environment requires stopping the running session first, as
-described in [Stopping a Session](#stopping-a-session).
+a different course environment requires stopping the running session first. See
+[Stopping a Session](#stopping-a-session).
 
 ### Shell, VS Code, and Batch Jobs
 
@@ -82,9 +83,9 @@ conflict with the session.
 Total CPU, memory, and GPU across everything a member has running must fit
 within the Kubernetes limits set on the member's namespace and, where GPUs are
 involved, within the reservation system's limits. A launch is refused when the
-total would exceed them, whatever mix of sessions makes up that total. Running
-several jobs together is described in
-[Running Several Jobs at Once](../running-jobs/job-modes-and-limits.md#running-several-jobs-at-once).
+total would exceed them, whatever mix of sessions makes up that total.
+[Running Several Jobs at Once](../running-jobs/job-modes-and-limits.md#running-several-jobs-at-once)
+describes running several jobs together.
 
 ## Stopping a Session
 
@@ -116,10 +117,11 @@ Two pages at datahub.ucsd.edu report storage use and cluster capacity.
 > [!WARNING]
 > A full quota prevents a session from starting and produces no error message.
 
-The storage pools and their quotas are described in
-[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas),
-and the cluster status page in
-[The Status Page](../gpu-access/quotas-and-availability.md#the-status-page).
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas)
+describes the storage pools and their quotas.
+See [The Status Page](../gpu-access/quotas-and-availability.md#the-status-page).
+
+See also: [Recovering from a Full Quota](../workspaces-and-storage/your-files-and-quotas.md#recovering-from-a-full-quota)
 
 ## Sign-In Failures
 
@@ -129,5 +131,5 @@ Most failures to reach a session resolve to one of these conditions:
 - The disk quota is full, or a package in `.local` breaks the environment.
 - The cluster is busy, or the environment's image is slow to download.
 
-Each condition is covered in
-[Sign-In & Session Problems](sign-in-and-session-problems.md).
+[Sign-In & Session Problems](sign-in-and-session-problems.md) covers each
+condition.

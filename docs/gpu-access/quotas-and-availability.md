@@ -26,9 +26,9 @@ afterward. A lab's share can be raised the same way for a conference deadline.
 
 A dated change requires the dates in advance. For courses, the quarterly survey
 asks instructors and TAs about assignment scope, GPU sizes, and deadlines. The
-answers allow a quota to be raised for week 9 before the surge begins. Course
-GPU planning is covered in
-[Teaching with Datahub and DSMLP](../instructor-or-ta.md).
+answers allow a quota to be raised for week 9 before the surge begins.
+[Teaching with Datahub and DSMLP](../instructor-or-ta.md) covers course GPU
+planning.
 For research workspaces, include the date in the request; see
 [Requesting a Quota Increase](#requesting-a-quota-increase).
 
@@ -47,7 +47,7 @@ protected like any other reservation for its full length.
 Borrowing has two tiers, and course workspaces always hold the senior tier. The
 junior tier may borrow only the capacity above a deeper reserve floor. The tier
 matters only when a reservation is made, not after it is admitted. Groups that
-contribute hardware to the cluster have a separate arrangement, described in
+contribute hardware to the cluster have a separate arrangement. See
 [Setting Up a Research Lab](../faculty-research-lab.md).
 
 Borrowing does not raise a Service Unit budget. Borrowed GPU time is charged at
@@ -70,9 +70,9 @@ still has headroom; see
 [Zero Availability With Headroom Remaining](#zero-availability-with-headroom-remaining).
 
 A cohort is not a workspace. Members belong to a workspace, and that workspace
-may sit in a cohort alongside groups its members never encounter. Workspaces are
-described in
-[What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md).
+may sit in a cohort alongside groups its members never encounter.
+[What a Workspace Is and What It Controls](../workspaces-and-storage/what-a-workspace-is.md)
+describes workspaces.
 
 The reservation app does not show members which cohort their workspace is in.
 The word appears only in some refusals, such as
@@ -121,8 +121,9 @@ is a maximum rather than a guarantee.
 
 The cohort holding hardware contributors is not overcommitted. A lab that
 contributes hardware has group limits matching its contribution, so its own
-capacity is available when it books. Hardware contribution is covered in
-[Setting Up a Research Lab](../faculty-research-lab.md).
+capacity is available when it books.
+[Setting Up a Research Lab](../faculty-research-lab.md) covers hardware
+contribution.
 
 ## Limits That Can Stop a Launch
 
@@ -213,8 +214,8 @@ recreating a pod moves it to the back.
 
 A launch that carries `-f` releases its GPU when the script ends. The flag runs
 the script and ends the container, so a launch that waited for a GPU holds it
-only for the length of the script. The flag is covered in
-[Job Modes](../running-jobs/job-modes-and-limits.md#job-modes).
+only for the length of the script.
+[Job Modes](../running-jobs/job-modes-and-limits.md#job-modes) covers the flag.
 
 ## Obtaining Capacity When the Cluster Is Busy
 
@@ -306,9 +307,9 @@ unreachable while datahub.ucsd.edu is up, through
 ## Requesting a Quota Increase
 
 Quotas and group limits are set administratively. A workspace manager (an
-instructor, TA, or PI) may view them but may not edit them. Manager privileges
-are described in
-[Managing a Group](../reference/managing-a-group.md).
+instructor, TA, or PI) may view them but may not edit them.
+[Managing a Group](../reference/managing-a-group.md) describes manager
+privileges.
 
 Send the request by ticket to [datahub@ucsd.edu](mailto:datahub@ucsd.edu),
 naming the work, the GPU class it needs, and the dates it matters on. A request

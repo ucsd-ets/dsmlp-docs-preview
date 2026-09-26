@@ -15,15 +15,15 @@ familiarity with a Slurm cluster.
 | The scheduler | Kubernetes admission | There is no queue position, no backfill, and no observable priority ordering. |
 | `sbatch`, `srun`, `squeue`, `scancel` | [Slurm Compatibility Wrappers](#slurm-compatibility-wrappers) | The commands are installed and working. They translate into `launch.sh`, with no Slurm scheduler behind them. |
 | `sacct`, `sinfo`, `scontrol` | No equivalent | Use `kubectl get pods` and `kubectl describe pod`. |
-| `module load` | Container images | The environment is the container image, chosen with `-i` or set by the workspace, as described in [Standard Images, Tags, and Pinning](../environments/standard-images.md). |
-| Walltime (`--time`) | [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit) | The runtime limit is 6 hours by default, up to 12 hours if set at launch. Idle culling and the end of a reservation window can also end a job, as described in [Runtime Limit, Idle Culling, and Reservation Window](#runtime-limit-idle-culling-and-reservation-window). |
-| `--mem`, `--cpus-per-task` | `-m`, `-c` | The number passed is the limit, not the amount reserved, as described in [Resource Requests and Limits](../running-jobs/launch-sh-reference.md#resource-requests-and-limits). |
-| `--gres=gpu:N` | `-g N` | `-g` is the GPU count and `-G` is the group flag, as described in [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags). |
+| `module load` | Container images | The environment is the container image, chosen with `-i` or set by the workspace. See [Standard Images, Tags, and Pinning](../environments/standard-images.md). |
+| Walltime (`--time`) | [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit) | The runtime limit is 6 hours by default, up to 12 hours if set at launch. Idle culling and the end of a reservation window can also end a job. See [Runtime Limit, Idle Culling, and Reservation Window](#runtime-limit-idle-culling-and-reservation-window). |
+| `--mem`, `--cpus-per-task` | `-m`, `-c` | The number passed is the limit, not the amount reserved. See [Resource Requests and Limits](../running-jobs/launch-sh-reference.md#resource-requests-and-limits). |
+| `--gres=gpu:N` | `-g N` | `-g` is the GPU count and `-G` is the group flag. See [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags). |
 | `--exclusive`, whole-node jobs | No equivalent | `-n` can place a pod on a named node, but the container is still sized by the resource tiers and runs on a node shared with other users. Use `-n` only for a session launched without a booking; see [Node Selection](../running-jobs/launch-sh-reference.md#node-selection). |
 | MPI, `--nodes`, multi-node | No equivalent | Every job runs in one container on one node. |
 | Job arrays | `--array` | `--array` submits multiple jobs. A concurrency limit such as `%4` is parsed and ignored. |
 | Reservation | [Reservations](../gpu-access/reservations.md) | A reservation guarantees access, not a running job. The session is still launched as usual. |
-| Fairshare | Service Units and borrowing seniority | The mechanism differs. Service Units and borrowing seniority divide a contested cluster between workspaces and between members of a workspace, as described in [Service Units & Budgets](../gpu-access/service-units-and-budgets.md) and [Borrowing Beyond Quota](../gpu-access/quotas-and-availability.md#borrowing-beyond-quota). |
+| Fairshare | Service Units and borrowing seniority | The mechanism differs. Service Units and borrowing seniority divide a contested cluster between workspaces and between members of a workspace. See [Service Units & Budgets](../gpu-access/service-units-and-budgets.md) and [Borrowing Beyond Quota](../gpu-access/quotas-and-availability.md#borrowing-beyond-quota). |
 | Login node | [The Login Node](../access/the-login-node.md) | The same rule applies. The login node is a jumpbox for launching jobs and moving files, and running computation on it is prohibited. |
 | Scratch | The container's `/tmp` | No shared scratch filesystem. `/tmp` is local to the node, fast, and erased when the pod ends. |
 
@@ -37,15 +37,15 @@ Three Slurm conventions behave differently on DSMLP.
 pod label, so `--partition medium` requests the `medium` GPU class rather than
 a queue named "medium". A partition name that is not a GPU class requests
 nothing that exists. The option is accepted either way, and the failure appears
-later as a pod that does not schedule. The classes are described in
-[GPU Classes](../gpu-access/gpu-classes.md).
+later as a pod that does not schedule.
+[GPU Classes](../gpu-access/gpu-classes.md) describes the classes.
 
 ### Memory and CPU Limits
 
 The value passed to `-m` or `-c`, or to `--mem` or `--cpus-per-task` through
-the wrappers, is the limit, not the amount the scheduler guarantees. The
-guaranteed request and how to size a job for it are described in
-[Resource Requests and Limits](../running-jobs/launch-sh-reference.md#resource-requests-and-limits).
+the wrappers, is the limit, not the amount the scheduler guarantees.
+[Resource Requests and Limits](../running-jobs/launch-sh-reference.md#resource-requests-and-limits)
+describes the guaranteed request and how to size a job for it.
 
 ### Pending Pods
 
@@ -57,7 +57,7 @@ the pods were created. See
 Until it is admitted, a GPU pod shows a `FailedScheduling` event, and the
 reservation event beside it gives the reason; see
 [Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label).
-The messages are also listed in [Error Messages](error-messages.md).
+[Error Messages](error-messages.md) also lists the messages.
 
 ## Runtime Limit, Idle Culling, and Reservation Window
 
@@ -111,8 +111,9 @@ The wrappers accept two options that Slurm does not have.
 ### Requested Runtime
 
 `--time` is subject to the platform's runtime limits. A batch script that asks
-for 72 hours does not receive 72 hours. The limits are described in
-[The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit).
+for 72 hours does not receive 72 hours.
+[The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit)
+describes the limits.
 
 ## Limitations of the Slurm Wrappers
 
@@ -132,21 +133,21 @@ job's own output shows that.
 
 The wrappers translate into `launch.sh` and do not translate back. Diagnose a
 failed job with the Kubernetes commands `kubectl get pods`,
-`kubectl describe pod`, and `kubectl logs`, not with Slurm commands. Direct use
-of Kubernetes is described in
-[Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md).
+`kubectl describe pod`, and `kubectl logs`, not with Slurm commands.
+[Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md)
+describes direct use of Kubernetes.
 
 ## Choosing Between the Slurm Wrappers and `launch.sh`
 
 Use the Slurm wrappers to run existing submission scripts unchanged. Write new
 work against `launch.sh`, using workspaces, GPU classes, and background and
-batch modes directly, as described in
+batch modes directly. See
 [`launch.sh` Reference](../running-jobs/launch-sh-reference.md).
 
 ## Unsupported HPC Features
 
 MPI, multi-node jobs, a job scheduler, and accounting commands are not
-available, as described in
+available. See
 [Slurm Compatibility Wrappers](#slurm-compatibility-wrappers). Nothing reports
 historical usage the way `sacct` does. Work that is tightly coupled across
 nodes belongs on another platform.
@@ -163,5 +164,5 @@ See also: [Platform Selection](getting-help.md#platform-selection)
 DSMLP provides a browser-based notebook environment that shares one filesystem
 with the login node, per-user containers that members build themselves, and
 Kubernetes underneath for direct use. Most HPC clusters do not provide these.
-Direct use of Kubernetes is described in
-[Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md).
+[Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md)
+describes direct use of Kubernetes.

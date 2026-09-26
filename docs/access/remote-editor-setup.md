@@ -2,15 +2,15 @@
 
 VS Code is supported through one configuration, Remote-SSH over a ProxyCommand,
 which connects the editor to a container on a cluster node rather than to the
-login node. Running VS Code directly on `dsmlp-login` is not permitted, as
-described in [The Login Node](the-login-node.md).
+login node. Running VS Code directly on `dsmlp-login` is not permitted. See
+[The Login Node](the-login-node.md).
 
 ## What a Remote Editor Adds
 
 The browser session is the default route onto the platform and covers most
 coursework. Signing in at [datahub.ucsd.edu](https://datahub.ucsd.edu) opens a
-Jupyter session with nothing to install or configure. The routes are described
-in [Access](README.md).
+Jupyter session with nothing to install or configure. [Access](README.md)
+describes the routes.
 
 A remote editor keeps the editor on the local machine and runs its working
 parts in the container. VS Code installs a server component into the container
@@ -28,8 +28,8 @@ A remote editor suits the following work:
 | A session that outlives the window | The container keeps running when the editor closes. Reopening the editor reconnects to the same container, with the same files and any processes left running in it |
 
 A remote editor is the route with the most setup: an SSH key, an extension, and
-a config file, as listed in [Prerequisites](#prerequisites). Its container keeps
-running with nothing on screen and is deleted by hand, as described in
+a config file. See [Prerequisites](#prerequisites). Its container keeps running
+with nothing on screen and is deleted by hand. See
 [Ending the Session](#ending-the-session).
 
 ## Launch and Connection Sequence
@@ -66,9 +66,9 @@ indicates that the launch step was skipped or that the pod had already expired.
 
 1. An SSH key pair, with the public key installed so that neither the login node
    nor the container asks for a password. The `ProxyCommand` runs unattended and
-   cannot answer a password prompt. Key generation is covered in
-   [The Key Pair](#the-key-pair), and the SSH connection to the login node in
-   [Connecting over SSH](the-login-node.md#connecting-over-ssh).
+   cannot answer a password prompt. [The Key Pair](#the-key-pair) covers key
+   generation. [Connecting over SSH](the-login-node.md#connecting-over-ssh)
+   covers the SSH connection to the login node.
 2. The [Remote-SSH extension](https://code.visualstudio.com/docs/remote/ssh) in
    VS Code, and an OpenSSH-compatible client on the local machine. VS Code does
    not support PuTTY.
@@ -94,8 +94,9 @@ both, because `launch.sh -H` carries it from the login node into the container.
 
 macOS ships an SSH client. On Windows, the OpenSSH client is a Windows optional
 feature, and VS Code looks for `ssh` on the `PATH` before falling back to the
-Git for Windows install path. Client installation is described in
-[Installing a supported SSH client](https://code.visualstudio.com/docs/remote/troubleshooting#_installing-a-supported-ssh-client).
+Git for Windows install path.
+[Installing a supported SSH client](https://code.visualstudio.com/docs/remote/troubleshooting#_installing-a-supported-ssh-client)
+describes client installation.
 
 ### Generating the Key Pair
 
@@ -125,8 +126,9 @@ SSH refuses a private key that other accounts can read, with
 `WARNING: UNPROTECTED PRIVATE KEY FILE!`. On macOS, the fix is `chmod 700 ~/.ssh`
 and `chmod 600` on the private key and on `~/.ssh/config`. On Windows, the
 `.ssh` directory must be owned by the account, with no other user granted
-access. The fix is described in
-[Fixing SSH file permission errors](https://code.visualstudio.com/docs/remote/troubleshooting#_fixing-ssh-file-permission-errors).
+access.
+[Fixing SSH file permission errors](https://code.visualstudio.com/docs/remote/troubleshooting#_fixing-ssh-file-permission-errors)
+describes the fix.
 
 ### SSH Agent
 
@@ -143,14 +145,14 @@ Start-Service ssh-agent
 
 `ssh-add -l`, run in a local VS Code terminal, lists what the agent holds.
 Restart VS Code after starting the agent; otherwise VS Code does not find it.
-Agent setup is described in
-[Setting up the SSH Agent](https://code.visualstudio.com/docs/remote/troubleshooting#_setting-up-the-ssh-agent).
+[Setting up the SSH Agent](https://code.visualstudio.com/docs/remote/troubleshooting#_setting-up-the-ssh-agent)
+describes agent setup.
 
 ### Keys Generated in PuTTYGen
 
 A key made in PuTTYGen does not work as generated. PuTTY is not a supported VS
 Code client. Save a `.ppk` private key out through
-**Conversions → Export OpenSSH key** before use, as described in
+**Conversions → Export OpenSSH key** before use. See
 [Reusing a key generated in PuTTYGen](https://code.visualstudio.com/docs/remote/troubleshooting#_reusing-a-key-generated-in-puttygen).
 
 ### Microsoft and GitHub Guides
@@ -160,8 +162,8 @@ Microsoft and GitHub each publish a longer walkthrough of key setup:
 and
 [Generating a New SSH Key and Adding It to the ssh-agent](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
 The "Deploy the public key" section of the Microsoft article describes a Windows
-SSH server and does not apply to `dsmlp-login`, where the public key is
-installed as described in [Installing the Public Key](#installing-the-public-key).
+SSH server and does not apply to `dsmlp-login`. See
+[Installing the Public Key](#installing-the-public-key).
 
 ## Installing the Public Key
 
@@ -236,15 +238,15 @@ Host MYCOURSE
 | `-N vscode-dsmlp` | The pod's name. It must match the name used at launch |
 
 The entry is written once. Size, image, and GPU are not set in it. They are set
-at each launch, and the entry attaches to whatever pod carries the name, as
-described in [Launching the Pod](#launching-the-pod).
+at each launch, and the entry attaches to whatever pod carries the name. See
+[Launching the Pod](#launching-the-pod).
 
 ### Key Paths in the Entry
 
 The entry names the key twice, once for each connection. `IdentityFile` governs
 the connection from VS Code to the container. The `ProxyCommand` is a separate
 `ssh` invocation that connects the local machine to the login node. The same
-key file serves both, as described in [The Key Pair](#the-key-pair).
+key file serves both. See [The Key Pair](#the-key-pair).
 
 On Windows, write the path with forward slashes, as in
 `IdentityFile C:/Users/USERNAME/.ssh/id_ed25519`, or double every backslash.
@@ -290,9 +292,8 @@ larger `-m`.
 > container spends for as long as it exists, whether or not the editor is in
 > use. See [On-Demand Lease Charges](../gpu-access/service-units-and-budgets.md#on-demand-lease-charges).
 
-The launch flags are documented in
-[`launch.sh` Reference](../running-jobs/launch-sh-reference.md), and the GPU
-classes in [GPU Classes](../gpu-access/gpu-classes.md).
+[`launch.sh` Reference](../running-jobs/launch-sh-reference.md) covers the
+launch flags. See [GPU Classes](../gpu-access/gpu-classes.md).
 
 ## Connecting
 
@@ -305,7 +306,7 @@ same action. The pod is still running, and the `ProxyCommand` attaches to it.
 ## Pod Lifetime
 
 An editor pod has the same runtime limit as any other container, 6 hours by
-default and up to 12 hours when set at launch, as described in
+default and up to 12 hours when set at launch. See
 [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit).
 When the limit is reached, the pod stops, the editor loses its connection, and
 any processes running in the container end with it. A 12-hour limit is set by
@@ -320,15 +321,14 @@ launch-scipy-ml.sh -W MYCOURSE -H -N vscode-dsmlp -b
 
 The next connection after the pod expires does not restore it. With nothing
 running under the name, the `ProxyCommand` starts a default-sized pod of its
-own. Delete that pod, as described in [Ending the Session](#ending-the-session),
-and launch again by hand before continuing. A launch that finds the default pod
+own. Delete that pod. See [Ending the Session](#ending-the-session).
+Launch again by hand before continuing. A launch that finds the default pod
 running attaches to it rather than replacing it.
 
 ### Idle Culling of GPU Editor Pods
 
 A GPU editor pod is subject to idle culling. Editing code does not use the GPU.
-A GPU container that stops using its GPU is reclaimed after a warning, as
-described in
+A GPU container that stops using its GPU is reclaimed after a warning. See
 [What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle).
 
 ## Host Entries for Multiple Courses
@@ -368,8 +368,9 @@ kubectl delete pod vscode-dsmlp
 Idle culling does not replace this step. It applies only to GPU pods, and an
 editor container with a stalled process holding the GPU may never qualify. A
 CPU-only editor pod is never culled. It runs until its runtime limit is reached
-or until it is deleted. The idle conditions are described in
-[What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle).
+or until it is deleted.
+[What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle)
+describes the idle conditions.
 
 The running container can also be entered from the login node with
 `kubesh vscode-dsmlp`, without opening the editor.

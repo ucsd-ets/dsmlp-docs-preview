@@ -22,8 +22,9 @@ term, and a TSS change, such as an add, a drop, or a section change, is
 reflected in Datahub and DSMLP by 10am the day following the change. A course
 that is not listed before those times has not been loaded yet. Report a course
 that is still missing after that time to
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu). Roster provisioning is described in
-[Students Enrolled in a Course](when-access-starts-and-ends.md#students-enrolled-in-a-course).
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu).
+[Students Enrolled in a Course](when-access-starts-and-ends.md#students-enrolled-in-a-course)
+describes roster provisioning.
 
 ### Roster Checks by Course Staff
 
@@ -31,13 +32,13 @@ The instructor or TA is the first contact for a course matter. Course staff can
 see the roster and can tell a student who is not yet enrolled from one who is
 enrolled but not provisioned. Auditors, observers, and Extended Studies students
 are not on the TSS roster that the automatic setup uses, and the instructor adds
-them through Canvas, as described in
+them through Canvas. See
 [Students Enrolled in a Course](when-access-starts-and-ends.md#students-enrolled-in-a-course).
 
 ### Access Outside a Course
 
 No roster grants access for an independent study, a capstone, or a personal
-project. Access for this work is obtained by request, as described in
+project. Access for this work is obtained by request. See
 [Projects & Independent Study](../student-project.md).
 
 ## "Spawn Failed"
@@ -59,8 +60,11 @@ clears it.
 A full disk quota prevents a session from starting and produces no error
 message. The quota is shown at
 [datahub.ucsd.edu/hub/spawn](https://datahub.ucsd.edu/hub/spawn) → **Services** →
-**disk-quota-service**. Storage quotas are described in
-[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
+**disk-quota-service**.
+[Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas)
+describes storage quotas.
+
+See also: [Recovering from a Full Quota](../workspaces-and-storage/your-files-and-quotas.md#recovering-from-a-full-quota)
 
 ### Broken Package in `.local`
 
@@ -76,8 +80,8 @@ mv .local/lib .local/lib.old      # move the offending packages aside
 ```
 
 Install packages into a virtual environment rather than into `.local`.
-Installing packages is described in
-[Customizing an Environment](../environments/customizing-your-environment.md).
+[Customizing an Environment](../environments/customizing-your-environment.md)
+describes installing packages.
 
 ### Busy Cluster
 
@@ -154,8 +158,9 @@ Concurrent sessions are permitted, but their combined CPU, memory, and GPU must
 fit within the Kubernetes limits on the namespace and, for GPUs, within the
 reservation system's limits. A launch that would take the total past those
 limits is refused. The remedy is to stop a session or job that is no longer in
-use. No request is required. Running several jobs together is described in
-[Running Several Jobs at Once](../running-jobs/job-modes-and-limits.md#running-several-jobs-at-once).
+use. No request is required.
+[Running Several Jobs at Once](../running-jobs/job-modes-and-limits.md#running-several-jobs-at-once)
+describes running several jobs together.
 
 ### 504 Error After a Crash
 
@@ -163,15 +168,14 @@ A notebook that exhausts its memory or runs an infinite loop can take its pod
 down. The hub then returns a 504 error until it detects the failure and resets.
 To recover:
 
-1. Delete the pod with `kubectl delete pod`, as described in
-   [GPU Held by an Existing Pod](#gpu-held-by-an-existing-pod). This shortens
-   the wait for the hub to reset.
-2. Run the manual resetter, as described in
+1. Delete the pod with `kubectl delete pod`. This shortens the wait for the hub
+   to reset. See [GPU Held by an Existing Pod](#gpu-held-by-an-existing-pod).
+2. Run the manual resetter. See
    [Stale Profile and the Manual Resetter](#stale-profile-and-the-manual-resetter).
 3. Start the session again.
 
-Error messages and their causes are listed in
-[Error Messages](../reference/error-messages.md).
+[Error Messages](../reference/error-messages.md) lists error messages and their
+causes.
 
 ### Sessions Left Running After Sign-Out
 
@@ -179,8 +183,8 @@ Error messages and their causes are listed in
 > Logging out, closing the tab, and closing a laptop leave the container running
 > and holding its resources.
 
-Stop the session with **File → Hub Control Panel → Stop My Server**, as
-described in [Stopping a Session](datahub-in-the-browser.md#stopping-a-session).
+Stop the session with **File → Hub Control Panel → Stop My Server**. See
+[Stopping a Session](datahub-in-the-browser.md#stopping-a-session).
 
 ## Reservation App Sign-In
 
@@ -223,13 +227,13 @@ Correct the named field and try again.
 
 ## End of Course Access
 
-Course access is retained for a period beyond the term the course ran in, as
-described in
+Course access is retained for a period beyond the term the course ran in. See
 [One Additional Quarter](when-access-starts-and-ends.md#one-additional-quarter).
 After that period, the course no longer appears, and its absence is not a fault.
 Files remain retrievable for a period afterward, and an extension can be
-requested. Copying files out is described in
-[Retrieving Work Before Access Ends](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends).
+requested.
+[Retrieving Work Before Access Ends](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends)
+describes copying files out.
 
 ## Reporting a Problem
 
@@ -244,5 +248,5 @@ details:
 - The exact command, if there was one
 - A screenshot
 
-Response targets for individual issues are listed in
-[Response Targets](../reference/getting-help.md#response-targets).
+[Response Targets](../reference/getting-help.md#response-targets) lists response
+targets for individual issues.

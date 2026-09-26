@@ -12,9 +12,9 @@ Student access follows the course roster in TSS (formerly TritonLink). No
 request or form is required. An environment appears for every student enrolled
 in a course that uses the platform.
 
-Datahub sign-in uses standard UCSD single sign-on, as described in
+Datahub sign-in uses standard UCSD single sign-on. See
 [Signing In](datahub-in-the-browser.md#signing-in). `ssh` to the login node
-takes the Active Directory username instead, as described in
+takes the Active Directory username instead. See
 [Connecting over SSH](the-login-node.md#connecting-over-ssh).
 
 ### Roster Loading and Changes
@@ -43,14 +43,13 @@ as 4th week.
 
 ## Instructors, TAs & Course Staff
 
-The deadline for course requests and the date course setup and instructor
-access open are set out in
-[Course Timeline](../instructor-or-ta.md#course-timeline).
+[Course Timeline](../instructor-or-ta.md#course-timeline) sets out the deadline
+for course requests and the date course setup and instructor access open.
 
 Each course receives a shared nbgrader grader account. Formgrader works only
-with that account, and instructor and TA accounts cannot be used for it. The
-account is described in
-[Grader Account](../grading/notebook-grading-workflow.md#grader-account).
+with that account, and instructor and TA accounts cannot be used for it.
+[Grader Account](../grading/notebook-grading-workflow.md#grader-account)
+describes the account.
 
 ### Adding TAs and Course Staff
 
@@ -113,7 +112,7 @@ current week. The budget is not prorated for a member added late. See
 ## Reporting Missing Access
 
 Most reports of missing access concern a roster change that has not yet reached
-the time given in [Roster Loading and Changes](#roster-loading-and-changes). A
+the time in [Roster Loading and Changes](#roster-loading-and-changes). A
 report made after that time names the course code, the system in use (Datahub
 or `dsmlp-login`), and whether the person is enrolled, auditing, or on an
 independent study request.
@@ -171,8 +170,8 @@ the state of the project.
 When access ends, the course environment no longer appears among a member's
 available environments, and its home directory is no longer reachable from that
 account. The files are not deleted at that point. The purge is a separate, later
-event, set out in [The Retention Timeline](#the-retention-timeline). Instructor
-and course-wide files can be archived on request, as set out in
+event. See [The Retention Timeline](#the-retention-timeline). Instructor
+and course-wide files can be archived on request. See
 [Archiving on Request](#archiving-on-request).
 
 > [!WARNING]
@@ -232,8 +231,8 @@ notebooks copies them out of the environment while it is still reachable.
 ## Session Length
 
 Access and retention dates do not govern how long a single session runs. A job
-runs for 6 hours by default and up to 12 hours when that is requested at launch,
-as set out in
+runs for 6 hours by default and up to 12 hours when that is requested at
+launch. See
 [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit).
 For runs longer than 12 hours, contact
 [datahub@ucsd.edu](mailto:datahub@ucsd.edu).

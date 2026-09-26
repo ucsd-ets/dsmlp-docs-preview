@@ -28,8 +28,8 @@ configuration, and no knowledge of Linux. Signing in and selecting a course and
 an environment starts a Jupyter session that contains the account's files. A
 session started from `datahub.ucsd.edu` expects the browser window to remain
 open while its work runs, and is not the route for work that continues
-unattended for hours. Signing in and stopping a session are described in
-[Datahub in the Browser](datahub-in-the-browser.md).
+unattended for hours. [Datahub in the Browser](datahub-in-the-browser.md)
+describes signing in and stopping a session.
 
 ### Shell Access
 
@@ -37,29 +37,28 @@ The shell is the route for work that the course menu does not cover. None of
 the following uses requires permission.
 
 - Background and batch jobs started from a terminal keep running after a
-  disconnect, as described in
+  disconnect. See
   [Working from the Command Line](../working-from-the-command-line.md).
 - Resources beyond the course menu, such as more CPU or RAM or a GPU class that
-  the course's environments do not include, are requested from the shell, as
-  described in [GPU Access](../gpu-access/README.md).
+  the course's environments do not include, are requested from the shell. See
+  [GPU Access](../gpu-access/README.md).
 - Large data transfers use `scp`, `sftp`, `rsync`, and `git`, which all run from
-  the login node, as described in
+  the login node. See
   [Moving & Sharing Data](../workspaces-and-storage/moving-and-sharing-data.md).
 - A session that will not start because a disk quota is full or a pod is stuck
-  is cleared from the shell rather than from the browser, as described in
+  is cleared from the shell rather than from the browser. See
   [Sign-In & Session Problems](sign-in-and-session-problems.md).
 
 Shell access begins at the login node, which is for launching jobs and moving
-files rather than for running work, as described in
-[The Login Node](the-login-node.md).
+files rather than for running work. See [The Login Node](the-login-node.md).
 
 ### Remote Editor Access
 
 VS Code attached over Remote-SSH runs a local editor, with local extensions and
 a debugger, against cluster hardware. It serves editing across many files and
 requires the most setup of the three routes. Closing the editor does not
-release the container. Setup is described in
-[Remote Editor Setup](remote-editor-setup.md).
+release the container. [Remote Editor Setup](remote-editor-setup.md) describes
+the setup.
 
 ## Files, Entitlements, and Concurrency Across Routes
 
@@ -67,9 +66,9 @@ release the container. Setup is described in
 
 The login node and the container share a filesystem, and a home directory
 follows the account between routes. A file uploaded in the browser is on the
-login node, and a file transferred with `scp` is in the notebook. The
-directories are described in
-[Where Files Live](../workspaces-and-storage/your-files-and-quotas.md#where-files-live).
+login node, and a file transferred with `scp` is in the notebook.
+[Where Files Live](../workspaces-and-storage/your-files-and-quotas.md#where-files-live)
+describes the directories.
 
 ### Entitlements
 
@@ -79,10 +78,10 @@ classes. The shell exposes more of them directly but grants nothing additional.
 ### Concurrency
 
 A member may have one Datahub session running, alongside any number of shell,
-VS Code, and batch jobs, as described in
+VS Code, and batch jobs. See
 [Concurrent Datahub Sessions](datahub-in-the-browser.md#concurrent-datahub-sessions).
 The limit that applies is the total CPU, memory, and GPU across everything
-running at once, as described in
+running at once. See
 [Running Several Jobs at Once](../running-jobs/job-modes-and-limits.md#running-several-jobs-at-once).
 
 ---

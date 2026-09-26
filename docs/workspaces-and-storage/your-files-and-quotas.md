@@ -18,23 +18,25 @@ intact in a directory other than the one on screen.
 | Team area | `/teams` | `/home/<username>/teams/<team>` | Members of that team |
 
 The workspace home, `public/`, and `teams/` draw on the workspace quota.
-`private/` draws on a separate personal quota. Both pools are described in
-[Workspace and Personal Quotas](#workspace-and-personal-quotas).
+`private/` draws on a separate personal quota.
+[Workspace and Personal Quotas](#workspace-and-personal-quotas) describes both
+pools.
 
 ## Workspace Home Directories
 
 A home directory is specific to one workspace. A workspace is a course, a lab,
-or a catch-all population, as described in
+or a catch-all population. See
 [What a Workspace Is and What It Controls](what-a-workspace-is.md). Each member
 has a separate home directory in every workspace the member belongs to.
 
 One account therefore holds several home directories. Notebooks that appear to
 be missing are usually in the home directory of another workspace, such as a
-different course. Membership of more than one workspace is described in
-[Belonging to Several Workspaces](what-a-workspace-is.md#belonging-to-several-workspaces).
+different course.
+[Belonging to Several Workspaces](what-a-workspace-is.md#belonging-to-several-workspaces)
+describes membership of more than one workspace.
 
-Home directory sizes are listed in
-[Workspace and Personal Quotas](#workspace-and-personal-quotas).
+[Workspace and Personal Quotas](#workspace-and-personal-quotas) lists home
+directory sizes.
 
 ## The Shared Workspace Area
 
@@ -43,8 +45,9 @@ starter notebooks, and reference material normally appear there.
 
 In a course, the shared grader account holds write permission on `public/`, and
 all other members have read access. Files staged there by an instructor or TA
-can be unreadable. The fix is described in
-[Inside the Workspace](moving-and-sharing-data.md#inside-the-workspace).
+can be unreadable.
+[Inside the Workspace](moving-and-sharing-data.md#inside-the-workspace)
+describes the fix.
 
 ## The Personal Area
 
@@ -69,7 +72,7 @@ launch-scipy-ml.sh -W <WORKSPACE> -G <teamid>  # launch with that team's data
 ```
 
 > [!NOTE]
-> `-G` is the group flag and `-g` is the GPU count, as listed in
+> `-G` is the group flag and `-g` is the GPU count. See
 > [Team Selection](../running-jobs/launch-sh-reference.md#team-selection).
 
 ### Team Directory Names
@@ -119,7 +122,7 @@ Course home directories are 5-10 GB, toward the lower end for very large
 classes. Research home directories are on the order of 100 GB, set when the
 account is provisioned. Both values are set per workspace rather than per
 person. The value that applies to a given account is the one the disk quota
-service reports, as described in [Checking Usage](#checking-usage).
+service reports. See [Checking Usage](#checking-usage).
 
 Storage above 1 TB is chargeable. Compute is not.
 
@@ -163,22 +166,23 @@ after 7 days. To reclaim the space sooner:
 
 Remote editing installs a server into `.vscode-server` in the home directory.
 The directory grows past 1 GB, a substantial fraction of a course-sized quota,
-and does not appear in the file browser. Remote editing is described in
-[Remote Editor Setup](../access/remote-editor-setup.md).
+and does not appear in the file browser.
+[Remote Editor Setup](../access/remote-editor-setup.md) describes remote
+editing.
 
 ### Packages in `.local`
 
 Every `pip install` run without a virtual environment installs into `.local` in
 the home directory, and the packages remain there across sessions. A broken
-package there can also stop the environment from starting. Package installation
-is described in
-[Customizing an Environment](../environments/customizing-your-environment.md).
+package there can also stop the environment from starting.
+[Customizing an Environment](../environments/customizing-your-environment.md)
+describes package installation.
 
 ### Personal Copies of Shared Datasets
 
 A personal copy of a shared dataset counts against the quota. Large inputs
 belong in the workspace's `public/` area or under `/datasets`, where every
-member reads them in place, as described in
+member reads them in place. See
 [Where Shared Data Lives](datasets.md#where-shared-data-lives).
 
 ## Recovering from a Full Quota
@@ -199,29 +203,29 @@ rm <files>                   # remove it
 
 On the login node, `~` is the personal area, not a course home. Removing files
 there frees space in the personal pool and has no effect on a full workspace
-pool. Once usage drops below the quota, environments start normally again. The
-login node is described in
-[What the Login Node Is For](../access/the-login-node.md#what-the-login-node-is-for).
+pool. Once usage drops below the quota, environments start normally again.
+[What the Login Node Is For](../access/the-login-node.md#what-the-login-node-is-for)
+describes the login node.
 
 ## Asking for More Space
 
 | Requester | Route |
 |---|---|
 | Students in a course | The instructor or TA, who raises the request on the course's existing Service Desk ticket |
-| Independent study and project users | A ticket submitted directly, as described in [Administrative Requests](../reference/getting-help.md#administrative-requests) |
+| Independent study and project users | A ticket submitted directly. See [Administrative Requests](../reference/getting-help.md#administrative-requests) |
 | Research accounts | Research IT, at [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu). Temporary increases are possible where the need is bounded |
 | Group and team space | [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
 
 Before requesting an increase, confirm that the space is in use. Empty the Trash
-and remove any personal copy of a shared dataset, as described in
+and remove any personal copy of a shared dataset. See
 [Common Causes of a Full Quota](#common-causes-of-a-full-quota).
 
 ## Storage Outside the Quota Pools
 
 `/datasets` is a shared, staged directory tree, present in containers and on the
 login node. It holds common corpora and course-specific data. It counts against
-neither quota and is not writable by members. Data is placed there on request,
-as described in [Datasets](datasets.md).
+neither quota and is not writable by members. Data is placed there on request.
+See [Datasets](datasets.md).
 
 ## Mounting External Storage
 
@@ -247,14 +251,14 @@ Two access paths are documented for Universal Scale Storage shares:
 | A shell after logging in | `/dsmlp/teams` |
 
 Licensed corpora are sometimes staged on the same storage and mounted
-read-only. The Nielsen subscription datasets are an example, described in
+read-only. The Nielsen subscription datasets are an example. See
 [Restricted & Licensed Datasets](datasets.md#restricted--licensed-datasets).
 
 ### Capacity Thresholds
 
 Above a certain volume, data belongs on external storage and is mounted rather
 than copied. Users do not set this boundary. State the expected volume and its
-growth rate in the request described in
+growth rate in the request. See
 [Requesting External Storage](#requesting-external-storage). The reply states
 what fits where.
 
@@ -265,8 +269,7 @@ Research IT provisions and mounts external storage. Requests go to
 for the Research Cluster and for Universal Scale Storage generally. Include in
 the request:
 
-- What the data is, and any licensing or classification that applies to it, as
-  described in
+- What the data is, and any licensing or classification that applies to it. See
   [Restricted & Licensed Datasets](datasets.md#restricted--licensed-datasets).
 - How much data exists now, and how fast it grows.
 - Which workspace should see it, and which members of that workspace need to
@@ -283,8 +286,7 @@ one, Research IT advises on where the work belongs.
 Campus and commercial cloud storage are not mounted into containers. Google
 Drive, OneDrive, and commercial object storage under the University's billing
 arrangements can hold data, but a job reaches them by transfer, not by mount.
-Transfer methods are described in
-[Moving & Sharing Data](moving-and-sharing-data.md).
+[Moving & Sharing Data](moving-and-sharing-data.md) describes transfer methods.
 
 ### Backups
 

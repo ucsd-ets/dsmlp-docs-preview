@@ -18,7 +18,7 @@ that installs into the operating system requires a custom image.
 ### Storage Quota
 
 Personal installs are written to the member's home directory, which is per-user
-and per-workspace and is not large. They count against the quota described in
+and per-workspace and is not large. They count against the quota in
 [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
 
 Machine-learning packages in particular can be very large. Build a custom image
@@ -123,8 +123,9 @@ sudo: The "no new privileges" flag is set, which prevents sudo from running as r
 Members keep full control of their own space. Installing Python packages,
 creating a Jupyter kernel, creating an R library, reading and writing anywhere
 the member owns, and managing the member's own pods with `kubectl` all work
-normally. Direct `kubectl` use is covered in
-[Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md).
+normally.
+[Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md) covers
+direct `kubectl` use.
 
 ### System Packages and Custom Images
 
@@ -132,7 +133,7 @@ A system-level package requires a custom image. Root is available inside a
 Dockerfile at build time, which is where `USER root` and `apt-get` belong. The
 image is built outside the cluster. When the image is later launched on the
 cluster, it runs unprivileged under the member's own UID, the same as a standard
-image. Building and publishing an image is covered in
+image. See
 [Building & Publishing a Custom Image](building-a-custom-image.md).
 
 ### Course-Wide Packages
@@ -155,10 +156,9 @@ must be moved or deleted as well.
 
 ### Manual Resetter
 
-The manual resetter, described in
-["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed), stops
-the account's running servers, signs the account out, and resets its profile
-while leaving files intact.
+The manual resetter stops the account's running servers, signs the account out,
+and resets its profile while leaving files intact. See
+["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed).
 
 ### Course Grader Account
 
@@ -169,12 +169,12 @@ a TA follows up in the course support ticket instead.
 > The grader account carries the course's nbgrader state. Clearing its `.local`
 > by hand can destroy that state.
 
-Grader account failures are covered in
-[Common Grading Failures & Recovery](../grading/grading-failures.md).
+[Common Grading Failures & Recovery](../grading/grading-failures.md) covers
+grader account failures.
 
 ### Support for Personal Customizations
 
 Minor customizations within a standard image are a supported feature. ITS staff
 cannot debug an arbitrary package tree. Instructors and Technical Points of
-Contact (TPOCs) can bring such problems to a 1:1 Consultation, described in
+Contact (TPOCs) can bring such problems to a 1:1 Consultation. See
 [Getting Help](../reference/getting-help.md).

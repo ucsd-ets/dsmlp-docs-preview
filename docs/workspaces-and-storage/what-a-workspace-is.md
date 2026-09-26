@@ -16,34 +16,35 @@ requested, and the quotas and budgets its members draw against.
 A course is not split across several workspaces, and a discussion section does
 not have a workspace of its own. Access that only some students in a course
 need, such as a mentor's dataset for one section or a project group's shared
-files, is given through teams inside the single course workspace, as described
-in [Sections, Teams and Group Data](#sections-teams-and-group-data).
+files, is given through teams inside the single course workspace. See
+[Sections, Teams and Group Data](#sections-teams-and-group-data).
 
 ## What the Workspace Controls
 
 | Resource | How the workspace governs it |
 |---|---|
 | Roster | Course rosters auto-populate from TSS (formerly TritonLink) and Canvas. Lab and research workspace rosters are curated by Research IT Services and have the potential to auto-populate from departmental staff affiliation. |
-| Storage | Home directories are per-user and per-workspace. The workspace also holds its shared `public/` area and any `teams/` directories. Home directory quotas are listed in [Workspace and Personal Quotas](your-files-and-quotas.md#workspace-and-personal-quotas). |
+| Storage | Home directories are per-user and per-workspace. The workspace also holds its shared `public/` area and any `teams/` directories. [Workspace and Personal Quotas](your-files-and-quotas.md#workspace-and-personal-quotas) lists home directory quotas. |
 | Container images | Each workspace defines one or more Jupyter configurations, each an image plus CPU, RAM, and GPU quantities, and members pick one from a menu. For example, a course might offer a CPU-only environment for most of the quarter and a 1-GPU environment for its projects. |
 | GPU class access | Each workspace is granted access to one or more [GPU Classes](../gpu-access/gpu-classes.md) matching the work it was provisioned for. A request for a class the workspace was not granted is refused. |
 | Quotas and budgets | Group quotas cap how much of each GPU class the workspace can hold at once. Per-workspace Service Unit budgets divide that capacity between its members, and renew weekly by default. |
 
 The resources in this table stop at the workspace boundary. The `private/`
 directory is the exception: it is per-user and cluster-wide, and it appears in
-every workspace an account belongs to. Directory scopes are listed in
-[Where Files Live](your-files-and-quotas.md#where-files-live).
+every workspace an account belongs to.
+[Where Files Live](your-files-and-quotas.md#where-files-live) lists directory
+scopes.
 
 ## Workspace Provisioning
 
-Course workspaces are provisioned from a course request. The submission
-deadline is listed in
-[Course Timeline](../instructor-or-ta.md#course-timeline).
+Course workspaces are provisioned from a course request.
+[Course Timeline](../instructor-or-ta.md#course-timeline) gives the submission
+deadline.
 A quarterly survey asks instructors and TAs about assignment scope, GPU sizes,
 and deadlines. From the answers, ITS provisions the workspace, its Datahub
-environments, and its GPU class access before the quarter starts. The course
-staff timeline is described in
-[Instructors, TAs & Course Staff](../access/when-access-starts-and-ends.md#instructors-tas--course-staff).
+environments, and its GPU class access before the quarter starts.
+[Instructors, TAs & Course Staff](../access/when-access-starts-and-ends.md#instructors-tas--course-staff)
+describes the course staff timeline.
 
 Research IT Services curates lab and research workspaces manually rather than
 generating them from a roster.
@@ -51,9 +52,9 @@ generating them from a roster.
 ### Image Pinning
 
 A workspace may **pin** a container image. Pinning keeps the workspace's
-members from being moved by an image update mid-quarter. The request
-is described in
-[Pinning a Workspace](../environments/standard-images.md#pinning-a-workspace).
+members from being moved by an image update mid-quarter.
+[Pinning a Workspace](../environments/standard-images.md#pinning-a-workspace)
+describes the request.
 
 ## Who Manages a Workspace
 
@@ -61,15 +62,15 @@ A workspace's **members** are its students or lab members. Its **workspace
 managers** are its instructors, TAs, or PI. A workspace manager may view the
 group calendar, book on a member's behalf, and waive a cancellation charge. A
 workspace manager may not edit Service Unit budgets or group limits, but may
-request a change by ticket to [datahub@ucsd.edu](mailto:datahub@ucsd.edu). The
-privilege tiers are described in
-[Managing a Group](../reference/managing-a-group.md).
+request a change by ticket to [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
+[Managing a Group](../reference/managing-a-group.md) describes the privilege
+tiers.
 
 ## Belonging to Several Workspaces
 
 An account can belong to several workspaces at once, for example as a TA in one
 course, a student in another, and a member of a lab. Each workspace is a
-separate context with its own files, as described in
+separate context with its own files. See
 [Per-Workspace Home Directories](#per-workspace-home-directories).
 
 The workspace a session runs in is chosen at every launch. In the browser, it is
@@ -93,15 +94,15 @@ Two locations follow an account across every workspace:
   placed there by `scp` are not in a course home until they are moved.
 
 `public/` and `teams/` belong to the workspace and count against its quota.
-Directory locations and quotas are listed in
-[Where Files Live](your-files-and-quotas.md#where-files-live).
+[Where Files Live](your-files-and-quotas.md#where-files-live) lists directory
+locations and quotas.
 
 ## Choosing a Workspace in the Browser
 
 Signing in at `datahub.ucsd.edu` leads to a page listing the environments the
 account is entitled to, each named for the course it belongs to. A course that
-is not listed may be an enrollment change that has not yet propagated, as
-described in [Missing Workspaces](#missing-workspaces).
+is not listed may be an enrollment change that has not yet propagated. See
+[Missing Workspaces](#missing-workspaces).
 
 ### Courses with Several Environments
 
@@ -165,8 +166,9 @@ launch-scipy-ml.sh -W <workspace-id> -G <teamid>
 ```
 
 `-G list` prints the teams the account belongs to. `-G <teamid>` launches with
-that team's data visible under `teams/`. The `teams/` directory is described in
-[Team Directories](your-files-and-quotas.md#team-directories).
+that team's data visible under `teams/`.
+[Team Directories](your-files-and-quotas.md#team-directories) describes the
+`teams/` directory.
 
 > [!NOTE]
 > `-g` is the GPU count and `-G` is the group flag: `-g 1` asks for one GPU, and
@@ -178,7 +180,7 @@ that team's data visible under `teams/`. The `teams/` directory is described in
 ### Pending Roster Updates
 
 A course that does not appear may still be waiting on a roster update. An
-enrolled course that is missing is not a fault until the roster timing listed in
+enrolled course that is missing is not a fault until the roster timing in
 [Students Enrolled in a Course](../access/when-access-starts-and-ends.md#students-enrolled-in-a-course)
 has passed. Auditors and observers are not on the TSS roster and are added
 through Canvas by the instructor or TA.
@@ -186,7 +188,7 @@ through Canvas by the instructor or TA.
 ### Ended Courses
 
 A course that has disappeared, rather than never appeared, has most likely
-reached the end of its retention period, as described in
+reached the end of its retention period. See
 [One Additional Quarter](../access/when-access-starts-and-ends.md#one-additional-quarter).
-Copying work out is described in
-[Retrieving Work Before Access Ends](moving-and-sharing-data.md#retrieving-work-before-access-ends).
+[Retrieving Work Before Access Ends](moving-and-sharing-data.md#retrieving-work-before-access-ends)
+describes copying work out.

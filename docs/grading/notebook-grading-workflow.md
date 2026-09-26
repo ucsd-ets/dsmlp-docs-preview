@@ -2,8 +2,8 @@
 
 nbgrader runs inside Datahub from a shared course grader account. This page
 covers the nbgrader workflow from creating an assignment to importing grades
-into Canvas; the choice of grading tool is covered in
-[Choosing a Grading Tool & Interface](choosing-a-grading-tool.md).
+into Canvas. [Choosing a Grading Tool & Interface](choosing-a-grading-tool.md)
+covers the choice of grading tool.
 
 ## Grader Account
 
@@ -18,13 +18,13 @@ To open Formgrader:
 2. Launch the course environment.
 3. Open **Nbgrader → Formgrader**.
 
-The interfaces that support nbgrader are listed in
-[Interface Support for nbgrader](choosing-a-grading-tool.md#interface-support-for-nbgrader).
+[Interface Support for nbgrader](choosing-a-grading-tool.md#interface-support-for-nbgrader)
+lists the interfaces that support nbgrader.
 
 The grader account is shared course infrastructure. Its local environment must
 not be reset or cleaned by hand. Request any reset or cleanup in the course
-ticket. Known failures of the grader environment and their recovery are listed
-in [Common Grading Failures & Recovery](grading-failures.md).
+ticket. [Common Grading Failures & Recovery](grading-failures.md) lists known
+failures of the grader environment and their recovery.
 
 ### Multiple Graders
 
@@ -59,8 +59,7 @@ each with the same internal structure:
 - Use a name that is unique across every assignment the grader account has
   created, not only within the course.
 - Do not use spaces. A space in the name is one of the two known causes of a
-  failed export at the end of the term, described in
-  [Export Failures](#export-failures).
+  failed export at the end of the term. See [Export Failures](#export-failures).
 
 ### Assignment File Size Limit
 
@@ -109,8 +108,8 @@ Leave at least one visible test, or a comment stating that hidden tests exist.
 ### Copying Read-Only and Autograded Cells
 
 Do not ask students to copy a read-only or autograded cell. Copying one corrupts
-the notebook's metadata and blocks autograding. Recovery is covered in
-[Common Grading Failures & Recovery](grading-failures.md).
+the notebook's metadata and blocks autograding.
+[Common Grading Failures & Recovery](grading-failures.md) covers recovery.
 
 ### Validating Solutions
 
@@ -132,8 +131,8 @@ Before releasing, validate the assignment's own solutions with the
 
 Course materials that are not nbgrader assignments, such as lecture notebooks
 and data, are usually distributed with a `git-pull` link. The most common
-failure of the link is a student clicking it before signing in. Signing in is
-covered in [Datahub in the Browser](../access/datahub-in-the-browser.md).
+failure of the link is a student clicking it before signing in.
+[Datahub in the Browser](../access/datahub-in-the-browser.md) covers signing in.
 
 ## Autograding, Manual Grading & Feedback
 
@@ -217,8 +216,8 @@ Canvas gradebook.
 Export fails for two known reasons: an assignment created with a space in its
 title, and an assignment deleted through the filesystem rather than with
 `nbgrader db assignment remove`. In both cases, delete the assignment properly
-and run the export again. Recovery is covered in
-[Common Grading Failures & Recovery](grading-failures.md).
+and run the export again.
+[Common Grading Failures & Recovery](grading-failures.md) covers recovery.
 
 ### Exporting Before Access Ends
 
@@ -251,8 +250,8 @@ In [Canvas](https://canvas.ucsd.edu/), open the course, then:
 The highlighted rows are the grades about to change. The review screen is the
 last point before Canvas writes them.
 
-The field order Canvas expects is given in the
-[Canvas gradebook import documentation](https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-import-grades-in-the-Gradebook/ta-p/807).
+The [Canvas gradebook import documentation](https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-import-grades-in-the-Gradebook/ta-p/807)
+gives the field order Canvas expects.
 
 ## Scope of the Canvas Integration
 
@@ -262,12 +261,13 @@ automatic route, and a Canvas account is not the account used to sign in to
 Datahub.
 
 Enrolled student access comes from TSS course rosters; auditors, observers, TAs,
-and other course staff are added through Canvas, as described in
+and other course staff are added through Canvas. See
 [Students Enrolled in a Course](../access/when-access-starts-and-ends.md#students-enrolled-in-a-course).
 
 ## The Otter & Gradescope Routes
 
 On the Otter and Gradescope routes, grades reach Canvas through Gradescope, not
 through Datahub. A course that needs automatic grade transfer uses a Gradescope
-route. The routes are compared in
-[Choosing a Grading Tool & Interface](choosing-a-grading-tool.md).
+route.
+[Choosing a Grading Tool & Interface](choosing-a-grading-tool.md) compares the
+routes.

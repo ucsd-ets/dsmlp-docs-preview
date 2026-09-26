@@ -184,8 +184,9 @@ closes, with an all-clear, when the warning is withdrawn.
 much notice a warning gives.
 
 VS Code shows the same status in its own status bar, with the same
-notifications. Setup instructions for VS Code and other remote editors are
-planned for Winter 2027.
+notifications. Setup instructions for this display in VS Code and other remote
+editors are not yet published. For connecting VS Code itself, see
+[Remote Editor Setup](../access/remote-editor-setup.md).
 
 ![The VS Code status bar reading Job protected 55:49, below a notification that says GPU resources reserved (medium) until 10:49 AM, from DSMLP Job Reservation/Resource Status, with a Details button.](../images/vscode-reservation-status.png)
 

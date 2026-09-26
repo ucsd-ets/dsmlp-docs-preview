@@ -385,6 +385,6 @@ The reservation system writes no event in these cases. Only the scheduler's
 | The pod asks for 2 or more GPUs, which needs a raised GPU limit, and no single node has that many free | Wait, or ask for fewer GPUs. A pod runs on one node |
 | The reservation app cannot be reached | Wait. If it lasts, contact [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
 
-A termination warning is not an event. It is a set of annotations on the pod,
-described in
+A termination warning is not an event. It is a set of annotations on the pod.
+See
 [The Termination Warning](../running-jobs/checkpointing.md#the-termination-warning).

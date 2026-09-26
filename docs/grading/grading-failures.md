@@ -60,7 +60,7 @@ causes are known, both related to how an assignment was named or removed:
   disagree.
 
 To recover, delete the assignment with `nbgrader db assignment remove` and run
-the export again, as described in
+the export again. See
 [Exporting the Grades](notebook-grading-workflow.md#exporting-the-grades).
 
 ## Grader Environment Failures
@@ -92,11 +92,12 @@ rm -r <old_course_directory>
 
 ### Broken Grader Environment After a Package Install
 
-For an individual account, the standard fixes are clearing `.local`, described
-in
-[Recovering a Broken Environment](../environments/customizing-your-environment.md#recovering-a-broken-environment),
-and running the manual resetter, described in
-["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed). For
+For an individual account, the standard fixes are clearing `.local` and running
+the manual resetter.
+[Recovering a Broken Environment](../environments/customizing-your-environment.md#recovering-a-broken-environment)
+describes the first.
+["Spawn Failed"](../access/sign-in-and-session-problems.md#spawn-failed)
+describes the second. For
 the shared grader account, raise the problem in the course support ticket
 instead.
 
@@ -109,8 +110,8 @@ instead.
 ### Student Missing from Manage Students
 
 Students appear in **Manage Students** only after they have submitted
-something, and then by username alone. Names are imported separately, as
-described in [The Student Roster](notebook-grading-workflow.md#the-student-roster).
+something, and then by username alone. Names are imported separately. See
+[The Student Roster](notebook-grading-workflow.md#the-student-roster).
 
 ### Uncollected Submissions
 
@@ -143,9 +144,9 @@ A missing Formgrader menu has two causes. Check them in order of likelihood:
 
 1. The account. nbgrader works only from the shared course grader account,
    never from an instructor's or TA's own account.
-2. The interface. NBClassic does not carry the nbgrader extension. The
-   interfaces that support grading are listed in
-   [Interface Support for nbgrader](choosing-a-grading-tool.md#interface-support-for-nbgrader).
+2. The interface. NBClassic does not carry the nbgrader extension.
+   [Interface Support for nbgrader](choosing-a-grading-tool.md#interface-support-for-nbgrader)
+   lists the interfaces that support grading.
 
 ## Unresponsive Distribution Links
 
@@ -165,8 +166,8 @@ account has created, not only within one course.
 Instructors and TAs open a ticket for any problem that touches the shared
 grader account, the course database, or a deadline. Incidents at a critical
 point in the term are handled with more urgency than routine requests. State
-the critical timing in the ticket. Support contacts and response targets are
-listed in [Getting Help](../reference/getting-help.md).
+the critical timing in the ticket. [Getting Help](../reference/getting-help.md)
+lists support contacts and response targets.
 
 Students contact the course instructor or TA first. The instructor or TA can
 reproduce the problem and escalate it to ITS with the course context attached.

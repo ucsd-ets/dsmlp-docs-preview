@@ -10,8 +10,8 @@ the Jupyter interfaces that support nbgrader.
 nbgrader is the in-platform tool. Assignments are created, distributed,
 collected, autograded, and manually graded inside Datahub, through the
 Formgrader interface. Students complete and submit their work without leaving
-the platform. The workflow is described in
-[Notebook Grading Workflow](notebook-grading-workflow.md).
+the platform. [Notebook Grading Workflow](notebook-grading-workflow.md)
+describes the workflow.
 
 ### Otter-Grader
 
@@ -59,12 +59,12 @@ The tools differ mainly in where the work happens: on Datahub or on Gradescope.
 | A language other than Python | Only the Gradescope autograder on its own supports other languages natively |
 | Grades delivered to Canvas | The Gradescope routes carry grades to Canvas. nbgrader does not, and course staff upload a CSV |
 
-The nbgrader export and CSV upload are described in
-[Exporting the Grades](notebook-grading-workflow.md#exporting-the-grades).
+[Exporting the Grades](notebook-grading-workflow.md#exporting-the-grades)
+describes the nbgrader export and CSV upload.
 
 IT Services can advise on the choice and put course staff in touch with
-instructors who have used each tool. Contact routes are listed on
-[Getting Help](../reference/getting-help.md).
+instructors who have used each tool.
+[Getting Help](../reference/getting-help.md) lists contact routes.
 
 ### Timing of the Choice
 
@@ -76,17 +76,17 @@ before the quarter starts, during the setup window. Course setup dates are on
 ## nbgrader on Datahub
 
 nbgrader runs entirely in the Jupyter interface, so the interface a grader or
-student uses determines whether its controls are available. Support by
-interface is listed in
-[Interface Support for nbgrader](#interface-support-for-nbgrader).
+student uses determines whether its controls are available.
+[Interface Support for nbgrader](#interface-support-for-nbgrader) lists support
+by interface.
 
 ### Shared Grader Account
 
 Each Datahub course is issued one shared grader account. nbgrader works only
 from that account, not from an instructor's or a TA's own account, and everyone
 who grades shares it. Formgrader appears only for the shared grader account,
-whichever interface is in use. The account is described in
-[Managing a Group](../reference/managing-a-group.md).
+whichever interface is in use.
+[Managing a Group](../reference/managing-a-group.md) describes the account.
 
 ### Student Feedback
 
@@ -114,9 +114,9 @@ JupyterLab is the default interface and the supported interface for grading.
 ### Experimental Interfaces
 
 Notebook 7 and NBClassic are experimental. If either misbehaves, switch back to
-JupyterLab, as described in
-[Moving Between Interfaces](#moving-between-interfaces), and report the problem
-to [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
+JupyterLab and report the problem to
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu). See
+[Moving Between Interfaces](#moving-between-interfaces).
 
 ### Interface Choice per Person
 
@@ -132,7 +132,7 @@ to another interface does not see what a course handout describes.
 | Fetching and submitting assignments (students) | **Nbgrader → Assignment List** |
 
 **Nbgrader → Create Assignment** and the right-hand panel open the same
-per-cell grading controls, described in
+per-cell grading controls. See
 [Marking Up Cells](notebook-grading-workflow.md#marking-up-cells).
 
 The Assignment List is nearly identical to the one in the classic interface,

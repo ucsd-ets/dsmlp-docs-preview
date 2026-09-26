@@ -17,8 +17,9 @@ single sign-on. The sidebar lists these pages:
 | **My Reservations** | List, cancel, extend, and adopt reservations |
 | **Rates** | The SU rate of every GPU class for each hour of the week |
 
-Workspace managers see further pages, described in
-[Managing a Group](../reference/managing-a-group.md). Members of a workspace in
+Workspace managers see further pages.
+[Managing a Group](../reference/managing-a-group.md) describes them.
+Members of a workspace in
 researcher mode also see **Group Reservations**; see
 [Researcher Mode](#researcher-mode).
 
@@ -63,9 +64,9 @@ the usual way and is admitted onto the booking. See
 ![The Select Date & Time step of the booking wizard. Hourly bars across two days show how many GPUs are free, with an amber strip under the off-peak hours. Three evening hours are selected, and the line below the timeline reads 6:00 PM to 9:00 PM, 3 hours, 1 GPU, 3 SU.](../images/reservation-wizard-date-time.png)
 
 **Next** checks the booking against every rule before the confirm step, and a
-refusal appears at the top of the page. The refusal messages and their fixes are
-listed in
-[Booking Refusals in the Reservation App](../reference/error-messages.md#booking-refusals-in-the-reservation-app).
+refusal appears at the top of the page.
+[Booking Refusals in the Reservation App](../reference/error-messages.md#booking-refusals-in-the-reservation-app)
+lists the refusal messages and their fixes.
 The server checks again on **Confirm Reservation**, because capacity can change
 in between.
 
@@ -138,9 +139,7 @@ A session, the pod a launch creates, runs for 6 hours by default and up to 12
 hours where that is set at launch. See
 [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit).
 The runtime limit applies to a session under a booking as it does to any other.
-`launch.sh` is scheduled to be corrected for this in Fall 2026. Until then,
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu) gives instructions for a
-workaround.
+For a workaround, write to [datahub@ucsd.edu](mailto:datahub@ucsd.edu).
 
 > [!WARNING]
 > When a session under an open booking stops at its runtime limit, start a new
@@ -217,7 +216,7 @@ such as a command-line launch without `-W`, is charged to `ORG_ON_DEMAND`, a
 workspace that every user is enrolled in automatically.
 
 `ORG_ON_DEMAND` accepts on-demand leases only and cannot be booked. It has the
-default budget and length cap described in
+default budget and length cap. See
 [The Size of a Budget](service-units-and-budgets.md#the-size-of-a-budget) and
 [Reservation Length Caps](#reservation-length-caps). A job there can keep
 running after its reservation ends, with no guarantee; see
@@ -302,9 +301,9 @@ booking that will not be used.
 
 ## Planning a Long Window
 
-Book the GPU class the work needs rather than the largest one available. Class
-selection is covered in [GPU Classes](gpu-classes.md), and booking costs in
-[Service Units & Budgets](service-units-and-budgets.md).
+Book the GPU class the work needs rather than the largest one available.
+[GPU Classes](gpu-classes.md) covers class selection.
+[Service Units & Budgets](service-units-and-budgets.md) covers booking costs.
 
 Unused time can be released by cancelling the rest of the booking. Releasing it
 is not always free: the charge depends on how much of the booking was used and
@@ -408,9 +407,9 @@ A workspace can run in team mode. Teams come from the course roster.
 The `launch.sh -G` flag controls which team data is visible, not reservations.
 `-G list` prints the teams an account belongs to, and `-G <teamid>` launches
 with that team's data visible under `teams/`. No connection between this flag
-and team mode in the reservation system is documented. Team data is described
-in
-[Sections, Teams and Group Data](../workspaces-and-storage/what-a-workspace-is.md#sections-teams-and-group-data).
+and team mode in the reservation system is documented.
+[Sections, Teams and Group Data](../workspaces-and-storage/what-a-workspace-is.md#sections-teams-and-group-data)
+describes team data.
 
 > [!NOTE]
 > `-g` is the GPU count and `-G` is the group flag: `-g 1` asks for one GPU,
@@ -437,4 +436,4 @@ each member has a Service Unit budget that meters the member's own share
 A workspace quota is not a hard ceiling; the conditions for exceeding it are in
 [Borrowing Beyond Quota](quotas-and-availability.md#borrowing-beyond-quota).
 Availability can also read zero while a workspace still has headroom under its
-quota, as described in [Cohorts](quotas-and-availability.md#cohorts).
+quota. See [Cohorts](quotas-and-availability.md#cohorts).

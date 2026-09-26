@@ -84,7 +84,7 @@ a broad incident from an individual report such as "my notebook will not start".
 
 ITS targets resolution of individual user issues within 1-2 business days. The
 target applies to students in a course, researchers, and instructors, and to
-the requests listed in [Administrative Requests](#administrative-requests).
+the requests in [Administrative Requests](#administrative-requests).
 
 A problem report from an independent study or project user, whose access came
 through the Independent Study Request form, may take up to 5 days to answer.
@@ -108,7 +108,7 @@ routed.
 ## 1:1 Consultation
 
 1:1 Consultation appointments connect instructors, TAs, and TPOCs with ITS
-technical staff for real-time guidance, as described in
+technical staff for real-time guidance. See
 [Support & Technical Consultation](../instructor-or-ta.md#support--technical-consultation).
 
 ## Administrative Requests
@@ -120,7 +120,7 @@ administrative action taken by someone else.
 | Request | Granted by | Information to include |
 |---|---|---|
 | More disk space | Cluster administrators, by ticket. In a course, the instructor or TA raises it on the course's existing ticket. | The workspace ID, the current disk-quota-service reading, what is taking the space, and what has already been cleared |
-| A resource tier above the default, as described in [Resource Tiers](../running-jobs/launch-sh-reference.md#resource-tiers) | Cluster administrators, by ticket to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) | What the work is, the CPU and memory it needs and why, whether it is one container or several at once, and how long the raise is needed for |
+| A resource tier above the default. See [Resource Tiers](../running-jobs/launch-sh-reference.md#resource-tiers) | Cluster administrators, by ticket to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) | What the work is, the CPU and memory it needs and why, whether it is one container or several at once, and how long the raise is needed for |
 | A GPU class the workspace was not granted | Cluster administrators. A request from an instructor or PI carries more weight than one from a member. | The workspace, the class needed, the model or dataset whose memory footprint requires it, and the dates it matters on |
 | More Service Units | Cluster administrators set budgets. A workspace manager may request a change but cannot edit a budget. | The workspace, what the work is, the date by which it must be done, and what the budget has already been spent on |
 | A waived cancellation penalty | The workspace manager: an instructor or TA for a course, a PI for a lab, at cancellation or afterwards. A manager's waiver clears the member's share; only an administrator clears a group pool's share. | Which booking, and what happened |
@@ -151,7 +151,7 @@ deadline and time window, and lists what has already been tried.
 
 ### Naming the Workspace
 
-Almost every limit covered in [Administrative Requests](#administrative-requests)
+Almost every limit in [Administrative Requests](#administrative-requests)
 belongs to a workspace rather than to an individual. A request that does not
 name a workspace cannot be acted on. The disk-quota-service page displays the
 workspace ID, and `workspace --list` on the login node prints every workspace an
@@ -222,5 +222,4 @@ designed.
 
 A quota increase, a GPU class, or a longer reservation window is an
 administrative request rather than a fault report. These requests have no
-self-service path and are listed in
-[Administrative Requests](#administrative-requests).
+self-service path. See [Administrative Requests](#administrative-requests).
