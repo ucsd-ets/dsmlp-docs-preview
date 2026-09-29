@@ -1,8 +1,10 @@
 # Datasets
 
-This page covers where shared datasets are stored on Datahub and DSMLP, how to
-request that a dataset be staged, and the restrictions that apply to protected
-and licensed data.
+Find the shared datasets on the cluster and read them where they are stored,
+rather than copying them into your home directory. Request staging for a large
+dataset that several people need. Data classification decides whether protected
+data can go on the cluster at all, and license terms limit what you can do with
+licensed data.
 
 ## Where Shared Data Lives
 

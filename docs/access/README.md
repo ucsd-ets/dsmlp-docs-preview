@@ -1,9 +1,9 @@
 # Access
 
-This section covers the three routes onto Datahub and DSMLP (the browser, the
-shell, and a remote editor), sign-in and session problems, and when access
-starts and ends. Moving between the routes has no eligibility requirement and
-requires no request.
+Datahub and DSMLP have three access routes: the browser, the shell, and a
+remote editor. Start here to choose a route, to fix a sign-in or startup
+failure, or to find out when your access starts and ends. Moving between the
+routes has no eligibility requirement and requires no request.
 
 | Page | Covers |
 |---|---|

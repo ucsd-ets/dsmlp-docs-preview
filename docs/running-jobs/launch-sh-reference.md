@@ -1,11 +1,11 @@
 # `launch.sh` Reference
 
-This page lists the options `launch.sh` accepts, the resources it provides by
-default, and how the resource values passed to it are applied.
+Look up a `launch.sh` option, the resources a container gets by default, or how
+it applies the CPU, memory, and GPU values you pass.
 [Job Modes](job-modes-and-limits.md#job-modes) covers work that continues after
 a terminal session ends.
-[The Runtime Limit](job-modes-and-limits.md#the-runtime-limit) covers how long a
-container may run.
+[The Runtime Limit](job-modes-and-limits.md#the-runtime-limit) covers how long
+a container may run.
 
 ## Location and Invocation
 

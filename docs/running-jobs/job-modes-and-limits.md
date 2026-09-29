@@ -1,9 +1,8 @@
 # Job Modes, Runtime Limits & Configuration
 
-The three job modes differ in what happens when no session is attached, not in
-how much compute a job receives. This page also covers the runtime limit that
-applies to every container and configuring a launch with environment variables
-instead of flags.
+Choose how a container launched with `launch.sh` behaves when you disconnect,
+and how long it may run. The three job modes differ in what happens when no
+session is attached, not in how much compute a job receives.
 
 ## Job Modes
 

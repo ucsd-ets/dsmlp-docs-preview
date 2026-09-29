@@ -1,10 +1,9 @@
 # Software
 
-This page covers software beyond the contents of the standard images: R and
-RStudio, MATLAB and GNU Octave, Stata, other licensed software, capabilities
-that ITS classes as complex or experimental, and software that members install
-themselves. The standard images cover most courses and projects and receive
-priority support. See
+Find out how to run RStudio, MATLAB, and Stata on Datahub and DSMLP, how
+licensed software gets installed, and which software you can install yourself.
+The standard images cover most courses and projects and receive priority
+support. See
 [Standard Images, Tags, and Pinning](../environments/standard-images.md).
 
 ## R and RStudio

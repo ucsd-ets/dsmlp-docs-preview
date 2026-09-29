@@ -1,11 +1,14 @@
 # Standard Images, Tags, and Pinning
 
-This page covers the standard software images maintained by IT Services (ITS),
-their registry names and tags, and pinning a workspace to a fixed image.
+The standard images are the software environments IT Services maintains for
+Datahub and DSMLP, and most courses and projects run on one of them. Find out
+which image a session runs, what it contains, and how a course can pin its
+workspace to one version of an image for a term.
 
 ## Standard Images
 
-The canonical list of the images ITS maintains, with their current tags, is the
+The canonical list of the images IT Services (ITS) maintains, with their
+current tags, is the
 [`ucsd-ets/datahub-docker-stack`](https://github.com/ucsd-ets/datahub-docker-stack)
 repository. Three standard images cover most courses and projects, receive
 priority support, and serve as the starting point for a custom image. See

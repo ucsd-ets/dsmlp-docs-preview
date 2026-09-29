@@ -1,7 +1,9 @@
 # Environments
 
-This section covers the software images a session runs, adding packages to an
-environment, and building a custom image.
+Every Datahub and DSMLP session runs from a container image, which sets the
+software the session starts with. Start here to find out what the standard
+images contain, to add packages to your own environment, or to build a custom
+image when the software you need installs into the operating system.
 
 | Page | Covers |
 |---|---|

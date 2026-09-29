@@ -1,7 +1,9 @@
 # Choosing a Grading Tool & Interface
 
-This page compares the three grading tools used in Datahub courses and lists
-the Jupyter interfaces that support nbgrader.
+Choose a grading tool for your course before the quarter starts: nbgrader runs
+inside Datahub, while Otter-Grader and the Gradescope autograder run on
+Gradescope. If you choose nbgrader, grade in JupyterLab, the supported
+interface.
 
 ## Grading Tools
 

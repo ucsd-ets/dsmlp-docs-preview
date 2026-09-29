@@ -1,7 +1,7 @@
 # Glossary
 
-This page defines terms used across the Datahub and DSMLP documentation, in
-alphabetical order. Each entry links to the page that covers the term in full.
+Look up a term used in the Datahub and DSMLP documentation. Entries are in
+alphabetical order, and each links to the page that covers the term in full.
 
 ## A-C
 

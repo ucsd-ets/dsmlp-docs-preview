@@ -1,7 +1,8 @@
 # Reference
 
-This section covers error messages, reservation events, support routing, the
-glossary, HPC vocabulary, group management, policy, and software.
+The pages in this section apply across Datahub and DSMLP rather than to one
+task. Look up an error message, a reservation event, or a term, or find whom to
+contact and the rules of use.
 
 | Page | Covers |
 |---|---|

@@ -1,10 +1,8 @@
 # Working from the Command Line
 
-This page covers reaching a course environment from a terminal: launching
-containers, requesting resources and GPU classes, running jobs that continue
-after disconnection, connecting Visual Studio Code, and interpreting what
-happened to a job. It assumes a terminal and the `ssh` command, and no
-knowledge of Kubernetes, Docker, or Linux administration.
+This page is for reaching a course environment from a terminal. It assumes a
+terminal and the `ssh` command, and no knowledge of Kubernetes, Docker, or Linux
+administration.
 
 ## Access
 

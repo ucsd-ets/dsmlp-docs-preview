@@ -1,8 +1,8 @@
 # Workspaces & Storage
 
-This section covers the workspace, the unit that governs rosters, storage,
-images, GPU access, and quotas. It also covers where files are stored, how they
-move and are shared, and shared datasets.
+A workspace is the unit that governs rosters, storage, images, GPU access, and
+quotas. Start here to find out which workspaces you belong to, where your files
+are stored, and how to move and share data.
 
 | Page | Covers |
 |---|---|

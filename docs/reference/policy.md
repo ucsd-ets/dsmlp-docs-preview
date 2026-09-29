@@ -1,8 +1,8 @@
 # Policy
 
-This page states the conditions for using Datahub and DSMLP: data
-classification, campus acceptable use, hosting of services, expected practice on
-shared resources, self-supporting programs, and scheduled maintenance.
+Check the conditions for using Datahub and DSMLP before you put data on the
+platform, host a service that people outside it can reach, or set a deadline
+that could fall in a maintenance window.
 
 ## Data Classification
 

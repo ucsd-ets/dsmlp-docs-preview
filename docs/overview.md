@@ -1,8 +1,9 @@
 # Datahub and DSMLP Overview
 
-This page describes Datahub and DSMLP and names the starting page for each
-audience. It also summarizes standard features, platform constraints, support
-contacts, and policy.
+Start here if you are new to Datahub and the Data Science & Machine Learning
+Platform (DSMLP). Find out what the service offers every course and lab, the
+constraints that apply to all work on it, and the page to begin with for your
+role.
 
 ## Datahub, DSMLP, and the Research Cluster
 

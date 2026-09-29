@@ -1,8 +1,8 @@
 # Sign-In & Session Problems
 
-This page covers common failures to reach or start a session on
-[datahub.ucsd.edu](https://datahub.ucsd.edu) and their remedies, most of which
-are self-service.
+Use this page when you cannot sign in to
+[datahub.ucsd.edu](https://datahub.ucsd.edu), your course does not appear, or a
+session will not start. Most of these failures have a self-service remedy.
 
 ## Campus Sign-In Failures
 

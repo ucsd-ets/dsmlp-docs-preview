@@ -1,8 +1,8 @@
 # GPU Access
 
-This section covers GPU access on DSMLP under the Fall 2026 reservation model:
-GPU classes, reservations, Service Units, quotas and availability, and the
-causes of a session ending.
+From Fall 2026, a reservation system manages GPU access on DSMLP. If your
+course, project, or research needs a GPU, start here to choose a GPU class,
+reserve time, and plan the Service Units your sessions spend.
 
 | Page | Covers |
 |---|---|

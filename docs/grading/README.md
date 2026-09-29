@@ -1,8 +1,8 @@
 # Grading
 
-This section covers choosing a grading tool, the nbgrader workflow from
-creating an assignment to importing grades into Canvas, and recovery from common
-grading failures.
+This section is for instructors and TAs who grade assignments in a Datahub
+course. Start with the choice of grading tool, then follow the nbgrader
+workflow from creating an assignment to importing grades into Canvas.
 
 | Page | Covers |
 |---|---|

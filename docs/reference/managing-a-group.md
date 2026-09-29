@@ -1,8 +1,10 @@
 # Managing a Group
 
-The reservation and workspace system has four privilege tiers. A workspace
-manager works on the manager pages of the reservation app at
-[reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/).
+If you manage a workspace for a course or a lab, find out what you can do for
+its members, such as booking or canceling on their behalf, and what only an
+administrator can change. The reservation and workspace system has four
+privilege tiers. A workspace manager works on the manager pages of the
+reservation app at [reserve.dsmlp.ucsd.edu](https://reserve.dsmlp.ucsd.edu/).
 
 ## The Four Tiers
 

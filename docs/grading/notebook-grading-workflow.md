@@ -1,9 +1,9 @@
 # Notebook Grading Workflow
 
-nbgrader runs inside Datahub from a shared course grader account. This page
-covers the nbgrader workflow from creating an assignment to importing grades
-into Canvas. [Choosing a Grading Tool & Interface](choosing-a-grading-tool.md)
-covers the choice of grading tool.
+Follow the nbgrader workflow for a Datahub course, from creating an assignment
+to importing its grades into Canvas. nbgrader runs inside Datahub from a shared
+course grader account. If you have not chosen a grading tool yet, see
+[Choosing a Grading Tool & Interface](choosing-a-grading-tool.md).
 
 ## Grader Account
 

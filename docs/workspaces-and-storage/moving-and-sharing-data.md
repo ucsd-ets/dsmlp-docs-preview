@@ -1,7 +1,9 @@
 # Moving & Sharing Data
 
-This page covers transferring files to and from the cluster, sharing files
-within a workspace, and sharing data with people who have no cluster account.
+Move files between your computer and the cluster by the route that suits their
+size and how often you repeat the transfer, and share data with your workspace,
+your team, or people who have no cluster account. Copy your work out before
+your access ends.
 
 ## Transfer Routes
 

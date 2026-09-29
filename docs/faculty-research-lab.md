@@ -1,12 +1,9 @@
 # Setting Up a Research Lab
 
 This page is for faculty arranging Datahub and DSMLP access for a research
-group. It covers platform suitability, the routes to capacity, establishing a
-lab workspace, storage, GPU allocation and borrowing from Fall 2026, the
-researcher-contributed hardware pilot, software, and operating a lab.
-[Research on DSMLP](individual-researcher.md) covers researchers working on
-their own. [Teaching with Datahub and DSMLP](instructor-or-ta.md) covers course
-setup.
+group. [Research on DSMLP](individual-researcher.md) covers researchers working
+on their own. [Teaching with Datahub and DSMLP](instructor-or-ta.md) covers
+course setup.
 
 ## Platform Suitability
 
@@ -123,6 +120,9 @@ review and gives the vetting period. Raise either classification in the initial
 workspace request rather than later.
 
 ## Compute Allocation
+
+From Fall 2026, a reservation system manages GPU access. See
+[GPU Access](gpu-access/README.md).
 
 ### GPU Classes
 

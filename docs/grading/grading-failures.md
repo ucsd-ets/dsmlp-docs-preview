@@ -1,7 +1,8 @@
 # Common Grading Failures & Recovery
 
-This page lists common grading failures by symptom, with the cause and the
-recovery for each.
+Look up a grading problem in an nbgrader course by its symptom, such as a
+notebook that will not validate, a failed export, or a missing submission, and
+follow the recovery for its cause.
 
 | Symptom | Section |
 |---|---|

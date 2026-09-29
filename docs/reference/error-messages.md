@@ -1,7 +1,7 @@
 # Error Messages
 
-This page lists common error messages and failure symptoms, grouped by where
-they appear, with the cause and fix for each. An idle-culled session, a
+Look up an error message or symptom by where you saw it, from signing in to the
+output of your own code, and find its cause and fix. An idle-culled session, a
 `DeadlineExceeded` status, and a refused `sudo` are expected platform behavior,
 not faults.
 

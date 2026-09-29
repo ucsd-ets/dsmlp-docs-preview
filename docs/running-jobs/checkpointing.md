@@ -1,9 +1,9 @@
 # Checkpointing & Logging Long Runs
 
 A container can stop for reasons unrelated to faulty code: the runtime limit,
-idle culling, preemption, and maintenance. This page covers checkpoints a job
-can resume from, the termination warning that precedes some of these stops, and
-logs for unattended jobs.
+idle culling, preemption, and maintenance. Checkpoint and log a long or
+unattended run so that it can resume after a stop and so that its logs show
+what happened.
 
 ## What Can End a Run
 

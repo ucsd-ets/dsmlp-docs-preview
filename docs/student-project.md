@@ -1,8 +1,8 @@
 # Projects & Independent Study
 
-This page covers access to Datahub and DSMLP for work outside a scheduled
-course, and assumes familiarity with a shell. Access through an enrolled course
-is separate and follows different rules. See
+This page is for work on Datahub and DSMLP outside a scheduled course. It
+assumes familiarity with a shell. Access through an enrolled course is separate
+and follows different rules. See
 [Using Datahub in a Course](student-in-a-course.md) and
 [Working from the Command Line](working-from-the-command-line.md).
 

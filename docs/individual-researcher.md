@@ -1,9 +1,8 @@
 # Research on DSMLP
 
-This page covers DSMLP for researchers working without a lab workspace:
-graduate students, postdocs, undergraduate researchers, staff researchers, and
-faculty who have not yet established a group. It assumes familiarity with a
-shell.
+This page is for researchers working without a lab workspace: graduate
+students, postdocs, undergraduate researchers, staff researchers, and faculty
+who have not yet established a group. It assumes familiarity with a shell.
 
 [Setting Up a Research Lab](faculty-research-lab.md) covers provisioning for a
 group. [Projects & Independent Study](student-project.md) covers for-credit

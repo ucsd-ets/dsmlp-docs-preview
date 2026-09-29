@@ -1,8 +1,10 @@
 # Running Jobs
 
-This section covers launching containers with `launch.sh`, job modes and the
-runtime limit, monitoring and checkpointing a running job, and direct use of
-the Kubernetes cluster beneath the launcher.
+Use `launch.sh` on the login node for work the browser does not cover: more CPU
+or memory than the course menu offers, a GPU class the menu does not include,
+or a job that keeps running after you disconnect. Start here to launch a
+container, watch it while it runs, and make a long run resumable after an
+interruption.
 
 | Page | Covers |
 |---|---|

@@ -1,8 +1,8 @@
 # Coming from HPC
 
-This page maps high-performance computing (HPC) and Slurm vocabulary to its
-equivalents on DSMLP and describes the Slurm compatibility wrappers. It assumes
-familiarity with a Slurm cluster.
+If you have worked on a high-performance computing (HPC) cluster that runs
+Slurm, find the DSMLP equivalent of what you know, where DSMLP behaves
+differently, and whether your existing submission scripts run unchanged.
 
 ## HPC Terms and Their Equivalents
 

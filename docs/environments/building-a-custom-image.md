@@ -1,9 +1,8 @@
 # Building & Publishing a Custom Image
 
-This page covers building, publishing, and testing a custom image, which a
-course builds when a standard image does not meet its needs, most often because
-the course requires an operating-system package that cannot be installed from
-inside a running container
+A course builds a custom image when a standard image does not meet its needs,
+most often because the course requires an operating-system package that cannot
+be installed from inside a running container
 ([Root Access and System Packages](customizing-your-environment.md#root-access-and-system-packages)).
 A Python or R package for personal use does not require a custom image. See
 [Customizing an Environment](customizing-your-environment.md).

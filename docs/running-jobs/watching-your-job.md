@@ -1,8 +1,8 @@
 # Watching a Running Job
 
-This page covers monitoring the CPU, memory, and GPU use of a running job from
-the browser, from a shell inside the container, and from a dashboard on a local
-machine. It also covers checking on detached jobs and stopping sessions.
+Check whether a running job is using the CPU, memory, and GPU it requested,
+whether a detached job is still going, and what an `OOMKilled` status means.
+When you finish, list and stop the sessions your account still holds.
 
 ## Monitoring from the Browser
 

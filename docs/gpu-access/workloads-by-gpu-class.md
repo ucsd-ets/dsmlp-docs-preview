@@ -1,9 +1,10 @@
 # Workloads by GPU Class
 
-Request the smallest GPU class the work fits within, among the classes the
-workspace was granted; see [Choosing a Class](gpu-classes.md#choosing-a-class)
-and [Workspace Class Grants](gpu-classes.md#workspace-class-grants). Not every
-card or slice listed here backs its class in every quarter.
+Estimate the GPU memory your work needs, then request the smallest GPU class it
+fits within, among the classes your workspace can use. See
+[Choosing a Class](gpu-classes.md#choosing-a-class) and
+[Workspace Class Grants](gpu-classes.md#workspace-class-grants). Not every card
+or slice listed here backs its class in every quarter.
 
 ## Estimating GPU Memory
 

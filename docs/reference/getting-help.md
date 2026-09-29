@@ -1,8 +1,9 @@
 # Getting Help
 
-This page lists support contacts by type of question, the contents of a support
-ticket, ITS response targets, and the administrative requests that cluster
-administrators and workspace managers grant.
+Find out whom to contact about Datahub or DSMLP, what to include in a ticket,
+and how to ask for a change you cannot make yourself, such as more disk space
+or a larger GPU class. If you are a student in a course, start with your
+instructor or TA.
 
 ## Support Tiers
 

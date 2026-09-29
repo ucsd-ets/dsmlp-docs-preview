@@ -1,8 +1,9 @@
 # Directories, Quotas & Cleaning Up
 
-This page covers the directories available in a session, the workspace and
-personal storage quotas, reclaiming space, and external storage mounted into a
-workspace.
+Find where your files are in a session, check your storage quotas, and free
+space when a full quota stops a session from starting. Files that seem to be
+missing are usually intact in another directory. Data too large for a home
+directory goes on external storage.
 
 ## Where Files Live
 

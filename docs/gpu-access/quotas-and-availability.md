@@ -1,5 +1,9 @@
 # Quotas, Cohorts & Availability
 
+Use this page when a GPU launch waits, or when the reservation calendar offers
+nothing although your workspace has quota to spare. Find out which capacity
+limit applies and how to get more GPU capacity.
+
 ## What a Quota Is
 
 A **quota** is the maximum number of GPUs of each class that a workspace may
