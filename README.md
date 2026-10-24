@@ -1,7 +1,8 @@
 # dsmlp-docs-preview
 
-**This is the preview site for the DSMLP documentation. It is not the
-published documentation, and it is not where the source lives.**
+**This is a preview site for the DSMLP documentation, served at
+<https://dsmlp-docs-preview.ucsd.edu/>. It is not the published documentation,
+and it is not where the source lives.**
 
 Read the real thing at <https://dsmlp-docs.ucsd.edu/> — source at
 [`ucsd-ets/dsmlp-docs-public`](https://github.com/ucsd-ets/dsmlp-docs-public).

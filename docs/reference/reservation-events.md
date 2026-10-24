@@ -50,6 +50,7 @@ support names
 | [`OnDemandAdmissionPaused`](#ondemandadmissionpaused) | Warning | Waiting | On-demand admission is paused for the whole GPU class |
 | [`UnknownGpuClass`](#unknowngpuclass) | Warning | Waiting | The pod's `gpu-class` label is not a known class |
 | [`NoReservation`](#noreservation) | Warning | Waiting | Nothing matches the pod, and it cannot have an on-demand lease |
+| [`NoGpuRequest`](#nogpurequest) | Warning | Waiting | The pod has a `gpu-class` label but asks for no GPU, so the reservation system ignores it |
 | [`AnnotationIgnored`](#annotationignored) | Warning | Waiting | An annotation on the pod was ignored, which changed the outcome |
 | [`NoMatchingNode`](#nomatchingnode) | Warning | Waiting | The node or GPU model the pod names is not in its GPU class, so it cannot have an on-demand lease |
 | [`WaitingForNode`](#waitingfornode) | Normal | Waiting | The node or GPU model the pod names has no free GPU, so no on-demand lease is requested yet |
@@ -208,6 +209,20 @@ window for the class. See
 [Claiming a Booking](../gpu-access/reservations.md#claiming-a-booking). On
 DSMLP, where every pod with a class label qualifies for an on-demand lease, this
 event is not expected.
+
+### `NoGpuRequest`
+
+Type `Warning`. The pod has a `gpu-class` label but asks for no GPU: no
+container sets an `nvidia.com/gpu` limit. The reservation system ignores the
+pod. It is not admitted under a booking or given an on-demand lease, and stays
+`Pending`. The usual cause is a launch with `-l gpu-class=<class>` but no `-g`,
+or a manifest with the label and no GPU limit. Launch again with `-g 1`, or set
+`resources.limits` `nvidia.com/gpu` in the manifest, and recreate the pod. A
+session that needs no GPU should drop the `gpu-class` label instead.
+
+```text
+This pod has the gpu-class label medium but requests no GPUs: no container sets an nvidia.com/gpu resource limit or request. The GPU reservation controller ignores it -- it will not be admitted under a reservation or on demand. Set resources.limits nvidia.com/gpu on the container that needs the GPU and recreate the pod, or remove the gpu-class label if it needs none; if this is wrong, contact support: datahub@ucsd.edu
+```
 
 ### `AnnotationIgnored`
 

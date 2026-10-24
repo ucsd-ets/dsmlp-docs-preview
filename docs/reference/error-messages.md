@@ -56,7 +56,7 @@ not faults.
 The reservation system writes its own events on GPU pods, such as
 `OnDemandLeaseDenied`, `WaitingForReservation`, `UnknownGpuClass`, and
 `Preempted`. Each is a full sentence that says what to do.
-[Reservation Events](reservation-events.md) lists all 18.
+[Reservation Events](reservation-events.md) lists all 19.
 
 ## Booking Refusals in the Reservation App
 

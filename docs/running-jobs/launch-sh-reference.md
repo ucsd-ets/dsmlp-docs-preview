@@ -132,6 +132,8 @@ Every GPU class is managed by the reservation system, which admits only pods
 that carry the `gpu-class` label. A GPU request that omits the label waits in
 `Pending` with no event from the reservation system
 ([Missing or Misspelled Class Label](../gpu-access/gpu-classes.md#missing-or-misspelled-class-label)).
+The reverse, the label with no `-g`, also waits in `Pending`, with a
+[`NoGpuRequest`](../reference/reservation-events.md#nogpurequest) event.
 
 ### Workspace and GPU Charges
 

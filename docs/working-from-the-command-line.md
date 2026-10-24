@@ -286,7 +286,7 @@ The reservation system reports on a GPU session with Kubernetes events, shown by
 - While a session waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
   `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
-  `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
+  `NoGpuRequest`, `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
 - When it is admitted: `RuntimeGuaranteed`, `ReservationRelinked`,
   `OverstayRelinked`, `BestEffortAdmitted`.
 - When it is stopped: `Preempted`, `ReservationCancelled`,

@@ -145,7 +145,7 @@ Datahub while a session starts.
 - While a session waits: `WaitingForReservation`, `ReservationFull`,
   `ReservationTooSmall`, `OnDemandLeaseDenied`, `OnDemandLeaseRejected`,
   `OnDemandAdmissionPaused`, `UnknownGpuClass`, `NoReservation`,
-  `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
+  `NoGpuRequest`, `AnnotationIgnored`, `NoMatchingNode`, `WaitingForNode`.
 - When it is admitted: `RuntimeGuaranteed`, `ReservationRelinked`,
   `OverstayRelinked`, `BestEffortAdmitted`.
 - When it is stopped: `Preempted`, `ReservationCancelled`,
