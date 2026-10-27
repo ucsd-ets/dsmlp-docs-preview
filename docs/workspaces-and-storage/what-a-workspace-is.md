@@ -11,6 +11,7 @@ requested, and the quotas and budgets its members draw against.
 |---|---|
 | Course | The whole course: its lecture timeslots and the discussion sections associated with them |
 | Lab or research | A research group |
+| Open Learning | The students in the majors and programs that offer it, for work outside a course or project. See [Open Learning](../open-learning.md) |
 | Catch-all | A population that has no course or lab of its own |
 
 A course is not split across several workspaces, and a discussion section does
@@ -23,7 +24,7 @@ files, is given through teams inside the single course workspace. See
 
 | Resource | How the workspace governs it |
 |---|---|
-| Roster | Course rosters auto-populate from TSS (formerly TritonLink) and Canvas. Lab and research workspace rosters are curated by Research IT Services and have the potential to auto-populate from departmental staff affiliation. |
+| Roster | Course rosters auto-populate from TSS (formerly TritonLink) and Canvas. Lab and research workspace rosters are curated by Research IT Services and have the potential to auto-populate from departmental staff affiliation. An Open Learning workspace's roster follows major and program records in TSS. See [Open Learning](../access/when-access-starts-and-ends.md#open-learning). |
 | Storage | Home directories are per-user and per-workspace. The workspace also holds its shared `public/` area and any `teams/` directories. [Workspace and Personal Quotas](your-files-and-quotas.md#workspace-and-personal-quotas) lists home directory quotas. |
 | Container images | Each workspace defines one or more Jupyter configurations, each an image plus CPU, RAM, and GPU quantities, and members pick one from a menu. For example, a course might offer a CPU-only environment for most of the quarter and a 1-GPU environment for its projects. |
 | GPU class access | Each workspace is granted access to one or more [GPU Classes](../gpu-access/gpu-classes.md) matching the work it was provisioned for. A request for a class the workspace was not granted is refused. |

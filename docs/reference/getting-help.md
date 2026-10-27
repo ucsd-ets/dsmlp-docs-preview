@@ -17,7 +17,8 @@ Platform problems go directly to ITS, whoever reports them. Platform problems
 include an inability to sign in at all, a service that is down, and behavior
 that differs from the documentation.
 
-Researchers and lab members have no instructor tier and use the contacts in
+Researchers, lab members, and students working in Open Learning have no
+instructor tier for that work and use the contacts in
 [Support Contacts](#support-contacts) directly.
 
 ## Support Contacts
@@ -25,18 +26,18 @@ Researchers and lab members have no instructor tier and use the contacts in
 | Question | Contact |
 |---|---|
 | A course a student is enrolled in | The instructor or TA, first |
-| Datahub or DSMLP itself: access, images, launching, quotas, GPUs | [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
-| The Research Cluster, or Universal Scale Storage | [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) |
+| Datahub or DSMLP itself: access, images, launching, quotas, GPUs, and research work | [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| Universal Scale Storage, or research work, which Research IT also answers | Research IT, at [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) |
 | An outage, or anything to be tracked as a ticket | The [ITS Service Desk](https://support.ucsd.edu/) |
 | Which platform is appropriate for a research project | [Research IT](https://research-it.ucsd.edu/computing/index.html) |
 | An in-depth conversation, for an instructor, TA, or Technical Point of Contact (TPOC) | [1:1 Consultation](https://ucsd-datahub.youcanbook.me/) |
 
 ### Email and the Service Desk
 
-Email to `datahub@ucsd.edu` and a ticket through the Service Desk reach the same
-staff. Email to that address opens a case, and the Service Desk web form submits
-to the same queue. Either route may be used. The web form is better suited to
-screenshots and long pastes.
+Email to [datahub@ucsd.edu](mailto:datahub@ucsd.edu) and a ticket through the
+Service Desk reach the same staff. Email to that address opens a case, and the
+Service Desk web form submits to the same queue. Either route may be used. The
+web form is better suited to screenshots and long pastes.
 
 ### Platform Selection
 
@@ -44,7 +45,9 @@ Research IT is the first contact for the question of whether a research project
 belongs on DSMLP. Research IT can compare a project against the other platforms
 the campus runs, including capabilities DSMLP does not have, such as a full
 batch scheduler, MPI, and multi-node work, and against the platforms a PI's
-group already uses.
+group already uses. Highly resource-intensive work may suit San Diego
+Supercomputer Center (SDSC) systems such as the Triton Shared Computing Cluster
+(TSCC).
 
 See also: [Coming from HPC](coming-from-hpc.md)
 
@@ -87,15 +90,16 @@ ITS targets resolution of individual user issues within 1-2 business days. The
 target applies to students in a course, researchers, and instructors, and to
 the requests in [Administrative Requests](#administrative-requests).
 
-A problem report from an independent study or project user, whose access came
-through the Independent Study Request form, may take up to 5 days to answer.
+A problem report from Open Learning, or from an independent study or project
+user whose access came through the Independent Study Request form, may take up
+to 5 days to answer.
 
 ### Instructor Incident Tier
 
 For instructors only, an incident affecting multiple courses, many users, or a
 critical point in the quarter such as an exam carries a target response time of
 30 minutes from first contact to the Service Desk and a target resolution time
-of 8 hours. The tier is an instructional commitment. An instructor or TA reaches
+of 8 hours, during business hours. The tier is an instructional commitment. An instructor or TA reaches
 it by reporting a broad incident. An individual user does not reach it by
 marking a ticket urgent, and a student whose whole class is affected reaches it
 by telling the instructor.
@@ -104,7 +108,9 @@ by telling the instructor.
 
 Urgent problems outside business hours may be escalated through the Service
 Desk. Escalation may be requested, and the Service Desk determines how it is
-routed.
+routed. Response outside business hours is best effort, and instruction comes
+first. During critical periods of the term, ITS aims for the same 30-minute
+response to an instructor's incident.
 
 ## 1:1 Consultation
 

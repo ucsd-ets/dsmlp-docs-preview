@@ -3,6 +3,13 @@
 From Fall 2026, GPU time on DSMLP is metered in Service Units (SU), and each
 workspace member has a budget of them.
 
+| At a glance | |
+|---|---|
+| Default budget | 10 SU per week per member, in every workspace |
+| Renews | Each Monday at 00:00 Pacific time, weekly by default |
+| Off-peak | 50% off, 1 AM to 4 PM Pacific time |
+| Free to cancel | At least 24 hours before the start |
+
 ## What a Service Unit Is
 
 A **Service Unit** (SU) is a usage credit for GPU time. Each GPU class carries
@@ -37,6 +44,7 @@ reservation made on the spot, which draws Service Units exactly as a booked
 window would. This applies whether the reservation app is ever opened.
 
 > [!WARNING]
+> **No free exploratory launch**
 > There is no free exploratory launch. Launching an eligible GPU session is
 > what authorizes the spend, and nothing prompts for confirmation.
 
@@ -172,11 +180,11 @@ Availability that reads zero in the evening often reads differently in the
 morning, particularly for a workspace in an overcommitted cohort. See
 [Cohorts](quotas-and-availability.md#cohorts).
 
-An off-peak booking is otherwise identical to a peak booking. The GPU hardware
-is the same, and the runtime guarantee,
+An off-peak booking is otherwise identical to a booking in the peak hours. The
+GPU hardware is the same, and the runtime guarantee,
 [The Claim Window](reservations.md#the-claim-window), and
 [The Cancellation Penalty](#the-cancellation-penalty) apply exactly as they do
-at peak.
+in the peak hours.
 
 ### The Rates Page
 
@@ -316,21 +324,27 @@ assessed in Service Units. No money is billed.
 
 ### Cancelling a Booking
 
-On **My Reservations**, select **Cancel** on the reservation. The dialog states
-what the cancellation will cost:
+1. **Select Cancel**
+   On **My Reservations**, select **Cancel** on the reservation.
+2. **Read the cost**
+   The dialog states what the cancellation will cost:
 
-- For a booking that starts within 24 hours:
-  `Late cancellation: X SU will be charged for reserved hours within the next 24 h (part is exempt).`
-  When the cancellation costs nothing, no notice appears. When the app
-  cannot work out the charge, the notice reads
-  `Late cancellation: an SU penalty may apply for reserved hours within the next 24 h.`
-- For a booking in progress: `You will be credited X SU.`, and a warning that
-  pods running under the booking will be stopped.
-- For a booking more than 24 hours away: no notice, because nothing is charged.
+    - For a booking that starts within 24 hours:
+      `Late cancellation: X SU will be charged for reserved hours within the next 24 h (part is exempt).`
+      When the cancellation costs nothing, no notice appears. When the app
+      cannot work out the charge, the notice reads
+      `Late cancellation: an SU penalty may apply for reserved hours within the next 24 h.`
+    - For a booking in progress: `You will be credited X SU.`, and a warning that
+      pods running under the booking will be stopped.
+    - For a booking more than 24 hours away: no notice, because nothing is charged.
 
-Select **Yes, Cancel** to confirm. Cancelling a booking in progress deletes the
-sessions running under it; see
-[`ReservationCancelled`](../reference/reservation-events.md#reservationcancelled).
+3. **Confirm**
+   Select **Yes, Cancel** to confirm.
+
+    > [!WARNING]
+    > **Cancelling stops running sessions**
+    > Cancelling a booking in progress deletes the sessions running under it; see
+    > [`ReservationCancelled`](../reference/reservation-events.md#reservationcancelled).
 
 ### Cancelling in Advance
 

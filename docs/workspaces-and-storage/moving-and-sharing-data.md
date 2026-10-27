@@ -5,6 +5,13 @@ size and how often you repeat the transfer, and share data with your workspace,
 your team, or people who have no cluster account. Copy your work out before
 your access ends.
 
+| At a glance | |
+|---|---|
+| Transfers run through | The login node, `dsmlp-login` |
+| Browser upload limit | 200 MB per upload |
+| For most transfers | `scp`, `sftp`, or `rsync`, from the local machine |
+| Sharing outside the cluster | Globus Project Guest Collections, or rdl-share |
+
 ## Transfer Routes
 
 Files reach the cluster by one of four routes, chosen by size and by how often
@@ -53,6 +60,7 @@ the cluster. ITS recommends them for most transfers. On Windows,
 [WinSCP](https://winscp.net/) provides the same function through a graphical
 interface.
 
+*`scp`, run on your local machine*
 ```bash
 scp /local/path <username>@dsmlp-login.ucsd.edu:~/remote/path            # upload
 scp <username>@dsmlp-login.ucsd.edu:~/remote/path /local/path            # download
@@ -63,6 +71,7 @@ scp -r <username>@dsmlp-login.ucsd.edu:/directory/to/send /local/where   # direc
 files is not known in advance. `rsync` sends only what has changed, which suits
 a transfer that will be repeated.
 
+*`sftp` and `rsync`, run on your local machine*
 ```bash
 sftp <username>@dsmlp-login.ucsd.edu
 rsync -avr <directory> <username>@dsmlp-login.ucsd.edu                   # upload
@@ -89,6 +98,7 @@ do not indicate an error.
 To transfer to or from a workspace home directory, take its path from the
 workspace listing:
 
+*Run on `dsmlp-login`*
 ```bash
 workspace -l     # prints each workspace and the path to its home directory
 ```
@@ -119,13 +129,19 @@ tar -xvzf globusconnectpersonal-latest.tgz
 
 Setup prints a login link. Globus authenticates through CILogon.
 
-1. Open the login link and choose **University of California-San Diego**.
-2. Sign in with Active Directory (AD) credentials and Duo.
-3. Allow the setup tool, and paste the returned code at the
+1. **Open the login link**
+   Open the login link and choose **University of California-San Diego**.
+2. **Sign in**
+   Sign in with Active Directory (AD) credentials and Duo.
+3. **Paste the auth code**
+   Allow the setup tool, and paste the returned code at the
    `Enter the auth code:` prompt.
-4. Enter a recognizable endpoint name when setup asks for one.
-5. Start the endpoint with `-start &`.
-6. Check the endpoint on the Globus
+4. **Name the endpoint**
+   Enter a recognizable endpoint name when setup asks for one.
+5. **Start the endpoint**
+   Start the endpoint with `-start &`.
+6. **Check the endpoint**
+   Check the endpoint on the Globus
    [Collections](https://app.globus.org/collections?scope=administered-by-me)
    page under **Administered By You**. Green indicates that the endpoint is
    running; red indicates that it is stopped.
@@ -235,6 +251,7 @@ is requested from ITS. See
 
 From the command line, the team's data is requested at launch:
 
+*List your teams, then launch with one*
 ```bash
 launch-scipy-ml.sh -W <WORKSPACE> -G list      # the teams the account belongs to
 launch-scipy-ml.sh -W <WORKSPACE> -G <teamid>  # launch with that team's data

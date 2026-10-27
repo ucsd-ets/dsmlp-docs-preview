@@ -33,7 +33,7 @@ extra:
 
   # Preview-site notice, shown on every page by
   # theme/partials/preview-banner.html. This MUST stay empty here.
-  # .github/workflows/preview.yml substitutes a value into this exact line
+  # .github/workflows/preview-site.yml substitutes a value into this exact line
   # while staging the preview, so the production build never carries a banner
   # and stays byte-identical. The workflow fails loudly if this line stops
   # matching, rather than silently publishing an unlabelled preview.
@@ -46,7 +46,8 @@ extra:
     This documentation is in draft and under active review. Figures for the
     Fall 2026 GPU reservation system are not yet published, and some pages
     describe behavior that has not been verified against a primary source.
-    Confirm any figure with datahub@ucsd.edu before relying on it.
+    Confirm any figure with
+    <a href="mailto:datahub@ucsd.edu">datahub@ucsd.edu</a> before relying on it.
 
 # In-site search. The Decorator chrome already owns #search, #q and
 # #search-scope and points them at the campus-wide redirect, so this cannot
@@ -99,6 +100,7 @@ nav:
       - student-in-a-course.md
       - working-from-the-command-line.md
       - instructor-or-ta.md
+      - open-learning.md
       - student-project.md
       - individual-researcher.md
       - faculty-research-lab.md

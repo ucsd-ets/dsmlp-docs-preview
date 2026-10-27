@@ -267,7 +267,7 @@ what fits where.
 
 Research IT provisions and mounts external storage. Requests go to
 [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu), which is also the address
-for the Research Cluster and for Universal Scale Storage generally. Include in
+for research work and for Universal Scale Storage generally. Include in
 the request:
 
 - What the data is, and any licensing or classification that applies to it. See

@@ -67,13 +67,11 @@ Desk instead of waiting for a course to be provisioned.
 ## Independent Study, Capstones & Special Projects
 
 For-credit independent study and research (for example, 199/299),
-thesis-related research, and certain departmentally sponsored student projects
-are requested through the
-[Independent Study Request](https://go.ucsd.edu/2wc5gH0) form. The form asks
-about the project, its resource requirements, and its sponsorship. Setting up
-access takes up to 5 business days from the request. Non-instructional
-activities such as clubs and personal projects may be approved case by case, as
-resources allow.
+thesis-related research, capstones, and club, team and personal projects are
+requested through the
+[Independent Study Request](https://go.ucsd.edu/2wc5gH0) form. Each needs a
+faculty sponsor. The form asks about the project, its resource requirements,
+and its sponsor. Setting up access takes up to 5 business days from the request.
 
 The Independent Study Request form is for individuals. Access for a course is
 requested separately, through the Specialized Instructional Computing Course
@@ -90,7 +88,26 @@ Request form. See [Course Timeline](../instructor-or-ta.md#course-timeline).
 ### Priority of Student Research Jobs
 
 Student research jobs run at a lower priority than coursework. Contention is
-expected during 8th-10th week and finals.
+expected in peak weeks, weeks 6 to 10 of a quarter and finals week. See
+[Peak GPU Demand](../reference/policy.md#peak-gpu-demand).
+
+## Open Learning
+
+Open Learning opens in Winter 2027. Your access follows your major, minor or
+graduate program in TSS, and students in eligible programs are added
+automatically, with no request or form. A change in TSS, such as declaring,
+changing or leaving a major, reaches the workspace within a day, whether it
+starts your access or ends it. A second major or a minor in an eligible program
+also gives access. [Eligible Programs](../open-learning.md#eligible-programs)
+lists the programs.
+
+If you graduate in an eligible program, your access lasts until your campus
+account is removed, one to two quarters after graduation.
+
+When your access ends, the Open Learning workspace and your home directory in
+it disappear from your account. Copy out anything you want to keep before then.
+See
+[Retrieving Work Before Access Ends](../workspaces-and-storage/moving-and-sharing-data.md#retrieving-work-before-access-ends).
 
 ## Research Labs & Individual Researchers
 
@@ -99,7 +116,7 @@ potential to auto-populate from departmental staff affiliation. Research
 workspaces have no roster feed and no fixed calendar. A research workspace opens
 when it is provisioned, and its membership changes on request.
 
-Research IT handles platform selection. Support for the Research Cluster and
+Research IT handles platform selection. Support for research work and for
 Universal Scale Storage is through
 [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
 

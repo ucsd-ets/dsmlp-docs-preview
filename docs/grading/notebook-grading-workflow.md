@@ -5,6 +5,13 @@ to importing its grades into Canvas. nbgrader runs inside Datahub from a shared
 course grader account. If you have not chosen a grading tool yet, see
 [Choosing a Grading Tool & Interface](choosing-a-grading-tool.md).
 
+| At a glance | |
+|---|---|
+| Work from | The shared course grader account |
+| Due dates | In UTC: `-0800` for PST, `-0700` for PDT |
+| Assignment file size | Capped at 100MB by default |
+| Grades to Canvas | Manual upload of `grades.csv` |
+
 ## Grader Account
 
 Each Datahub course is issued one shared nbgrader TA grader account, and its
@@ -13,18 +20,22 @@ from that account. An instructor's or TA's own account cannot use it.
 
 To open Formgrader:
 
-1. Sign in to [datahub.ucsd.edu](https://datahub.ucsd.edu) as the grader
+1. **Sign in as the grader account**
+   Sign in to [datahub.ucsd.edu](https://datahub.ucsd.edu) as the grader
    account.
-2. Launch the course environment.
-3. Open **Nbgrader → Formgrader**.
+2. **Launch the course environment**
+3. **Open Formgrader**
+   Open **Nbgrader → Formgrader**.
 
 [Interface Support for nbgrader](choosing-a-grading-tool.md#interface-support-for-nbgrader)
 lists the interfaces that support nbgrader.
 
-The grader account is shared course infrastructure. Its local environment must
-not be reset or cleaned by hand. Request any reset or cleanup in the course
-ticket. [Common Grading Failures & Recovery](grading-failures.md) lists known
-failures of the grader environment and their recovery.
+> [!WARNING]
+> **Do not reset the grader account by hand**
+> The grader account is shared course infrastructure. Its local environment must
+> not be reset or cleaned by hand. Request any reset or cleanup in the course
+> ticket. [Common Grading Failures & Recovery](grading-failures.md) lists known
+> failures of the grader environment and their recovery.
 
 ### Multiple Graders
 
@@ -45,12 +56,17 @@ each with the same internal structure:
 
 ## Creating an Assignment
 
-1. In **Manage Assignments**, choose **Add new assignment...**.
-2. Enter a name that follows the rules in [Assignment Names](#assignment-names).
-3. Set the due date and the **Timezone as UTC offset**: `-0800` for PST, or
+1. **Add a new assignment**
+   In **Manage Assignments**, choose **Add new assignment...**.
+2. **Name it**
+   Enter a name that follows the rules in [Assignment Names](#assignment-names).
+3. **Set the due date and time zone**
+   Set the due date and the **Timezone as UTC offset**: `-0800` for PST, or
    `-0700` for PDT. Due dates are in UTC.
-4. Open `source/{assignment_id}/` and add the notebook and any supporting files.
-5. Rename the notebook to match the assignment name.
+4. **Add the notebook and files**
+   Open `source/{assignment_id}/` and add the notebook and any supporting files.
+5. **Rename the notebook**
+   Rename the notebook to match the assignment name.
 
 ### Assignment Names
 
@@ -90,6 +106,7 @@ Every marked cell needs an ID, and a point value where one applies.
 Special comment lines delimit solutions and hidden tests. The region between
 them is replaced when the assignment is generated:
 
+*Solution and hidden test delimiters*
 ```python
 ### BEGIN SOLUTION
 return sum(values) / len(values)
@@ -118,13 +135,17 @@ Before releasing, validate the assignment's own solutions with the
 
 ## Generating, Releasing & Collecting
 
-1. Select **Generate** in **Manage Assignments**. This creates `release/`,
+1. **Generate**
+   Select **Generate** in **Manage Assignments**. This creates `release/`,
    mirroring `source/` with solutions stripped.
-2. Preview the release version and confirm that the hidden tests are hidden.
-3. Select **Release**. The button becomes an "x"; clicking it again un-releases
+2. **Preview the release version**
+   Preview the release version and confirm that the hidden tests are hidden.
+3. **Release**
+   Select **Release**. The button becomes an "x"; clicking it again un-releases
    the assignment. Un-releasing does not recall copies that students have
    already fetched.
-4. Select **Collect** after the deadline. A pop-up reports how many submissions
+4. **Collect after the deadline**
+   Select **Collect** after the deadline. A pop-up reports how many submissions
    came in.
 
 ### Distributing Other Course Materials
@@ -168,7 +189,8 @@ weeks. It is not maintained by hand.
 Students do not appear in **Manage Students** until they submit something, and
 then only by username. To add first and last names:
 
-1. From the login node, signed in as the grader account, run:
+1. **Write the roster CSV**
+   From the login node, signed in as the grader account, run:
 
     ```bash
     update-nbgrader -c <course-id>
@@ -176,10 +198,12 @@ then only by username. To add first and last names:
 
     This writes a CSV to the grader account's home directory.
 
-2. Check the CSV.
-3. Move it to a location the course environment can see. `workspace --list`
+2. **Check the CSV**
+3. **Move it where the course environment can see it**
+   Move it to a location the course environment can see. `workspace --list`
    prints the course's path.
-4. From a terminal inside the course environment, import it:
+4. **Import it**
+   From a terminal inside the course environment, import it:
 
     ```bash
     nbgrader db student import <course-id>-nbgrader-students.csv
@@ -199,9 +223,11 @@ Canvas gradebook.
 > [Autograding, Manual Grading & Feedback](#autograding-manual-grading--feedback)
 > before exporting.
 
-1. Sign in as the course grader account and open a terminal in the course
+1. **Open a terminal as the grader account**
+   Sign in as the course grader account and open a terminal in the course
    environment (**File → New → Terminal**).
-2. Run:
+2. **Run the export**
+   Run:
 
     ```bash
     nbgrader export
@@ -209,7 +235,8 @@ Canvas gradebook.
 
     This writes `grades.csv` into the course home directory.
 
-3. Download `grades.csv` from the file browser.
+3. **Download the CSV**
+   Download `grades.csv` from the file browser.
 
 ### Export Failures
 
@@ -238,14 +265,19 @@ dispose of it in line with [Policy](../reference/policy.md).
 
 In [Canvas](https://canvas.ucsd.edu/), open the course, then:
 
-1. Select the **Grades** tab, then **Actions → Import**.
-2. Choose the exported `grades.csv`.
-3. Map any assignment Canvas does not recognize. Canvas offers a
+1. **Open the import**
+   Select the **Grades** tab, then **Actions → Import**.
+2. **Choose the CSV**
+   Choose the exported `grades.csv`.
+3. **Map unrecognized assignments**
+   Map any assignment Canvas does not recognize. Canvas offers a
    **--Choose Assignment--** dropdown for each unknown assignment. Pick the
    matching Canvas assignment, or create one, and set the points it is worth.
-4. Select **Continue**. Canvas shows every student and their new grade, with
+4. **Continue to the review screen**
+   Select **Continue**. Canvas shows every student and their new grade, with
    changes highlighted in red.
-5. Review that screen, then select **Save Changes**.
+5. **Review, then save**
+   Review that screen, then select **Save Changes**.
 
 The highlighted rows are the grades about to change. The review screen is the
 last point before Canvas writes them.

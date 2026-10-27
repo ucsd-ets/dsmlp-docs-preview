@@ -5,6 +5,12 @@ idle culling, preemption, and maintenance. Checkpoint and log a long or
 unattended run so that it can resume after a stop and so that its logs show
 what happened.
 
+| At a glance | |
+|---|---|
+| Usual warning notice | About 15 minutes, with no minimum |
+| Warning file | `/etc/podinfo/annotations` |
+| Grace period | 600 seconds, for pods started by `launch.sh` |
+
 ## What Can End a Run
 
 | Cause | Warning | Where it is documented |
@@ -13,15 +19,15 @@ what happened.
 | Idle culling, once the GPU stops being used | Yes; a warning comes first, and the status is recorded on the pod | [What Counts as Idle](../gpu-access/what-ends-a-session.md#what-counts-as-idle) |
 | Preemption, once the session is past its runtime guarantee and its GPU is needed | Usually; about 15 minutes of notice, readable by the job itself | [Preemption](../gpu-access/what-ends-a-session.md#preemption) |
 | Eviction, when the reservation is cancelled or given to a teammate | None | [Eviction](../gpu-access/what-ends-a-session.md#eviction) |
-| Research Cluster maintenance | Notice in advance, not on the pod; all running jobs are terminated | [Scheduled Maintenance](../reference/policy.md#scheduled-maintenance) |
+| Quarterly maintenance | Notice in advance, not on the pod; all running jobs are terminated | [Scheduled Maintenance](../reference/policy.md#scheduled-maintenance) |
 
-None of these stops indicates a fault in the code. Instructional maintenance
+None of these stops indicates a fault in the code. Weekly maintenance
 generally leaves running jobs alone.
 
 > [!WARNING]
-> The runtime limit, an eviction, and Research Cluster maintenance are not
+> The runtime limit, an eviction, and quarterly maintenance are not
 > announced on the pod. The runtime limit stops the container at its deadline
-> with no prior warning and no signal to catch. Research Cluster maintenance
+> with no prior warning and no signal to catch. Quarterly maintenance
 > terminates every running job. Work that is not on disk before any of them
 > arrives is lost.
 
@@ -73,9 +79,13 @@ be supplied by hand at each restart.
 Checkpoints are large, and home directories have quotas. See
 [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas).
 Bound the number of checkpoints kept. The last two and the best one are usually
-enough. Delete an old checkpoint only after the new one is complete. A job that
-deletes the old checkpoint first can lose all saved progress to one interruption
-during the save.
+enough.
+
+> [!WARNING]
+> **Delete the old checkpoint last**
+> Delete an old checkpoint only after the new one is complete. A job that
+> deletes the old checkpoint first can lose all saved progress to one
+> interruption during the save.
 
 ## What a Resumable Checkpoint Contains
 
@@ -110,6 +120,7 @@ Write a single-file checkpoint to a temporary path, flush it, then rename it.
 either the complete old checkpoint or the complete new one, never a truncated
 file:
 
+*An atomic save in Python*
 ```python
 import os, torch
 
@@ -181,8 +192,9 @@ Asynchronous saves have two costs:
 - Only one save may be outstanding at a time. Wait on the previous future before
   issuing the next, or the memory use multiplies.
 
-An asynchronous save that was never flushed is not a checkpoint. Wait on the
-outstanding future before exiting on a preemption.
+> [!WARNING]
+> An asynchronous save that was never flushed is not a checkpoint. Wait on the
+> outstanding future before exiting on a preemption.
 
 ## The Termination Warning
 
@@ -233,10 +245,12 @@ Four annotations are relevant to a long-running job:
 
 The message takes one of two forms:
 
+*A reservation starting at a given time*
 ```text
 At risk of preemption: this pod is at or nearing the end of its GPU runtime guarantee and may be terminated as early as 2026-09-23 11:45:00 PDT to free GPUs for a reservation starting at 2026-09-23 12:00:00 PDT (risk 0.50). Extend or re-book the reservation to retain capacity.
 ```
 
+*GPUs kept free for on-demand jobs*
 ```text
 At risk of preemption: this pod is at or nearing the end of its GPU runtime guarantee and may be terminated as early as 2026-09-23 11:45:00 PDT to keep GPUs free for on-demand jobs (risk 1.00). Extend or re-book the reservation to retain capacity.
 ```
@@ -289,6 +303,7 @@ behind it, its GPU class, and when it was admitted. Each annotation is on its
 own line as `key="value"`. The value is quoted, and any quote or backslash
 inside it is escaped:
 
+*List the warning annotations*
 ```console
 $ grep '^galends/termination-warning' /etc/podinfo/annotations
 galends/termination-warning-at="2026-08-21T17:30:16Z"
@@ -382,6 +397,7 @@ during the backward pass captures inconsistent state, and under distributed
 training a save is a collective operation that every rank has to enter in the
 same iteration:
 
+*Read the warning and guarantee annotations*
 ```python
 import ast
 from datetime import datetime, timezone
@@ -421,6 +437,7 @@ def stop_expected(lead_seconds):
     return False
 ```
 
+*Checkpoint at a step boundary*
 ```python
 warned = False
 
@@ -511,9 +528,9 @@ state still goes through `torch.save`.
 
 Test the resume path deliberately:
 
-1. Kill a run at a random step.
-2. Restart it.
-3. Check that the loss curve is continuous across the restart.
+1. **Kill a run at a random step**
+2. **Restart it**
+3. **Check that the loss curve is continuous across the restart**
 
 ## Checkpointing by Job Shape
 
@@ -593,6 +610,7 @@ record.
 A file in a home directory persists after the pod is deleted. For unattended
 work, redirect output into one:
 
+*Run on the login node*
 ```bash
 launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -B -- bash -c 'python -u ./train.py > run.log 2>&1'
 ```

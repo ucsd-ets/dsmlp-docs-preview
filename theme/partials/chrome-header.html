@@ -7,7 +7,10 @@
 
     * the .title-header site name (per-site by definition)
     * the <li> links inside ul.navmenu-nav and ul.nav.navbar-nav, which
-      contracts/chrome-regions.json marks `ignoreChildrenOf`
+      contracts/chrome-regions.json marks `ignoreChildrenOf`. A section that
+      opens with its own landing page (navm.landing) links its name to that
+      page and does not list it again in its menu; one with nothing else to
+      list is a plain link.
 
   URLs here are ROOT-RELATIVE on purpose. MkDocs' idiomatic `|url` filter
   emits paths relative to the current page, which makes the chrome differ by
@@ -36,6 +39,7 @@
   The sr-only labels are new. The template ships this form with no label at
   all; protected-regions.md calls that out as wanting a fix on both shapes.
 #}
+{%- import "partials/nav-macros.html" as navm %}
 <header class="layout-header">
 		<a class="sr-only" href="#main-content">Skip to main content</a>
 		<div id="uc-emergency"></div>
@@ -58,7 +62,7 @@
 		<ul class="nav navbar-nav navbar-right">
 			<li>
 				<div class="search">
-					<button class="search-toggle btn-default">
+					<button class="search-toggle btn-default" aria-label="Search">
 						<span class="glyphicon glyphicon-search"></span> <span class="caret"></span>
 					</button>
 
@@ -85,17 +89,18 @@
 
 		<ul class="nav navmenu-nav">
 {%- for item in nav %}
-{%- if item.children %}
+{%- set entries = item.children[1:] if navm.landing(item) else item.children %}
+{%- if entries %}
 			<li class="dropdown{{ ' active' if item.active }}">
-				<a href="/{{ item.children[0].url }}" class="dropdown-toggle">{{ item.title }} <b class="caret"></b></a>
+				<a href="/{{ navm.first_url(item) }}" class="dropdown-toggle">{{ item.title }} <b class="caret"></b></a>
 				<ul class="dropdown-menu navmenu-nav">
-{%- for child in item.children %}
-					<li><a href="/{{ child.url }}">{{ child.title }}</a></li>
+{%- for child in entries %}
+					<li><a href="/{{ navm.first_url(child) }}">{{ child.title }}</a></li>
 {%- endfor %}
 				</ul>
 			</li>
 {%- else %}
-			<li class="{{ 'active' if item.active }}"><a href="/{{ item.url }}">{{ item.title }}</a></li>
+			<li class="{{ 'active' if item.active }}"><a href="/{{ navm.first_url(item) }}">{{ item.title }}</a></li>
 {%- endif %}
 {%- endfor %}
 		</ul>
@@ -128,18 +133,19 @@
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 {%- for item in nav %}
-{%- if item.children %}
+{%- set entries = item.children[1:] if navm.landing(item) else item.children %}
+{%- if entries %}
 					<li class="dropdown{{ ' active' if item.active }}">
-						<a href="/{{ item.children[0].url }}" class="dropdown-toggle" data-hover="dropdown" role="button"
+						<a href="/{{ navm.first_url(item) }}" class="dropdown-toggle" data-hover="dropdown" role="button"
 							aria-haspopup="true" aria-expanded="false">{{ item.title }} <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-{%- for child in item.children %}
-							<li><a href="/{{ child.url }}">{{ child.title }}</a></li>
+{%- for child in entries %}
+							<li><a href="/{{ navm.first_url(child) }}">{{ child.title }}</a></li>
 {%- endfor %}
 						</ul>
 					</li>
 {%- else %}
-					<li class="{{ 'active' if item.active }}"><a href="/{{ item.url }}">{{ item.title }}</a></li>
+					<li class="{{ 'active' if item.active }}"><a href="/{{ navm.first_url(item) }}">{{ item.title }}</a></li>
 {%- endif %}
 {%- endfor %}
 				</ul>
@@ -149,7 +155,7 @@
 				<ul class="nav navbar-nav navbar-right">
 					<li>
 						<div class="search">
-							<button class="search-toggle btn-default">
+							<button class="search-toggle btn-default" aria-label="Search">
 								<span class="glyphicon glyphicon-search"></span> <span class="caret"></span>
 							</button>
 

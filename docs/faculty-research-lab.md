@@ -17,16 +17,19 @@ receive the same tooling that students use.
 ### Unsuitable Workloads
 
 The platform has no Slurm scheduler, no MPI, and no multi-node parallelism.
-[Research IT](https://research-it.ucsd.edu/computing/index.html) can direct
-workloads of that shape to a more appropriate platform. See
+Work of that shape, or at a scale the cluster does not carry, suits San Diego
+Supercomputer Center (SDSC) systems such as the Triton Shared Computing Cluster
+(TSCC). [Research IT](https://research-it.ucsd.edu/computing/index.html) can
+direct workloads to a more appropriate platform. See
 [Platform Selection](reference/getting-help.md#platform-selection).
 
 ### Priority of Instruction
 
-During 10th and Finals Weeks and at major assignment deadlines, coursework is
-served ahead of research. A lab workspace with its own quota insulates a group
-from most of this effect. A lab working from the shared research pool is
-subject to it.
+In peak weeks, weeks 6 to 10 of a quarter and finals week, and at major
+assignment deadlines, coursework is served ahead of research. A lab workspace
+with its own quota insulates a group from most of this effect. A lab working
+from the shared research pool is subject to it. See
+[Peak GPU Demand](reference/policy.md#peak-gpu-demand).
 
 ## Routes to Capacity
 
@@ -199,8 +202,8 @@ gone. [Reservation Events](reference/reservation-events.md) defines each event:
 
 ## Contributing Hardware (Pilot)
 
-A pilot is evaluating the placement of researcher-contributed GPUs or servers
-into the cluster. The pilot is expected to continue through Spring 2027, when
+A pilot is evaluating the placement of GPUs or servers that research labs and
+schools contribute to the cluster. The pilot is expected to continue through Spring 2027, when
 ITS will determine whether the capability can be made available to a broader
 audience.
 
@@ -212,7 +215,8 @@ Contributors receive:
   GPU limits match its contribution, and the cohort holding contributor groups
   is not overcommitted, so the lab can always book its own GPUs ahead whenever
   it needs them.
-- Access to the school-wide shared pool, like any other research group.
+- Access to the campus-wide shared research pool, like any other research
+  group.
 - Access to near-term, otherwise idle capacity across the cluster through
   junior borrowing. See
   [Borrowing and Seniority](#borrowing-and-seniority). Borrowing is the route
@@ -290,8 +294,8 @@ and faster to obtain. See
 
 ### Scheduled Maintenance
 
-Datahub may be unavailable during scheduled instructional maintenance for
-time-sensitive updates or security patches. Research Cluster maintenance
+Datahub may be unavailable during scheduled weekly maintenance for
+time-sensitive updates or security patches. Quarterly maintenance
 terminates all running jobs, and long-running work must be checkpointed or
 completed before that window.
 [Scheduled Maintenance](reference/policy.md#scheduled-maintenance) gives both
@@ -316,8 +320,8 @@ availability and reliability.
 
 | Service | Contact |
 |---|---|
-| Research IT and the Research Cluster | [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu), [research-it.ucsd.edu](https://research-it.ucsd.edu/computing/index.html) |
-| Datahub and DSMLP | [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| Datahub and DSMLP, including research work | [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| Research IT, which also answers research questions | [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu), [research-it.ucsd.edu](https://research-it.ucsd.edu/computing/index.html) |
 | IT Service Desk | [support.ucsd.edu](https://support.ucsd.edu/) |
 
 [Response Targets](reference/getting-help.md#response-targets) gives ITS

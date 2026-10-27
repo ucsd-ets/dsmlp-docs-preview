@@ -8,17 +8,20 @@ and follows different rules. See
 
 ## Eligibility & Requesting Access
 
-Project access covers for-credit and campus-sponsored work outside a scheduled
-course:
+Every project needs a faculty sponsor. Project access covers this work outside
+a scheduled course:
 
 - Designated independent study courses: 198/199, 293/298/299
 - Independent thesis or dissertation research
 - State-supported capstone projects
 - Campus-sponsored co-curricular activities, such as projects, workshops,
   clubs, and teams
+- Non-credit personal projects
 
-Non-credit personal projects may be approved on a case-by-case basis as
-resources are available. The programs in
+Exploration without a sponsor or a defined project, by a student in a
+participating major or program, belongs in [Open Learning](open-learning.md).
+
+The programs in
 [Self-Supporting Programs](reference/policy.md#self-supporting-programs) are
 eligible, subject to the cost recovery set out there.
 
@@ -31,11 +34,10 @@ cluster.
 ### Submitting a Request
 
 Request access through the
-[Independent Study Request](https://go.ucsd.edu/2wc5gH0) form. A request states
-who is sponsoring the work, what will be run, the resources required, and for
-how long. A request that names a faculty sponsor and a concrete workload is
-provisioned considerably faster than one that describes the work only in general
-terms. Setting up access takes up to 5 business days from the request. See
+[Independent Study Request](https://go.ucsd.edu/2wc5gH0) form. A request names
+the faculty sponsor and states what will be run, the resources required, and for
+how long. A request that describes a concrete workload is set up considerably
+faster than one that describes the work only in general terms. Setting up access takes up to 5 business days from the request. See
 [Independent Study, Capstones & Special Projects](access/when-access-starts-and-ends.md#independent-study-capstones--special-projects).
 
 ## How Project Access Differs from Course Access
@@ -46,9 +48,10 @@ and environment configuration.
 
 ### Priority Relative to Coursework
 
-Instruction has priority. When the cluster is busy, during 10th and Finals Weeks
-and at major assignment deadlines, coursework is served ahead of project work.
-Demand is generally lower during the day than in the evening.
+Instruction has priority. In peak weeks, weeks 6 to 10 of a quarter and finals
+week, and at major assignment deadlines, coursework is served ahead of project
+work. Demand is generally lower during the day than in the evening. See
+[Peak GPU Demand](reference/policy.md#peak-gpu-demand).
 
 ### Support Tier
 

@@ -4,6 +4,12 @@ Check whether a running job is using the CPU, memory, and GPU it requested,
 whether a detached job is still going, and what an `OOMKilled` status means.
 When you finish, list and stop the sessions your account still holds.
 
+| At a glance | |
+|---|---|
+| CPU and memory | `htop`, inside the container |
+| GPU | `nvidia-smi`, inside the container |
+| Detached jobs | `kubectl get pods` |
+
 ## Monitoring from the Browser
 
 The standard images in
@@ -90,20 +96,22 @@ A dashboard runs as a server inside the container and is reached from a local
 machine over an SSH tunnel. TensorBoard is the usual case. Any other service
 that serves a web page is reached the same way.
 
-1. Start the server in the container, from a JupyterLab terminal or a `kubesh`
-   shell:
+1. **Start the server in the container**
+   From a JupyterLab terminal or a `kubesh` shell:
 
     ```bash
     tensorboard --logdir <log directory> --bind_all --port <port>
     ```
 
-2. Open a tunnel to it from a second terminal on the local machine:
+2. **Open a tunnel to it**
+   From a second terminal on the local machine:
 
     ```bash
     ssh -N -L localhost:<port>:127.0.0.1:<port> <user>@dsmlp-login.ucsd.edu
     ```
 
-3. Open `localhost:<port>` in a browser.
+3. **Open the dashboard**
+   Open `localhost:<port>` in a browser.
 
 A working tunnel prints nothing. A silent terminal indicates success, not a
 hang. Keep the tunnel's terminal open for as long as the dashboard is needed.
@@ -118,9 +126,16 @@ term. Such a script performs the same three steps.
 ### Closing the Tunnel and the Container
 
 Closing a tunnel does not stop the container. Stopping the container does not
-close the tunnel. At the end of a session, stop the session with
-**File → Hub Control Panel → Stop My Server** or `kubectl delete pod <pod-id>`,
-then close the tunnel. Logging out does not stop the session. See
+close the tunnel. At the end of a session:
+
+<!-- steps: short -->
+
+1. **Stop the session**
+   Use **File → Hub Control Panel → Stop My Server** or
+   `kubectl delete pod <pod-id>`.
+2. **Close the tunnel**
+
+Logging out does not stop the session. See
 [Stopping a Session](../access/datahub-in-the-browser.md#stopping-a-session).
 
 ## Checking On a Detached Job

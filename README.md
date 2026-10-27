@@ -4,7 +4,7 @@
 <https://dsmlp-docs-preview.ucsd.edu/>. It is not the published documentation,
 and it is not where the source lives.**
 
-Read the real thing at <https://dsmlp-docs.ucsd.edu/> — source at
+The published documentation is at <https://dsmlp-docs.ucsd.edu/> — source at
 [`ucsd-ets/dsmlp-docs-public`](https://github.com/ucsd-ets/dsmlp-docs-public).
 
 Pages here are staged for review before publication. They may be

@@ -26,13 +26,13 @@ alphabetical order, and each links to the page that covers the term in full.
 
 | Term | Definition | Reference |
 |---|---|---|
-| Datahub | The browser interface at [`datahub.ucsd.edu`](https://datahub.ucsd.edu), comprising JupyterHub, the environment menu, and the services attached to it. | [Datahub in the Browser](../access/datahub-in-the-browser.md) |
+| Datahub | The browser interface to DSMLP at [`datahub.ucsd.edu`](https://datahub.ucsd.edu), comprising JupyterHub, the environment menu, and the services attached to it. | [Datahub in the Browser](../access/datahub-in-the-browser.md) |
 | `datahub-base-notebook` | A former base image, no longer built or updated. Derive from `datascience-notebook` instead. | [Legacy Image Names](../environments/standard-images.md#legacy-image-names) |
 | `datascience-notebook` | The standard CPU image, containing widely used data analysis libraries from the Python, R, and Julia communities, and the base of the other standard images. | [Image Inheritance](../environments/standard-images.md#image-inheritance) |
 | `/datasets` | The cluster-wide directory tree where shared corpora are staged, to be read in place rather than copied. | [Datasets](../workspaces-and-storage/datasets.md) |
 | `DeadlineExceeded` | The pod status reported when a container reaches the runtime limit, which does not indicate an error in the code. | [The `DeadlineExceeded` Status](../running-jobs/job-modes-and-limits.md#the-deadlineexceeded-status) |
 | disk-quota-service | The service under the **Services** tab at [`datahub.ucsd.edu/hub/spawn`](https://datahub.ucsd.edu/hub/spawn) that reports usage against quota and displays the workspace ID. | [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas) |
-| DSMLP | The Data Science / Machine Learning Platform, the on-premises cluster of CPU and GPU nodes on which Datahub sessions and command-line jobs run. | [Datahub and DSMLP Overview](../overview.md) |
+| DSMLP | The Data Science & Machine Learning Platform, the on-premises cluster of CPU and GPU nodes on which Datahub sessions and command-line jobs run. | [Datahub and DSMLP Overview](../overview.md) |
 | `dsmlp-login.ucsd.edu` | The hostname of the login node. | [Connecting over SSH](../access/the-login-node.md#connecting-over-ssh) |
 | Duo | The campus two-factor prompt, which applies to both web and SSH access. | [Duo Authentication](../access/the-login-node.md#duo-authentication) |
 | Eviction | The deletion of a running session because its reservation was cancelled or given to another user, with no warning beforehand. | [Eviction](../gpu-access/what-ends-a-session.md#eviction) |
@@ -72,10 +72,12 @@ alphabetical order, and each links to the page that covers the term in full.
 | No-show | A booking cancelled and charged because no matching session was waiting or running when its claim window closed, or soon after the last session under it ended. | [The Claim Window](../gpu-access/reservations.md#the-claim-window) |
 | Off-peak | The discounted hours outside the peak evening period. | [Peak & Off-Peak Hours](../gpu-access/service-units-and-budgets.md#peak--off-peak-hours) |
 | On-demand lease | The reservation the system creates when a GPU session is launched without a booking, which draws on the Service Unit budget as a booked window does. | [On-Demand Lease Charges](../gpu-access/service-units-and-budgets.md#on-demand-lease-charges) |
+| Open Learning | The workspace for students in the majors and programs that offer it, for coursework and exploration outside a course workspace or a sponsored project, with access that follows the student's major or program in TSS. | [Open Learning](../open-learning.md) |
 | `ORG_ON_DEMAND` | The default workspace, for on-demand leases only, that a GPU session naming no course is charged to, such as a launch without `-W`. | [The Default Workspace](../gpu-access/reservations.md#the-default-workspace) |
 | `OOMKilled` | The pod status reported when a container reaches its memory limit. | [Resource Requests and Limits](../running-jobs/launch-sh-reference.md#resource-requests-and-limits) |
 | Otter-Grader, Gradescope | Grading tools used on the platform alongside nbgrader. | [Choosing a Grading Tool & Interface](../grading/choosing-a-grading-tool.md) |
 | Overstay | Running a session past the end of its runtime guarantee, unprotected but not charged. | [Overstay](../gpu-access/what-ends-a-session.md#overstay) |
+| Peak weeks | Weeks 6 to 10 of a quarter and finals week, when GPU demand is highest and coursework is served ahead of project and research work. | [Peak GPU Demand](policy.md#peak-gpu-demand) |
 | Pinning | Fixing a workspace to a dated image tag so that its members are not moved by an image update mid-term. | [Pinning a Workspace](../environments/standard-images.md#pinning-a-workspace) |
 | Pod | One running container as Kubernetes represents it; `kubectl get pods` lists the pods in an account's own namespace. | [Direct Kubernetes Use and Session Events](../running-jobs/kubernetes.md) |
 | Pod label (`-l key=value`) | A repeatable attribute attached to a pod at launch, and the means by which `gpu-class` is set. | [Resource and GPU Selection Flags](../running-jobs/launch-sh-reference.md#resource-and-gpu-selection-flags) |
@@ -90,7 +92,7 @@ alphabetical order, and each links to the page that covers the term in full.
 |---|---|---|
 | Quota, GPU | The ceiling on how many GPUs of each class a workspace may hold at one time, separate from a Service Unit budget. | [What a Quota Is](../gpu-access/quotas-and-availability.md#what-a-quota-is) |
 | Quota, storage | Two separate pools: the workspace pool, covering the workspace home, `public/`, and `teams/`, and the personal pool, covering `private/` and following the member into every workspace. | [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas) |
-| Research Cluster | The research-facing service supported by Research IT at `rcd-support@ucsd.edu`, whose scheduled maintenance terminates all running jobs. | [Scheduled Maintenance](policy.md#scheduled-maintenance) |
+| Research Cluster | The name used for research work on DSMLP, which Research IT supports at `rcd-support@ucsd.edu`. | [Research on DSMLP](../individual-researcher.md) |
 | Reservation | A booked window during which GPU capacity is held and a session is admitted ahead of the walk-up queue; the session is still launched as usual. | [Reservations](../gpu-access/reservations.md) |
 | Reservation app | The web app at [`reserve.dsmlp.ucsd.edu`](https://reserve.dsmlp.ucsd.edu/) where GPU windows are booked, cancelled, and extended. | [The Reservation App](../gpu-access/reservations.md#the-reservation-app) |
 | Reservation event | A Kubernetes event the reservation system writes on a GPU pod, such as `OnDemandLeaseDenied` or `Preempted`. | [Reservation Events](reservation-events.md) |

@@ -7,11 +7,16 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0">
-	<meta name="robots" content="index,follow,noarchive">
+	{#- A preview site must stay out of search results, and noindex is the only
+	    signal that does it: robots.txt Disallow stops a crawler from reading
+	    the page, so it never sees a noindex and can still list the URL. The
+	    preview therefore serves a crawlable robots.txt and this. Production
+	    leaves preview_banner empty and is unchanged. #}
+	<meta name="robots" content="{{ 'noindex,follow' if config.extra.preview_banner else 'index,follow,noarchive' }}">
 	<meta name="ORGANIZATION" content="University of California, San Diego">
 	<meta name="SITE" content="{{ config.site_name }}">
 	<meta name="PAGETITLE" content="{{ page.title|default(config.site_name) }}">
-	<meta name="DESCRIPTION" content="{{ page.meta.description|default(config.site_description) }}">
+	<meta name="DESCRIPTION" content="{{ (page.meta.description or config.site_description)|e }}">
 	{%- if page.canonical_url %}
 	<link rel="canonical" href="{{ page.canonical_url }}">
 	{%- endif %}
@@ -28,6 +33,9 @@
 
 	<!-- Site-specific CSS -->
 	<link rel="stylesheet" href="/css/site.css">
+	{%- for path in config.extra_css %}
+	<link rel="stylesheet" href="/{{ path }}">
+	{%- endfor %}
 
 	{%- if is_search_page %}
 	{#
@@ -44,6 +52,10 @@
 
 	<main class="layout-main" id="main-content" role="main">
 		{%- include "partials/preview-banner.html" %}
+		{%- if config.extra.hero %}
+		{%- include "partials/hero-banner.html" %}
+		{%- endif %}
+		{%- set hub = config.extra.hero and page.meta and page.meta.hub %}
 
 		{% include "partials/breadcrumbs.html" %}
 
@@ -51,7 +63,7 @@
 
 		<div class="container">
 			<div class="row">
-				<section class="col-xs-12 col-md-9 main-section pull-right">
+				<section class="{{ 'col-xs-12 main-section landing-hub-content' if hub else 'col-xs-12 col-md-9 main-section pull-right' }}">
 					{{ page.content }}
 
 					{%- if is_search_page %}
@@ -64,7 +76,7 @@
 					<form class="docs-search docs-search--page" role="search" onsubmit="return false;">
 						<label class="sr-only" for="mkdocs-search-query">Search query</label>
 						<input type="search" class="form-control docs-search__input" id="mkdocs-search-query"
-							name="q" placeholder="Search this site&hellip;" autocomplete="off" autofocus>
+							name="q" placeholder="Search this site&hellip;" autocomplete="off">
 					</form>
 					<div id="mkdocs-search-results" class="docs-search-results"
 						data-no-results-text="No results. Try fewer or more general words."></div>
@@ -98,8 +110,10 @@
 					</p>
 					{%- endif %}
 				</section>
+				{%- if not hub %}
 
 				{% include "partials/sidebar.html" %}
+				{%- endif %}
 			</div>
 		</div>
 	</main>

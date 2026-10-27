@@ -4,6 +4,12 @@ Use this page when you cannot sign in to
 [datahub.ucsd.edu](https://datahub.ucsd.edu), your course does not appear, or a
 session will not start. Most of these failures have a self-service remedy.
 
+| At a glance | |
+|---|---|
+| Course matters | The instructor or TA first |
+| Stale profile or unreachable session | The manual resetter, under the **services** dropdown |
+| Platform matters | [datahub@ucsd.edu](mailto:datahub@ucsd.edu) or the [ITS Service Desk](https://support.ucsd.edu/) |
+
 ## Campus Sign-In Failures
 
 Datahub sign-in is standard UCSD single sign-on. An account that cannot get past
@@ -72,6 +78,7 @@ Packages under `.local/lib/python3.x/site-packages` load ahead of the packages
 the image provides, and one incompatible package can stop a notebook from
 starting. Move them aside from a terminal:
 
+*Move the packages aside from a terminal*
 ```bash
 ssh USERNAME@dsmlp-login.ucsd.edu
 workspace --list                  # the workspaces available to the account
@@ -102,9 +109,11 @@ minutes. Start the session again later.
 The **manual resetter** is provided for a stale profile. It stops any running
 servers, signs the account out, and resets the profile. Files are preserved.
 
-1. Open [datahub.ucsd.edu](https://datahub.ucsd.edu).
-2. Open the **services** dropdown and choose **manual-resetter**.
-3. Click reset.
+1. **Open Datahub**
+   Open [datahub.ucsd.edu](https://datahub.ucsd.edu).
+2. **Choose the manual resetter**
+   Open the **services** dropdown and choose **manual-resetter**.
+3. **Click reset**
 
 The manual resetter also stops a running session that cannot be reached from
 the browser.
@@ -119,6 +128,7 @@ the course. See [Reporting a Problem](#reporting-a-problem).
 Course materials are often distributed by a link that fetches a repository into
 the course environment:
 
+*The form of a course materials link*
 ```text
 https://datahub.ucsd.edu/hub/user-redirect/git-pull?repo=<url-encoded>&urlpath=tree%2F<dir>%2F&branch=main
 ```
@@ -129,9 +139,10 @@ resembles a broken link.
 
 To open the link:
 
-1. Sign in at [datahub.ucsd.edu](https://datahub.ucsd.edu).
-2. Start the course environment.
-3. Click the link.
+1. **Sign in**
+   Sign in at [datahub.ucsd.edu](https://datahub.ucsd.edu).
+2. **Start the course environment**
+3. **Click the link**
 
 Clicking a failed link again after signing in also works.
 
@@ -146,6 +157,7 @@ account already holds the requested GPU. The earlier pod is usually terminating
 and clears within a minute or two. If it does not clear, delete it from the
 login node:
 
+*Delete the earlier pod from the login node*
 ```bash
 ssh USERNAME@dsmlp-login.ucsd.edu
 kubectl get pods
@@ -168,11 +180,13 @@ A notebook that exhausts its memory or runs an infinite loop can take its pod
 down. The hub then returns a 504 error until it detects the failure and resets.
 To recover:
 
-1. Delete the pod with `kubectl delete pod`. This shortens the wait for the hub
+1. **Delete the pod**
+   Delete the pod with `kubectl delete pod`. This shortens the wait for the hub
    to reset. See [GPU Held by an Existing Pod](#gpu-held-by-an-existing-pod).
-2. Run the manual resetter. See
+2. **Run the manual resetter**
+   See
    [Stale Profile and the Manual Resetter](#stale-profile-and-the-manual-resetter).
-3. Start the session again.
+3. **Start the session again**
 
 [Error Messages](../reference/error-messages.md) lists error messages and their
 causes.

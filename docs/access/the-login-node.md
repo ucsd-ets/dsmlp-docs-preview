@@ -3,11 +3,19 @@
 `dsmlp-login.ucsd.edu` is a login node for launching jobs and transferring
 files. Running computation on it is prohibited.
 
+| At a glance | |
+|---|---|
+| Username | The AD username, without `@ucsd.edu` |
+| Duo | Challenged once every 8 hours |
+| VPN | Not required for SSH to the login node |
+| CPU limit | At most 10% of one CPU core |
+
 ## Connecting over SSH
 
 Launching containers, requesting GPUs, running jobs that outlive a connection,
 and attaching an editor all begin with an SSH connection to the login node:
 
+*Connect to the login node*
 ```bash
 ssh <username>@dsmlp-login.ucsd.edu
 ```
@@ -58,8 +66,12 @@ conversions.
 Running an editor's server component on `dsmlp-login` is not permitted. Running
 VS Code directly on the login node is specifically prohibited. The supported
 configuration places VS Code in a container. See
-[Remote Editor Setup](remote-editor-setup.md). Automated jobs find and stop VS
-Code and other remote-editor processes on the login node.
+[Remote Editor Setup](remote-editor-setup.md).
+
+> [!WARNING]
+> **Remote editors are stopped automatically**
+> Automated jobs find and stop VS Code and other remote-editor processes on the
+> login node.
 
 ### CPU Limit on the Login Node
 
@@ -84,6 +96,7 @@ cluster nodes through a launch script.
 
 After connecting, launch a container and run work in it:
 
+*Run on the login node after connecting*
 ```bash
 launch-scipy-ml.sh -W <WORKSPACE>     # GPU-capable image
 launch.sh -h                          # print the flag summary
@@ -98,6 +111,7 @@ See also: [Working from the Command Line](../working-from-the-command-line.md)
 A launch runs in one of three modes, depending on whether the session is
 attended:
 
+*Interactive, background, and batch launches*
 ```bash
 launch-scipy-ml.sh -W <WORKSPACE>                    # interactive: a shell in a container
 launch-scipy-ml.sh -W <WORKSPACE> -b                 # background: keeps running after a disconnect
@@ -119,6 +133,7 @@ See also: [Where Files Live](../workspaces-and-storage/your-files-and-quotas.md#
 An SSH key pair removes the password prompt from repeated connections. Generate
 a pair on the local machine and install the public key on the login node:
 
+*Run on the local machine*
 ```bash
 ssh-keygen -t ed25519
 cat ~/.ssh/id_ed25519.pub | ssh <username>@dsmlp-login.ucsd.edu \
@@ -147,6 +162,7 @@ the local file permissions, the SSH agent, and the `IdentityFile` directive.
 A launch script can be invoked directly over SSH. A job is submitted this way
 from a script on a local machine rather than by hand:
 
+*Submit a job from a local machine*
 ```bash
 ssh <username>@dsmlp-login.ucsd.edu /opt/launch-sh/bin/launch.sh <flags>
 ```
@@ -158,6 +174,7 @@ See also: [`launch.sh` Reference](../running-jobs/launch-sh-reference.md)
 `kubesh`, run on the login node, opens a second shell in a running container
 without starting a second container:
 
+*Run on the login node*
 ```bash
 kubectl get pods          # find the pod
 kubesh <pod-id>           # enter it
@@ -183,23 +200,27 @@ wrong form is the usual reason a tunnel does not work.
 
 ### Tunnel to a Port on the Login Node
 
-The output of a launch ends with a URL naming a port on
-`dsmlp-login.ucsd.edu`. Forward that port from a second terminal on the local
-machine:
+1. **Find the port in the launch output**
+   The output of a launch ends with a URL naming a port on
+   `dsmlp-login.ucsd.edu`.
+2. **Forward that port**
+   Forward it from a second terminal on the local machine:
 
-```bash
-ssh -N -L 8889:dsmlp-login.ucsd.edu:<port> <user>@dsmlp-login.ucsd.edu
-```
+    ```bash
+    ssh -N -L 8889:dsmlp-login.ucsd.edu:<port> <user>@dsmlp-login.ucsd.edu
+    ```
 
-`http://localhost:8889/user/<username>/tree/` then opens the session, and the
-token from the launch output authenticates it. Replacing `tree` with `lab` in
-that URL opens JupyterLab, which adds a terminal and an editor.
+3. **Open the session**
+   `http://localhost:8889/user/<username>/tree/` then opens the session, and the
+   token from the launch output authenticates it. Replacing `tree` with `lab` in
+   that URL opens JupyterLab, which adds a terminal and an editor.
 
 ### Tunnel to a Port Inside the Container
 
 For a service started by hand inside the container, the tunnel targets the
 loopback address:
 
+*Tunnel to a service inside the container*
 ```bash
 ssh -N -L localhost:<port>:127.0.0.1:<port> <user>@dsmlp-login.ucsd.edu
 ```
@@ -243,6 +264,7 @@ See also: [Datahub in the Browser](datahub-in-the-browser.md)
 covers the case where the container publishes nothing itself, such as a custom
 image with an overridden entrypoint:
 
+*Run on the login node*
 ```bash
 kubectl port-forward pods/<pod-name> <port>:8888
 ```

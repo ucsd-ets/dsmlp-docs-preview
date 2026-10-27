@@ -4,6 +4,13 @@ Choose how a container launched with `launch.sh` behaves when you disconnect,
 and how long it may run. The three job modes differ in what happens when no
 session is attached, not in how much compute a job receives.
 
+| At a glance | |
+|---|---|
+| Default mode | Interactive, with no flag |
+| Default runtime | 6 hours |
+| Maximum settable at launch | 12 hours |
+| Longer than 12 hours | By request |
+
 ## Job Modes
 
 | Mode | Flag | What it provides | The job ends when |
@@ -12,6 +19,7 @@ session is attached, not in how much compute a job receives.
 | Background | `-b` | A pod left running; the session stays on the login node | The pod is deleted, or the runtime limit is reached |
 | Batch | `-B -- <command>` | No interactive session | The command finishes, or the runtime limit is reached |
 
+*The same launch in each mode*
 ```bash
 launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium                        # interactive
 launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -c 4 -b                # background, reconnect later
@@ -94,16 +102,18 @@ tmux attach       # reattach a tmux session
 screen -r         # or reattach a screen session
 ```
 
-Course material sometimes recommends `tmux` in place of `-b`. Neither `tmux`
-nor `screen` keeps the container running, so work in either one lasts only as
-long as the container. Only `-b` or `-B` keeps the container itself running
-after the login-node connection ends.
+> [!WARNING]
+> Course material sometimes recommends `tmux` in place of `-b`. Neither `tmux`
+> nor `screen` keeps the container running, so work in either one lasts only as
+> long as the container. Only `-b` or `-B` keeps the container itself running
+> after the login-node connection ends.
 
 ### Batch Jobs
 
 `-B` runs a command to completion and exits. A batch job has no Jupyter server,
 no shell, and nothing to reconnect to. The command to run follows `--`:
 
+*Submit a batch job*
 ```bash
 launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -B -- python ./train.py
 ```
@@ -178,8 +188,14 @@ total past them is refused, whatever mix of sessions makes up that total.
 limits.
 
 When a launch is refused for this reason, stop a pod that is no longer in use
-instead of filing a request. `kubectl get pods` lists what is running, and
-`kubectl delete pod <pod-id>` stops a pod.
+instead of filing a request:
+
+<!-- steps: short -->
+
+1. **List what is running**
+   `kubectl get pods` lists what is running.
+2. **Stop a pod**
+   `kubectl delete pod <pod-id>` stops a pod.
 
 Every running pod holds its resources whether or not it is doing anything. A
 pod that holds a GPU draws Service Units for as long as it runs. See
@@ -196,14 +212,14 @@ stops, whatever it was doing, and `kubectl get pods` reports `DeadlineExceeded`.
 |---|---|
 | Default runtime | 6 hours |
 | Maximum settable at launch | 12 hours |
-| Longer than 12 hours | By request to [datahub@ucsd.edu](mailto:datahub@ucsd.edu), stating the purpose |
+| Longer than 12 hours | By request to [datahub@ucsd.edu](mailto:datahub@ucsd.edu), stating the purpose. Research IT also takes requests for research work, at [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) |
 
 The runtime limit also applies to a session running under a booking, however
 long the booking. See
 [Reservation Length and Session Runtime](../gpu-access/reservations.md#reservation-length-and-session-runtime).
 
-On the Research Cluster, the same figures apply, and extension requests go to
-[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) instead.
+For research work, the same figures apply, and Research IT also takes extension
+requests, at [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
 
 The runtime limit is the same in every mode and does not depend on anyone being
 attached. `-b` and `-B` do not extend it. They change what the job is attached
@@ -228,8 +244,11 @@ export K8S_TIMEOUT_SECONDS=$(( 3600 * 12 ))
 launch-scipy-ml.sh -W DSC40_FA26_001 -g 1 -l gpu-class=medium -b
 ```
 
-The variable is read at launch and not afterwards. The deadline is fixed when
-the pod is created, and a container that is already running cannot be extended.
+> [!NOTE]
+> **Set it before launching**
+> The variable is read at launch and not afterwards. The deadline is fixed when
+> the pod is created, and a container that is already running cannot be
+> extended.
 
 A personal launch script can carry the setting. See
 [Copying & Editing a Launch Script](#copying--editing-a-launch-script).
@@ -257,16 +276,16 @@ Scheduled maintenance is separate from all three. The schedules are published
 under [Scheduled Maintenance](../reference/policy.md#scheduled-maintenance).
 [Maintenance Closures](../gpu-access/what-ends-a-session.md#maintenance-closures)
 describes the effect on sessions.
-Instructional maintenance generally leaves running jobs alone. Research Cluster
+Weekly maintenance generally leaves running jobs alone. Quarterly
 maintenance terminates all running jobs. Do not start a 12-hour run that would
-overlap a Research Cluster maintenance window.
+overlap a quarterly maintenance window.
 
 ### Runs Longer Than 12 Hours
 
 Runs longer than 12 hours are arranged by request, not by a flag. Email
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu), or
-[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) on the Research Cluster,
-stating what the job is and roughly how long it needs.
+[datahub@ucsd.edu](mailto:datahub@ucsd.edu), stating what the job is and roughly
+how long it needs. Research IT also takes requests for research work, at
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
 
 A job that checkpoints can be restarted.
 [Checkpointing & Logging Long Runs](checkpointing.md) covers checkpointing.
@@ -284,6 +303,7 @@ A **wrapper script** is a short file that sets variables and then calls the
 launcher. `launch-scipy-ml.sh` and `launch-datascience.sh` each export several
 `K8S_*` variables and then `exec launch.sh`. Members can use the same mechanism:
 
+*Set defaults with variables, then launch*
 ```bash
 export K8S_NUM_CPU=8
 export K8S_GB_MEM=32
@@ -296,9 +316,10 @@ A value given on the command line overrides the variable. A personal default of
 Variables, like flags, are read at launch and not afterwards. A variable
 exported inside a running container does not change that container.
 
-A variable set in `.bashrc` applies to every launch. A default of 8 CPU and a
-GPU class in a shell profile applies to quick launches too, at the cost of
-waiting time and Service Units.
+> [!WARNING]
+> A variable set in `.bashrc` applies to every launch. A default of 8 CPU and a
+> GPU class in a shell profile applies to quick launches too, at the cost of
+> waiting time and Service Units.
 
 ### Environment Variables
 

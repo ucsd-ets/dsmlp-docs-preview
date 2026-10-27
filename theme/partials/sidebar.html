@@ -12,10 +12,23 @@
 
   page.toc's top level is the document's single H1, whose children are the
   H2s. The H1 is already the page heading, so this walks toc[0].children.
+
+  The section listed is the innermost active one. In a flat nav that is the
+  active top-level section; where sections nest (Documentation > Access, say)
+  it is the one holding the page, so the list shows the page's siblings
+  rather than a list of sections.
 #}
+{%- import "partials/nav-macros.html" as navm -%}
 {%- set section = namespace(item=none) -%}
 {%- for item in nav -%}
 {%- if item.children and item.active -%}{%- set section.item = item -%}{%- endif -%}
+{%- endfor -%}
+{%- for _ in range(4) -%}
+{%- if section.item -%}
+{%- for child in section.item.children -%}
+{%- if child.children and child.active -%}{%- set section.item = child -%}{%- endif -%}
+{%- endfor -%}
+{%- endif -%}
 {%- endfor -%}
 {%- set headings = page.toc|list -%}
 {%- set sub = headings[0].children|list if headings|length == 1 else headings -%}
@@ -23,15 +36,16 @@
 {%- if section.item or sub %}
 	<article class="main-content-nav" role="navigation">
 {%- if section.item %}
-{#- A section's first child is its README/index page. Linking the <h2> to it
-    and dropping it from the list avoids naming the section twice. -#}
-{%- set index = section.item.children[0] if section.item.children[0].title == section.item.title else none %}
+{#- A section that opens with its own landing page (navm.landing): the <h2>
+    links to it, and it is dropped from the list, so the section is not named
+    twice -- whether or not the page's title matches the section's. -#}
+{%- set index = section.item.children[0] if navm.landing(section.item) else none %}
 {%- set entries = section.item.children[1:] if index else section.item.children %}
 		<h2>{% if index %}<a href="/{{ index.url }}">{{ section.item.title }}</a>{% else %}{{ section.item.title }}{% endif %}</h2>
 		<ul class="navbar-list">
 {%- for child in entries %}
 			<li class="{{ 'expanded active' if child.active else 'collapsed' }}">
-				<a href="/{{ child.url }}">{{ child.title }}</a>
+				<a href="/{{ navm.first_url(child) }}">{{ child.title }}</a>
 			</li>
 {%- endfor %}
 		</ul>

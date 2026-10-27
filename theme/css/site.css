@@ -26,6 +26,7 @@ main#main-content {
 	--ucsd-gray: #747678;
 	--ucsd-dark-gray: #484949;
 	--docs-rule: #ddd;
+	--docs-border: #d5d9de;
 }
 
 /* ---- Code ---------------------------------------------------------- */
@@ -51,6 +52,17 @@ main#main-content pre code {
 	background: transparent;
 	color: inherit;
 	padding: 0;
+}
+
+/* A long inline span -- a hostname, a whole command -- has no break point of
+ * its own. On a phone it ran past the edge of the column, where the
+ * Decorator's overflow-x: hidden on html and body cut it off. Let it break
+ * where it has to. Not in table cells, where it would squeeze the columns: a
+ * table scrolls instead (.docs-table, below). */
+main#main-content p code,
+main#main-content li code,
+main#main-content dd code {
+	overflow-wrap: anywhere;
 }
 
 main#main-content .highlight {
@@ -108,6 +120,125 @@ main#main-content blockquote > :last-child {
 	margin-bottom: 0;
 }
 
+/* ---- Page patterns ------------------------------------------------- *
+ * Steps, command captions and glance boxes: tools/hooks.py builds them from
+ * Markdown conventions (AUTHORING.md). Ported from the review site's
+ * documentation kit, on this sheet's tokens, with the caption restyled to
+ * match the light code blocks above.
+ */
+
+/* Steps: a numbered procedure, with a rail joining the numbers. The list
+ * keeps role="list", which Safari drops from a list with list-style: none. */
+main#main-content .docs-steps {
+	counter-reset: docs-step;
+	list-style: none;
+	margin: 18px 0 26px;
+	padding: 0;
+}
+
+main#main-content .docs-steps > li {
+	counter-increment: docs-step;
+	min-height: 44px;
+	padding: 0 0 20px 56px;
+	position: relative;
+}
+
+main#main-content .docs-steps > li::before {
+	align-items: center;
+	background: var(--ucsd-dark-blue);
+	border-radius: 50%;
+	color: #fff;
+	content: counter(docs-step);
+	display: flex;
+	font-weight: 700;
+	height: 36px;
+	justify-content: center;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 36px;
+}
+
+main#main-content .docs-steps > li:not(:last-child)::after {
+	background: var(--docs-border);
+	bottom: 4px;
+	content: "";
+	left: 17px;
+	position: absolute;
+	top: 42px;
+	width: 2px;
+}
+
+main#main-content .docs-steps > li > :last-child {
+	margin-bottom: 0;
+}
+
+main#main-content .docs-step-title {
+	color: var(--ucsd-dark-blue);
+	display: block;
+	font-size: 17px;
+	font-weight: 700;
+	line-height: 36px;
+	margin-bottom: 2px;
+}
+
+/* Command caption: where a code block runs, as a band on top of it. */
+main#main-content .docs-command {
+	margin: 0 0 18px;
+}
+
+main#main-content .docs-command > figcaption {
+	background: #eceef3;
+	border: 1px solid #e1e1e8;
+	border-bottom: 0;
+	color: var(--ucsd-dark-blue);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .08em;
+	padding: 6px 16px;
+	text-transform: uppercase;
+}
+
+main#main-content .docs-command > figcaption code {
+	text-transform: none;
+}
+
+main#main-content .docs-command > pre {
+	margin: 0;
+}
+
+/* At a glance: the page's key facts, as a row of tiles under its summary. */
+main#main-content .docs-glance {
+	display: grid;
+	gap: 12px;
+	grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	margin: 0 0 30px;
+}
+
+main#main-content .docs-glance > div {
+	background: #fff;
+	border: 1px solid var(--docs-border);
+	border-top: 4px solid var(--ucsd-blue);
+	border-radius: 4px;
+	padding: 14px 16px 12px;
+}
+
+main#main-content .docs-glance dt {
+	color: var(--ucsd-blue);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .1em;
+	margin-bottom: 4px;
+	text-transform: uppercase;
+}
+
+main#main-content .docs-glance dd {
+	color: var(--ucsd-dark-blue);
+	font-size: 16px;
+	line-height: 1.4;
+	margin: 0;
+}
+
 /* ---- Tables -------------------------------------------------------- *
  * Python-Markdown emits a bare <table> with no class, so style the element.
  * .table is included for hand-written Bootstrap markup. Scoping keeps
@@ -134,6 +265,25 @@ main#main-content table th,
 main#main-content .table th {
 	background: var(--ucsd-sand);
 	color: var(--ucsd-dark-blue);
+}
+
+/* tools/hooks.py wraps every body table in a .docs-table region. A table wider
+ * than the column scrolls sideways inside it rather than running past the edge
+ * of the page, where the Decorator's overflow-x: hidden on html and body cuts
+ * it off out of reach. The region is in the tab order so it can be scrolled
+ * from the keyboard; the outline shows where focus is. */
+main#main-content .docs-table {
+	overflow-x: auto;
+	margin-bottom: 18px;
+}
+
+main#main-content .docs-table > table {
+	margin-bottom: 0;
+}
+
+main#main-content .docs-table:focus-visible {
+	outline: 2px solid var(--ucsd-blue);
+	outline-offset: 2px;
 }
 
 /* ---- Headings ------------------------------------------------------ *

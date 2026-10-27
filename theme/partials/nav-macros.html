@@ -1,0 +1,28 @@
+{#
+  CANVAS and CHROME nav helpers. Imported by chrome-header.html, sidebar.html,
+  breadcrumbs.html and hero-banner.html.
+
+  first_url: the URL a nav item links to. A page links to itself. A section
+  has no URL of its own, so it links to its first page, descending through
+  nested sections -- a site layer may group the topic sections under one
+  heading (sites/<site>/mkdocs.yml). For a flat nav this is exactly `item.url` for a page and
+  `item.children[0].url` for a section, which is what the templates used
+  before nesting existed, so a flat nav renders byte for byte as it did.
+
+  landing: "1" when a section opens with its own landing page -- the README.md
+  of the section's directory, listed first -- and nothing otherwise. MkDocs has
+  no idea of a section's own page: the README is only its first child, so a
+  template that lists the children names the section twice ("Access", then
+  "Access"). Every template that draws the nav asks this and treats that page
+  as the section itself: the section's name links to it, and it is not listed
+  again beneath it. It asks MkDocs whether the page is a README, never whether
+  the titles match, because they often differ: "Jobs" opens with "Running
+  Jobs", "Storage" with "Workspaces & Storage".
+#}
+{%- macro first_url(item) -%}
+{%- if item.children -%}{{ first_url(item.children[0]) }}{%- else -%}{{ item.url }}{%- endif -%}
+{%- endmacro -%}
+
+{%- macro landing(section) -%}
+{%- if section.children and section.children[0].is_page and section.children[0].is_index -%}1{%- endif -%}
+{%- endmacro -%}

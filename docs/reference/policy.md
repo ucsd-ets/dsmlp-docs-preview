@@ -39,9 +39,8 @@ ITS documentation gives these examples:
 
 ### Contacts for Classification Questions
 
-For instruction and coursework, email
-[datahub@ucsd.edu](mailto:datahub@ucsd.edu). For research, email Research IT at
-[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
+Email [datahub@ucsd.edu](mailto:datahub@ucsd.edu). For research data, Research
+IT also answers at [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
 See
 [Restricted & Licensed Datasets](../workspaces-and-storage/datasets.md#restricted--licensed-datasets).
 [Getting Help](getting-help.md) lists other support routes.
@@ -138,9 +137,11 @@ describes penalties.
 
 ### Peak GPU Demand
 
-Demand for GPUs may exceed capacity at peak hours during 10th and Finals Weeks,
-or at assignment deadlines. Work shifted to a daytime or off-peak hour costs
-less. See
+Demand for GPUs is highest in **peak weeks**: weeks 6 to 10 of a quarter and
+finals week. In peak weeks and at assignment deadlines, demand may exceed
+capacity, and coursework is served ahead of project, research, and Open Learning
+work. Work
+shifted to a daytime or off-peak hour costs less. See
 [Peak & Off-Peak Hours](../gpu-access/service-units-and-budgets.md#peak--off-peak-hours).
 
 ## Self-Supporting Programs
@@ -158,17 +159,18 @@ See also: [Mounting External Storage](../workspaces-and-storage/your-files-and-q
 
 ## Scheduled Maintenance
 
-### Instructional Maintenance
+### Weekly Maintenance {#instructional-maintenance}
 
-Maintenance on the instructional side runs Tuesdays, 6-8 AM. The work is usually
-limited to a subset of worker nodes, in which case running jobs are unaffected.
+Weekly maintenance runs Tuesdays, 6-8 AM, across the whole cluster, for courses
+and research alike. The work is usually limited to a subset of worker nodes, in
+which case running jobs are unaffected.
 Do not plan a deadline within this window. Infrequent 'Critical' updates may
 require downtime outside the window; ITS notifies instructors of such downtime
 as soon as is practical.
 
-### Research Cluster Maintenance
+### Quarterly Maintenance {#research-cluster-maintenance}
 
-The Research Cluster maintenance window is quarterly, at the break between
-terms, with about 7 days' notice. All running jobs are terminated.
+The quarterly maintenance window falls at the break between terms, with about
+7 days' notice. All running jobs are terminated, for courses and research alike.
 [Maintenance Closures](../gpu-access/what-ends-a-session.md#maintenance-closures)
 describes the effect on sessions.

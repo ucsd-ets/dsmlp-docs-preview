@@ -10,8 +10,9 @@ coursework and capstones.
 
 ## What the Platform Is Suited To
 
-DSMLP, Datahub, and the Research Cluster are the same cluster. The work does not
-change with the name an article uses.
+Datahub sessions and research work run on the same cluster, DSMLP. Older pages
+and articles may call it the Research Cluster, and the work does not change with
+the name an article uses.
 
 ### Suitable Work
 
@@ -33,8 +34,8 @@ these features is in [Beyond DSMLP](#beyond-dsmlp).
 ## Obtaining Access
 
 Request access through
-[Research IT](https://research-it.ucsd.edu/computing/index.html), or through
-[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) for the Research Cluster.
+[Research IT](https://research-it.ucsd.edu/computing/index.html) or
+[rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu).
 Describe the work, its approximate resource requirements, and the timeframe.
 
 ## The Working Environment
@@ -158,7 +159,7 @@ from Fall 2026.
 
 ### The Shared Research GPU Pool
 
-Researchers without a lab workspace draw on a school-wide shared research GPU
+Researchers without a lab workspace draw on a campus-wide shared research GPU
 pool. The pool provides a baseline allocation, with occasional boosts when
 capacity frees up, most notably over the summer, when instructional hardware
 would otherwise be idle. Service Unit (SU) budgets divide the shared pool
@@ -278,8 +279,8 @@ Support for research users is routed by subject.
 
 | Subject of the question | Contact |
 |---|---|
-| The Research Cluster, Universal Scale Storage, research allocations | [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) |
-| Datahub or DSMLP itself: the platform, images, launching | [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| Datahub or DSMLP: the platform, images, launching, and research work on it | [datahub@ucsd.edu](mailto:datahub@ucsd.edu) |
+| Universal Scale Storage, research allocations, or research questions, which Research IT also answers | Research IT, at [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu) |
 | Which platform is appropriate for a given body of work | [Research IT](https://research-it.ucsd.edu/computing/index.html) |
 
 Urgent or broadly scoped problems may be escalated through the
@@ -290,7 +291,9 @@ affected. See [Response Targets](reference/getting-help.md#response-targets).
 ## Beyond DSMLP
 
 Work requiring tightly coupled multi-node computation, MPI, a batch scheduler, or
-capacity at a scale the cluster does not carry belongs on another platform.
+capacity at a scale the cluster does not carry belongs on another platform, such
+as the Triton Shared Computing Cluster (TSCC) at the San Diego Supercomputer
+Center.
 [Research IT](https://research-it.ucsd.edu/computing/index.html) can connect
 researchers with campus and national resources. A group large enough to warrant
 its own guaranteed capacity is a matter for its PI. See

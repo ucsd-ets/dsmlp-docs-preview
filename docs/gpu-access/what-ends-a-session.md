@@ -10,7 +10,7 @@ crash, and none of them loses saved work.
 | Runtime limit | The pod reached 6 hours, or 12 hours where that was set at launch | [The Runtime Limit](../running-jobs/job-modes-and-limits.md#the-runtime-limit) |
 | Preemption | The session was past its runtime guarantee, and its GPU was needed | [Preemption](#preemption) |
 | Eviction | The reservation the session ran under was cancelled, or given to a teammate | [Eviction](#eviction) |
-| Maintenance | A node was drained, or the Research Cluster maintenance window opened | [Maintenance Closures](#maintenance-closures) |
+| Maintenance | A node was drained, or the quarterly maintenance window opened | [Maintenance Closures](#maintenance-closures) |
 
 The end of a reservation window does not by itself stop a session; see
 [End of a Reservation Window](#end-of-a-reservation-window).
@@ -293,17 +293,17 @@ See also: [Reservation Events](../reference/reservation-events.md#events-when-a-
 
 ## Maintenance Closures
 
-Two maintenance regimes apply: instructional maintenance and Research Cluster
-maintenance. The schedule for both is published under
+Two maintenance regimes apply: weekly maintenance and quarterly maintenance. The schedule for both is published under
 [Scheduled Maintenance](../reference/policy.md#scheduled-maintenance). Do not
 start a 12-hour run that would overlap an announced maintenance window.
 
-### Instructional Maintenance
+### Weekly Maintenance {#instructional-maintenance}
 
-Campus policy requires prompt patching of servers. The instructional
-maintenance window is reserved for that patching and is not a scheduled outage.
+Campus policy requires prompt patching of servers. The weekly maintenance window
+is reserved for that patching and is not a scheduled outage.
 
-Instructional maintenance usually affects a subset of worker nodes. Scheduling
+Weekly maintenance applies to the whole cluster, for courses and research
+alike, but usually affects a subset of worker nodes at a time. Scheduling
 policy tries to place jobs on nodes that will not be touched, so running work is
 generally unaffected. During the window, the platform may operate at reduced
 capacity, and, depending on the work being done, the whole cluster can be
@@ -315,19 +315,19 @@ vulnerability requires immediate action. Critical updates occasionally require
 work outside the window. ITS notifies instructors and TAs of such work as far in
 advance as possible.
 
-### Research Cluster Maintenance
+### Quarterly Maintenance {#research-cluster-maintenance}
 
-Research Cluster maintenance terminates all running jobs. Jobs are not drained,
-migrated, or deferred to another node. A multi-day training run started the day
-before is lost when the window opens, together with everything not written to
-disk.
+Quarterly maintenance terminates all running jobs, for courses and research
+alike. Jobs are not drained, migrated, or deferred to another node. A multi-day
+training run started the day before is lost when the window opens, together
+with everything not written to disk.
 
 Windows are placed to avoid the start and end of a quarter, midterm periods, and
 known conference deadlines, and each notice is followed by a reminder shortly
 before the day. This placement reflects past practice, not a published
 commitment. The notice sent for each window governs.
 
-Research Cluster maintenance notices are sent from
+Quarterly maintenance notices are sent from
 [rcd-support@ucsd.edu](mailto:rcd-support@ucsd.edu), which also answers
 questions about them.
 

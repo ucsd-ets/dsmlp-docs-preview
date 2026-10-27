@@ -55,10 +55,11 @@ These capabilities are regularly used on the platform but fall outside the
 normal bounds of ITS support, and their use in a course is led by the instructor
 or the Technical Point of Contact (TPOC).
 
-### MATLAB on the Research Cluster
+### MATLAB from a Shell Script {#matlab-on-the-research-cluster}
 
-On the Research Cluster, Research IT documents running MATLAB from a small shell
-script that sets a license-file environment variable. The script exports
+Research IT documents running MATLAB from a small shell script that sets a
+license-file environment variable. The license covers course work and research
+work alike. The script exports
 `MLM_LICENSE_FILE`, points to a MATLAB installation held on the cluster, and runs
 MATLAB headless: with `-nojvm -nodisplay -nosplash` for interactive use, and
 with `-batch` for a script.

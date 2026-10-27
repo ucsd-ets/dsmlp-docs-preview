@@ -7,6 +7,13 @@ be installed from inside a running container
 A Python or R package for personal use does not require a custom image. See
 [Customizing an Environment](customizing-your-environment.md).
 
+| At a glance | |
+|---|---|
+| Derive from | A standard image |
+| Publish to | The GitHub Container Registry, with GitHub Actions |
+| Visibility | The published image must be public |
+| Image size | Unwieldy above about 15 GB; hard limit 30 GB |
+
 ## Choosing a Base Image
 
 Derive a custom image from a standard image. A derived image inherits a working
@@ -49,6 +56,7 @@ standard support tier. Contact ITS through
 The example repository contains an annotated Dockerfile that serves as the
 model for a custom image:
 
+*Dockerfile from the example repository*
 ```dockerfile
 ARG BASE_CONTAINER=ghcr.io/ucsd-ets/datascience-notebook:stable
 FROM $BASE_CONTAINER
@@ -117,22 +125,28 @@ workflow in the example repository, `.github/workflows/docker.yml`, builds the
 image on each push and tags it with the branch name. A push to `main` produces
 `...:main`.
 
-1. Commit the changes and push them.
-2. Follow the workflow run under the repository's **Actions** tab.
-3. After a successful run, find the image under **Packages**.
+1. **Push the changes**
+   Commit the changes and push them.
+2. **Follow the workflow run**
+   Follow the workflow run under the repository's **Actions** tab.
+3. **Find the image**
+   After a successful run, find the image under **Packages**.
 
 ### Public Images
 
-The published image must be public. ITS does not manage credentials for
-pulling a private custom image. Publishing from a public GitHub repository is
-the simplest way to get a public image, but the repository itself does not have
-to be public if the image is.
+> [!NOTE]
+> The published image must be public. ITS does not manage credentials for
+> pulling a private custom image.
+
+Publishing from a public GitHub repository is the simplest way to get a public
+image, but the repository itself does not have to be public if the image is.
 
 ### Local Builds
 
 Where possible, also build the image locally. A local build and shell give a far
 shorter debugging cycle than waiting for a hosted build:
 
+*Build locally, then open a shell in the image*
 ```bash
 docker build -t <image-fullname> .
 docker run --rm -it <image-fullname> /bin/bash
@@ -170,19 +184,24 @@ repository. See [Requesting a Course](../instructor-or-ta.md#requesting-a-course
 Branches correspond to Docker tags. A push to a `wi24` branch updates
 `{image}:wi24`. Updating to a newer base image is a one-line change:
 
+*The base image line in the Dockerfile*
 ```dockerfile
 FROM ghcr.io/ucsd-ets/datascience-notebook:2024.4-stable
 ```
 
 ### Development Branches
 
-1. Create a `dev` or `test` branch and commit to it. The build publishes the
+1. **Commit to a development branch**
+   Create a `dev` or `test` branch and commit to it. The build publishes the
    branch's tag, such as `{image}:test`.
-2. Test the branch image. See
-   [Testing a Custom Image on DSMLP](#testing-a-custom-image-on-dsmlp).
-3. When the image works, open a pull request into the branch the course uses.
-4. Have a team member review the pull request.
-5. Merge the pull request. The merge rebuilds the production tag.
+2. **Test the branch image**
+   See [Testing a Custom Image on DSMLP](#testing-a-custom-image-on-dsmlp).
+3. **Open a pull request**
+   When the image works, open a pull request into the branch the course uses.
+4. **Have it reviewed**
+   Have a team member review the pull request.
+5. **Merge**
+   Merge the pull request. The merge rebuilds the production tag.
 
 ### Preserving a Build with a Git Tag
 
@@ -202,6 +221,7 @@ See
 
 From the login node, launch the custom image into the course workspace:
 
+*Run on the login node*
 ```bash
 launch.sh -i <image>:<tag> -P Always -W <workspace-id>
 ```
@@ -241,6 +261,7 @@ still downloading. A batch job that only runs `sleep 10` lets the download
 finish without either timeout. `-B` queues the job and returns without waiting
 for it:
 
+*A batch job that only pulls the image*
 ```bash
 launch.sh -i <image>:<tag> -W <workspace-id> -B -- sleep 10
 ```

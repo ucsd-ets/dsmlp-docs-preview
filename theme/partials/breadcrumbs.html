@@ -4,17 +4,28 @@
 
   page.ancestors runs immediate-parent-first, so it is reversed here.
   MkDocs Section objects carry no url of their own; a section links to its
-  first child page rather than rendering as dead text.
+  first page (partials/nav-macros.html) rather than rendering as dead text.
+
+  A section's landing page stands for the section (navm.landing), so on that
+  page the trail ends at it rather than naming the section and then the page:
+  HOME / Access, not HOME / Access / Access. The home page has no trail: it
+  would only say HOME twice. And no crumb links to the page the trail ends on:
+  a section with no landing page links to its first page, so on that page its
+  crumb is text.
 #}
+{%- import "partials/nav-macros.html" as navm %}
+{%- if not page.is_homepage %}
+{%- set trail = page.ancestors|list %}
+{%- set trail = trail[1:] if (trail and navm.landing(trail[0]) and trail[0].children[0] == page) else trail %}
 <div class="container">
 	<div class="row">
 		<ol class="breadcrumb breadcrumbs-list">
 			<li><a href="/">HOME</a></li>
-{%- for anc in page.ancestors|reverse %}
+{%- for anc in trail|reverse %}
 {%- if anc.is_page and anc.url %}
 			<li><a href="/{{ anc.url }}">{{ anc.title }}</a></li>
-{%- elif anc.children and anc.children[0].url %}
-			<li><a href="/{{ anc.children[0].url }}">{{ anc.title }}</a></li>
+{%- elif anc.children and (navm.first_url(anc)|string) != page.url %}
+			<li><a href="/{{ navm.first_url(anc) }}">{{ anc.title }}</a></li>
 {%- else %}
 			<li>{{ anc.title }}</li>
 {%- endif %}
@@ -23,3 +34,4 @@
 		</ol>
 	</div>
 </div>
+{%- endif %}

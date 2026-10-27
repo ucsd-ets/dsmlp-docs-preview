@@ -179,7 +179,7 @@ you. Take in-depth questions to [1:1 Consultation](#11-consultation).
 [Response Targets](reference/getting-help.md#response-targets) gives the
 response targets, including the incident tier for instructors. You can
 escalate urgent problems that arise outside business hours through the Service
-Desk.
+Desk, where response is best effort, with instruction first.
 
 ### 1:1 Consultation
 
@@ -348,7 +348,7 @@ protected P3 data may be permitted after review. See
 [Data Classification](reference/policy.md#data-classification).
 
 Datahub may be unavailable during scheduled maintenance for time-sensitive
-updates or security patches.
+updates or security patches. Quarterly maintenance ends every running job.
 [Scheduled Maintenance](reference/policy.md#scheduled-maintenance) gives the
 schedule.
 

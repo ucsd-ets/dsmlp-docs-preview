@@ -1,0 +1,70 @@
+{#
+  CANVAS. The home page banner: the Decorator rotator (templates/homepage.html),
+  in the structure the review site used (its scripts/build.mjs renderHomeHero;
+  internal/operating-procedures.md names the repository). Included by hero-banner.html on the home
+  page when the site sets extra.hero.home.
+
+  extra.hero.home:
+    interval   milliseconds per slide, while playing
+    slides     a list; each has
+                 id      a stable name, on data-home-hero-id
+                 art     images/hero/<art>.webp; the first slide also needs
+                         images/hero/<art>-828.webp, for phones
+                 title   the slide's <h2>
+                 accent  optional bold line above the text
+                 text, link, label
+  With one slide it is a static banner: no controls, no script.
+
+  Each slide's title is an <h2>, never an <h1>: the home body carries the page's
+  one <h1>. Inactive slides are aria-hidden, and their link is out of the tab
+  order; js/home-hero.js keeps both in step as the slides turn, pauses on focus
+  and for reduced motion, and loads each later slide's art when it is shown.
+  The art is decorative (alt="").
+#}
+{%- set home = config.extra.hero.home -%}
+{%- set slides = home.slides -%}
+{%- set many = slides|length > 1 -%}
+<div class="carousel slide jumbotron jumbotron-hero hm"{% if many %} data-interval="{{ home.interval or 7000 }}" data-ride="carousel"{% endif %} id="heroslider">
+	<div class="carousel-inner" role="region" tabindex="0" aria-label="{{ 'Revolving banners with %d items'|format(slides|length) if many else (config.extra.site_name_short or config.site_name) ~ ' introduction' }}">
+		{%- if many %}
+		<div id="indicators-container">
+			<button aria-label="Carousel is playing; click to pause" data-home-hero-toggle id="toggleCarousel" type="button"><span aria-hidden="true" class="glyphicon glyphicon-pause"></span></button>
+			<ol aria-hidden="true" class="carousel-indicators">
+				{%- for slide in slides %}
+				<li{% if loop.first %} class="active"{% endif %} aria-hidden="true" data-slide-to="{{ loop.index0 }}" data-target="#heroslider"></li>
+				{%- endfor %}
+			</ol>
+		</div>
+		{%- endif %}
+		{%- for slide in slides %}
+		{%- set image = ('images/hero/' ~ slide.art ~ '.webp')|url %}
+		<div aria-label="{{ loop.index }} out of {{ slides|length }}" aria-roledescription="slide" aria-hidden="{{ 'false' if loop.first else 'true' }}" class="item{% if loop.first %} active{% endif %}" data-home-hero-id="{{ slide.id }}" role="group">
+			{%- if loop.first %}
+			<picture class="home-hero-media"><source media="(min-width: 768px)" srcset="{{ image }}"><img alt="" class="first-slide" src="{{ ('images/hero/' ~ slide.art ~ '-828.webp')|url }}" fetchpriority="high" decoding="async"></picture>
+			{%- else %}
+			<img alt="" class="first-slide" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" data-src="{{ image }}" loading="lazy" decoding="async">
+			{%- endif %}
+			<div class="container">
+				<div class="cr-item-container">
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="animated fadeInUp herotextbg-dark-opaque">
+								<h2 class="rt-text-light hero-slide-heading">{{ slide.title }}</h2>
+								<p class="rt-text-light">{% if slide.accent %}<strong>{{ slide.accent }}</strong><br>{% endif %}{{ slide.text }}</p>
+								<a class="btn btn-lg btn-default rt-btn-yellow" data-module="hero-homepage" href="{{ slide.link }}"{% if not loop.first %} tabindex="-1"{% endif %}>{{ slide.label }}</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{%- endfor %}
+		{%- if many %}
+		<a aria-controls="heroslider" aria-label="Previous slide" class="left carousel-control" data-home-hero-direction="prev" data-slide="prev" href="#heroslider" role="button"><span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">Previous</span></a>
+		<a aria-controls="heroslider" aria-label="Next slide" class="right carousel-control" data-home-hero-direction="next" data-slide="next" href="#heroslider" role="button"><span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span><span class="sr-only">Next</span></a>
+		{%- endif %}
+	</div>
+</div>
+{%- if many %}
+<script defer src="{{ 'js/home-hero.js'|url }}"></script>
+{%- endif %}

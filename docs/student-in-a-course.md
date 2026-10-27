@@ -185,7 +185,7 @@ ends. See
 ## Maintenance and Policy
 
 Datahub may be unavailable during scheduled maintenance for time-sensitive
-updates or security patches.
+updates or security patches. Quarterly maintenance ends every running job.
 [Scheduled Maintenance](reference/policy.md#scheduled-maintenance) gives the
 schedule. [Policy](reference/policy.md) gives the rules on acceptable use and
 data classification.

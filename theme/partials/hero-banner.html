@@ -1,0 +1,84 @@
+{#
+  CANVAS. Section banner: the page title over the section's art, with the
+  section's name as an eyebrow above it.
+
+  Rendered only when `extra.hero` is set, which only a site layer does
+  (sites/<site>/mkdocs.yml); with it unset this file is never included and a
+  site renders exactly as before. When it renders, it carries the page's one
+  <h1>, and tools/hooks.py drops the <h1> from the page body.
+
+  It sits directly in main#main-content, outside every .container, so it spans
+  the canvas without any full-bleed trick. The art is a background set by a
+  class -- site-hero--<key>, defined in the site's stylesheet -- never an
+  inline style.
+
+  The art for a page is the first of:
+    extra.hero.pages[<the page's source path>]
+    extra.hero.sections[<the innermost active nav section's title>]
+    extra.hero.default
+  The eyebrow is the page's `eyebrow` front matter, else that section's title
+  -- except on the section's own landing page (navm.landing), which would put
+  the section's name over the same name. There it is the parent section's
+  title ("Documentation" over "Access"), or nothing for a top-level section.
+
+  The home page shows extra.hero.home instead: the rotator in
+  partials/home-carousel.html, whose slides carry <h2>s, since the home page
+  body carries its own <h1>.
+
+  A page whose front matter sets `hub: true` is a landing hub: the taller
+  banner variant, and (main.html) a full-width body with no sidebar.
+#}
+{%- import "partials/nav-macros.html" as navm -%}
+{%- set hero = config.extra.hero -%}
+{%- set found = namespace(section=none) -%}
+{%- for item in nav recursive -%}
+{%- if item.children and item.active -%}
+{%- set found.section = item -%}
+{{- loop(item.children) -}}
+{%- endif -%}
+{%- endfor -%}
+{%- set src = page.file.src_uri if page and page.file else '' -%}
+{%- set pages = hero.pages or {} -%}
+{%- set sections = hero.sections or {} -%}
+{%- if src in pages -%}
+{%- set art = pages[src] -%}
+{%- elif found.section and found.section.title in sections -%}
+{%- set art = sections[found.section.title] -%}
+{%- else -%}
+{%- set art = hero.default -%}
+{%- endif -%}
+{%- set hub = page.meta and page.meta.hub -%}
+{%- if page.is_homepage and hero.home %}
+{% include "partials/home-carousel.html" %}
+{%- else %}
+{%- set landing = found.section and navm.landing(found.section) and found.section.children[0] == page %}
+{%- set above = found.section.parent if landing else found.section %}
+{%- set eyebrow = (page.meta.eyebrow if page.meta and page.meta.eyebrow) or (above.title if above) %}
+{%- if hub %}
+<div class="jumbotron jumbotron-fluid intro-banner landing-hub-hero landing-hub-hero--abstract site-hero--{{ art }}">
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="landing-hub-title">
+					{%- if eyebrow %}
+					<p>{{ eyebrow }}</p>
+					{%- endif %}
+					<h1 class="intro-banner-heading">{{ page.title }}</h1>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{%- else %}
+<div class="jumbotron jumbotron-fluid intro-banner about-subpage-hero site-hero--{{ art }}">
+	<div class="container">
+		<div class="about-subpage-title">
+			{%- if eyebrow %}
+			<p>{{ eyebrow }}</p>
+			{%- endif %}
+			<h1 class="intro-banner-heading">{{ page.title }}</h1>
+		</div>
+	</div>
+</div>
+{%- endif %}
+{%- endif %}

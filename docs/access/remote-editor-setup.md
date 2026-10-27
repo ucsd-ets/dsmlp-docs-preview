@@ -5,6 +5,12 @@ which connects the editor to a container on a cluster node rather than to the
 login node. Running VS Code directly on `dsmlp-login` is not permitted. See
 [The Login Node](the-login-node.md).
 
+| At a glance | |
+|---|---|
+| Set up once | An SSH key, an extension, and a config file |
+| Each session | Launch the pod, then connect the editor |
+| End with | `kubectl delete pod` from the login node |
+
 ## What a Remote Editor Adds
 
 The browser session is the default route onto the platform and covers most
@@ -37,10 +43,14 @@ with nothing on screen and is deleted by hand. See
 A session has two steps, performed in order: launch the pod, then connect the
 editor.
 
-1. From the login node, a launch script starts a container with `-H`, which
+<!-- steps: short -->
+
+1. **Launch the pod**
+   From the login node, a launch script starts a container with `-H`, which
    runs an SSH server inside it, and `-N`, which gives the pod a fixed name. The
    container's size, image, and any GPU are chosen at this step.
-2. From VS Code, the `ProxyCommand` of a `Host` entry runs the same launcher on
+2. **Connect the editor**
+   From VS Code, the `ProxyCommand` of a `Host` entry runs the same launcher on
    the login node with the same `-N` name. The launcher finds the pod already
    running under that name and attaches to it rather than starting a second
    one. The editor's SSH connection is carried through to the SSH server inside
@@ -103,6 +113,7 @@ describes client installation.
 Generate the pair in a local terminal: **Terminal** on macOS, **PowerShell** on
 Windows. The command is the same on both:
 
+*Run in a local terminal on macOS or Windows*
 ```bash
 ssh-keygen -t ed25519
 ```
@@ -138,6 +149,7 @@ itself. On macOS, the agent runs by default, and
 `ssh-add --apple-use-keychain ~/.ssh/id_ed25519` stores the passphrase in the
 login keychain. On Windows, start the service from an Administrator PowerShell:
 
+*Run in an Administrator PowerShell on Windows*
 ```powershell
 Set-Service ssh-agent -StartupType Automatic
 Start-Service ssh-agent
@@ -170,30 +182,33 @@ SSH server and does not apply to `dsmlp-login`. See
 The public key is installed once, on the login node. `launch.sh -H` carries it
 into the container, so nothing is pasted into a running pod.
 
-From macOS:
+1. **Send the public key to the login node**
+   From macOS:
 
-```bash
-cat ~/.ssh/id_ed25519.pub | ssh <username>@dsmlp-login.ucsd.edu \
-  "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
-```
+    ```bash
+    cat ~/.ssh/id_ed25519.pub | ssh <username>@dsmlp-login.ucsd.edu \
+      "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+    ```
 
-From Windows, in PowerShell:
+    From Windows, in PowerShell:
 
-```powershell
-$USER_AT_HOST="<username>@dsmlp-login.ucsd.edu"
-$PUBKEYPATH="$HOME\.ssh\id_ed25519.pub"
-$pubKey=(Get-Content "$PUBKEYPATH" | Out-String); ssh "$USER_AT_HOST" "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '${pubKey}' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
-```
+    ```powershell
+    $USER_AT_HOST="<username>@dsmlp-login.ucsd.edu"
+    $PUBKEYPATH="$HOME\.ssh\id_ed25519.pub"
+    $pubKey=(Get-Content "$PUBKEYPATH" | Out-String); ssh "$USER_AT_HOST" "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '${pubKey}' >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+    ```
 
-The Active Directory (AD) password and Duo are requested once, for that
-connection. Verify the key before continuing:
+2. **Enter the AD password and approve Duo**
+   The Active Directory (AD) password and Duo are requested once, for that
+   connection.
+3. **Verify the key before continuing**
 
-```bash
-ssh -i ~/.ssh/id_ed25519 <username>@dsmlp-login.ucsd.edu
-```
+    ```bash
+    ssh -i ~/.ssh/id_ed25519 <username>@dsmlp-login.ucsd.edu
+    ```
 
-A connection that does not ask for the AD password is using the key. A
-passphrase, if one was set, is still requested.
+    A connection that does not ask for the AD password is using the key. A
+    passphrase, if one was set, is still requested.
 
 ### Key Copy in the Container
 
@@ -212,20 +227,23 @@ skipped.
 
 ## The Host Entry
 
-In VS Code, open **Remote Explorer → SSH targets**, click the gear icon, and
-edit the config file in the local home directory: `~/.ssh/config` on macOS,
-`C:\Users\USERNAME\.ssh\config` on Windows. The Command Palette (`F1`) opens the
-same file through **Remote-SSH: Open Configuration File...**. Add an entry of
-this form:
+<!-- steps: short -->
 
-```
-Host MYCOURSE
-  User USERNAME
-  HostKeyAlias MYCOURSE
-  IdentitiesOnly yes
-  IdentityFile ~/.ssh/id_ed25519
-  ProxyCommand ssh -i ~/.ssh/id_ed25519 USERNAME@dsmlp-login.ucsd.edu /opt/launch-sh/bin/launch.sh -W MYCOURSE -H -N vscode-dsmlp
-```
+1. **Open the SSH config file**
+   In VS Code, open **Remote Explorer → SSH targets**, click the gear icon, and
+   edit the config file in the local home directory: `~/.ssh/config` on macOS,
+   `C:\Users\USERNAME\.ssh\config` on Windows. The Command Palette (`F1`) opens
+   the same file through **Remote-SSH: Open Configuration File...**.
+2. **Add an entry of this form**
+
+    ```
+    Host MYCOURSE
+      User USERNAME
+      HostKeyAlias MYCOURSE
+      IdentitiesOnly yes
+      IdentityFile ~/.ssh/id_ed25519
+      ProxyCommand ssh -i ~/.ssh/id_ed25519 USERNAME@dsmlp-login.ucsd.edu /opt/launch-sh/bin/launch.sh -W MYCOURSE -H -N vscode-dsmlp
+    ```
 
 | Part | What it does |
 |---|---|
@@ -255,6 +273,7 @@ On Windows, write the path with forward slashes, as in
 
 Each session begins on the login node:
 
+*Start of every session: connect, then launch the pod*
 ```bash
 ssh <username>@dsmlp-login.ucsd.edu
 launch-scipy-ml.sh -W MYCOURSE -H -N vscode-dsmlp -b
@@ -275,6 +294,7 @@ Resources are set on the launch line. `-c` and `-m` set CPU cores and gigabytes
 of memory. `-c 2 -m 8` is a working size for an editor container. `-g 1`, with a
 GPU class the workspace has been granted, adds a GPU:
 
+*Launch lines with more resources*
 ```bash
 # more CPU and memory
 launch-scipy-ml.sh -W MYCOURSE -H -N vscode-dsmlp -b -c 4 -m 8
@@ -312,6 +332,7 @@ When the limit is reached, the pod stops, the editor loses its connection, and
 any processes running in the container end with it. A 12-hour limit is set by
 exporting `K8S_TIMEOUT_SECONDS` before the launch:
 
+*Launch with a 12-hour limit*
 ```bash
 export K8S_TIMEOUT_SECONDS=$(( 3600 * 12 ))
 launch-scipy-ml.sh -W MYCOURSE -H -N vscode-dsmlp -b
@@ -359,6 +380,7 @@ limits. See
 
 End every session by deleting the pod from the login node:
 
+*Delete the pod from the login node*
 ```bash
 ssh <username>@dsmlp-login.ucsd.edu
 kubectl get pods
@@ -385,12 +407,17 @@ Code error.
 [Workspace and Personal Quotas](../workspaces-and-storage/your-files-and-quotas.md#workspace-and-personal-quotas)
 lists home directory quotas.
 
-To reclaim the space, close every VS Code window connected to the container,
-enter the container with `kubesh vscode-dsmlp`, and delete the directory:
+To reclaim the space:
 
-```bash
-rm -rf ~/.vscode-server
-```
+1. **Close VS Code**
+   Close every VS Code window connected to the container.
+2. **Enter the container**
+   Enter it with `kubesh vscode-dsmlp`.
+3. **Delete the directory**
+
+    ```bash
+    rm -rf ~/.vscode-server
+    ```
 
 Run the command inside the container, not on the login node, whose home
 directory is a different one. VS Code installs the server again on the next
