@@ -14,7 +14,7 @@
   crumb is text.
 #}
 {%- import "partials/nav-macros.html" as navm %}
-{%- if not page.is_homepage %}
+{%- if page.url %}
 {%- set trail = page.ancestors|list %}
 {%- set trail = trail[1:] if (trail and navm.landing(trail[0]) and trail[0].children[0] == page) else trail %}
 <div class="container">
@@ -24,7 +24,7 @@
 {%- for anc in trail|reverse %}
 {%- if anc.is_page and anc.url %}
 			<li><a href="/{{ anc.url }}">{{ anc.title }}</a></li>
-{%- elif anc.children and (navm.first_url(anc)|string) != page.url %}
+{%- elif anc.children and navm.first_url(anc) and (navm.first_url(anc)|string) != page.url %}
 			<li><a href="/{{ navm.first_url(anc) }}">{{ anc.title }}</a></li>
 {%- else %}
 			<li>{{ anc.title }}</li>

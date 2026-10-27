@@ -33,6 +33,9 @@
 
 	<!-- Site-specific CSS -->
 	<link rel="stylesheet" href="/css/site.css">
+	{%- if config.extra.home_template and not page.url %}
+	<link rel="stylesheet" href="/css/home-dsmlp.css">
+	{%- endif %}
 	{%- for path in config.extra_css %}
 	<link rel="stylesheet" href="/{{ path }}">
 	{%- endfor %}
@@ -55,7 +58,8 @@
 		{%- if config.extra.hero %}
 		{%- include "partials/hero-banner.html" %}
 		{%- endif %}
-		{%- set hub = config.extra.hero and page.meta and page.meta.hub %}
+		{%- set home_template = config.extra.home_template if not page.url else '' %}
+		{%- set hub = home_template or (config.extra.hero and page.meta and page.meta.hub) %}
 
 		{% include "partials/breadcrumbs.html" %}
 
@@ -64,7 +68,11 @@
 		<div class="container">
 			<div class="row">
 				<section class="{{ 'col-xs-12 main-section landing-hub-content' if hub else 'col-xs-12 col-md-9 main-section pull-right' }}">
+					{%- if home_template %}
+					{%- include home_template %}
+					{%- else %}
 					{{ page.content }}
+					{%- endif %}
 
 					{%- if is_search_page %}
 					{#

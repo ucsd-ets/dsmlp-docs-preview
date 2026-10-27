@@ -30,6 +30,7 @@ theme:
 extra:
   site_name_short: DSMLP
   feedback_email: datahub@ucsd.edu
+  home_template: partials/home-dsmlp.html
 
   # Preview-site notice, shown on every page by
   # theme/partials/preview-banner.html. This MUST stay empty here.
@@ -77,6 +78,9 @@ markdown_extensions:
   - pymdownx.magiclink
   - pymdownx.superfences
 
+# The DSMLP home page is a theme partial, so docs/README.md can stay vanilla
+# Markdown while the page uses the shared hub layout.
+
 # GitHub alert callouts (> [!NOTE]) are not native to Python-Markdown.
 hooks:
   - tools/hooks.py
@@ -96,7 +100,7 @@ validation:
 
 nav:
   - Overview: overview.md
-  - Guides:
+  - Get Started:
       - student-in-a-course.md
       - working-from-the-command-line.md
       - instructor-or-ta.md
@@ -104,53 +108,54 @@ nav:
       - student-project.md
       - individual-researcher.md
       - faculty-research-lab.md
-  - Access:
-      - access/README.md
-      - access/datahub-in-the-browser.md
-      - access/the-login-node.md
-      - access/remote-editor-setup.md
-      - access/when-access-starts-and-ends.md
-      - access/sign-in-and-session-problems.md
-  - Storage:
-      - workspaces-and-storage/README.md
-      - workspaces-and-storage/what-a-workspace-is.md
-      - workspaces-and-storage/your-files-and-quotas.md
-      - workspaces-and-storage/moving-and-sharing-data.md
-      - workspaces-and-storage/datasets.md
-  - Jobs:
-      - running-jobs/README.md
-      - running-jobs/job-modes-and-limits.md
-      - running-jobs/launch-sh-reference.md
-      - running-jobs/watching-your-job.md
-      - running-jobs/checkpointing.md
-      - running-jobs/kubernetes.md
-  - GPUs:
-      - gpu-access/README.md
-      - gpu-access/gpu-classes.md
-      - gpu-access/workloads-by-gpu-class.md
-      - gpu-access/gpu-hardware.md
-      - gpu-access/quotas-and-availability.md
-      - gpu-access/reservations.md
-      - gpu-access/service-units-and-budgets.md
-      - gpu-access/what-ends-a-session.md
-  - Environments:
-      - environments/README.md
-      - environments/standard-images.md
-      - environments/customizing-your-environment.md
-      - environments/building-a-custom-image.md
-  - Grading:
-      - grading/README.md
-      - grading/choosing-a-grading-tool.md
-      - grading/notebook-grading-workflow.md
-      - grading/grading-failures.md
-  - Reference:
-      - reference/README.md
-      - reference/error-messages.md
-      - reference/reservation-events.md
-      - reference/getting-help.md
-      - reference/glossary.md
-      - reference/coming-from-hpc.md
-      - reference/managing-a-group.md
-      - reference/software.md
-      - reference/policy.md
-  - Home: README.md
+  - Documentation:
+      - README.md
+      - Access:
+          - access/README.md
+          - access/datahub-in-the-browser.md
+          - access/the-login-node.md
+          - access/remote-editor-setup.md
+          - access/when-access-starts-and-ends.md
+          - access/sign-in-and-session-problems.md
+      - Workspaces & Storage:
+          - workspaces-and-storage/README.md
+          - workspaces-and-storage/what-a-workspace-is.md
+          - workspaces-and-storage/your-files-and-quotas.md
+          - workspaces-and-storage/moving-and-sharing-data.md
+          - workspaces-and-storage/datasets.md
+      - Running Jobs:
+          - running-jobs/README.md
+          - running-jobs/job-modes-and-limits.md
+          - running-jobs/launch-sh-reference.md
+          - running-jobs/watching-your-job.md
+          - running-jobs/checkpointing.md
+          - running-jobs/kubernetes.md
+      - GPU Access:
+          - gpu-access/README.md
+          - gpu-access/gpu-classes.md
+          - gpu-access/workloads-by-gpu-class.md
+          - gpu-access/gpu-hardware.md
+          - gpu-access/quotas-and-availability.md
+          - gpu-access/reservations.md
+          - gpu-access/service-units-and-budgets.md
+          - gpu-access/what-ends-a-session.md
+      - Environments:
+          - environments/README.md
+          - environments/standard-images.md
+          - environments/customizing-your-environment.md
+          - environments/building-a-custom-image.md
+      - Grading:
+          - grading/README.md
+          - grading/choosing-a-grading-tool.md
+          - grading/notebook-grading-workflow.md
+          - grading/grading-failures.md
+      - Reference:
+          - reference/README.md
+          - reference/error-messages.md
+          - reference/reservation-events.md
+          - reference/glossary.md
+          - reference/coming-from-hpc.md
+          - reference/managing-a-group.md
+          - reference/software.md
+          - reference/policy.md
+  - Support: reference/getting-help.md
