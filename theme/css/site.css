@@ -313,13 +313,6 @@ main#main-content .docs-toc__l3 > a {
 
 /* ---- Misc ---------------------------------------------------------- */
 
-main#main-content .docs-edit-link {
-	margin-top: 36px;
-	padding-top: 12px;
-	border-top: 1px solid var(--docs-rule);
-	font-size: 14px;
-}
-
 main#main-content img {
 	max-width: 100%;
 	height: auto;

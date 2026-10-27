@@ -77,7 +77,8 @@ def on_page_content(html: str, page=None, config=None, files=None) -> str:
     html = CAPTION.sub(_caption, html)
     html = GLANCE.sub(_glance, html)
     html = _lead(html, page)
-    if config is not None and (config.get("extra") or {}).get("hero"):
+    hero = (config.get("extra") or {}).get("hero") if config is not None else None
+    if hero and (not hero.get("home_only") or page is not None and (page.is_homepage or not page.url)):
         html = _drop_title(html)
     html = _mark_figures(html)
     return _scroll_tables(html, page)

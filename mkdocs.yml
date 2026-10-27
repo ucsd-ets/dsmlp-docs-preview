@@ -3,14 +3,6 @@ site_url: https://dsmlp-docs.ucsd.edu/
 site_description: >-
   Documentation for UC San Diego's Datahub and Data Science & Machine Learning
   Platform (DSMLP).
-# The PUBLIC repository, deliberately. Readers cannot see the private source,
-# and the theme routes "Report a problem" to this repo's issue chooser -- which
-# is the contribution path the public README and CONTRIBUTING describe.
-# No edit_uri: the source is not editable by readers, so an "edit this page"
-# link would send them somewhere they cannot commit and that a publish would
-# overwrite anyway.
-repo_url: https://github.com/ucsd-ets/dsmlp-docs-public
-
 docs_dir: docs
 site_dir: _site
 
@@ -31,6 +23,42 @@ extra:
   site_name_short: DSMLP
   feedback_email: datahub@ucsd.edu
   home_template: partials/home-dsmlp.html
+
+  # The home page rotator (theme/partials/home-carousel.html). The shared
+  # theme carries the component; this configuration keeps it home-only.
+  hero:
+    home_only: true
+    home:
+      interval: 7000
+      slides:
+        - id: dsmlp
+          art: hero-home
+          title: DSMLP
+          accent: GPU computing for UC San Diego
+          text: DSMLP provides Jupyter, RStudio, and GPUs for coursework, student projects, and research. Open it in a browser through Datahub, or from a terminal.
+          link: /overview/
+          label: How DSMLP works
+        - id: gpu-reservations
+          art: hero-gpu
+          title: GPUs on Reservation
+          accent: New for Fall 2026
+          text: Book a GPU window ahead of time, or launch on demand and the reservation system creates a lease for you. Both draw on your workspace's Service Unit budget.
+          link: /gpu-access/reservations/
+          label: How reservations work
+        - id: open-learning
+          art: hero-open-learning
+          title: Open Learning
+          accent: Starting Winter 2027
+          text: Students in eligible data science and artificial intelligence programs get a Datahub workspace for coursework and exploration outside a course, with nothing to request.
+          link: /open-learning/
+          label: See who is eligible
+        - id: documentation
+          art: hero-docs
+          title: One Documentation Home
+          accent: Start with a role, then go deeper
+          text: Find a guide for coursework, projects, or research, then use the technical documentation for jobs, GPUs, environments, and support.
+          link: /overview/
+          label: Browse the documentation
 
   # Preview-site notice, shown on every page by
   # theme/partials/preview-banner.html. This MUST stay empty here.

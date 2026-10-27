@@ -20,6 +20,8 @@ main#main-content .dsmlp-home .hub-section-dark {
 	background-color: var(--ucsd-dark-blue);
 	background-image: linear-gradient(115deg, rgba(24, 43, 73, .98), rgba(0, 98, 155, .88));
 	color: #fff;
+	padding-left: 30px;
+	padding-right: 30px;
 }
 
 main#main-content .dsmlp-home .hub-heading {
@@ -517,6 +519,11 @@ main#main-content .dsmlp-home .hub-subscribe {
 		padding: 48px 22px;
 	}
 
+	main#main-content .dsmlp-home .hub-section-dark {
+		padding-left: 15px;
+		padding-right: 15px;
+	}
+
 	main#main-content .dsmlp-home .agent-metric-grid > [class*="col-"] {
 		width: 100%;
 	}
@@ -580,5 +587,171 @@ main#main-content .dsmlp-home .hub-subscribe {
 @media (prefers-reduced-motion: reduce) {
 	main#main-content .dsmlp-home .hub-action-card {
 		transition: none;
+	}
+}
+
+/* ---- Home page rotator ----------------------------------------------- *
+ * The shared theme supplies the component. These rules keep its art and
+ * controls readable within the DSMLP home layout.
+ */
+main#main-content #heroslider .hero-slide-heading {
+	color: #fff;
+	font-family: Teko-SemiBold, sans-serif;
+	font-size: 56px;
+	font-weight: 700;
+	line-height: .9;
+	margin: 23px 0 11.5px;
+}
+
+main#main-content .home-hero-media,
+main#main-content .home-hero-media .first-slide {
+	display: block;
+	width: 100%;
+}
+
+main#main-content #heroslider [data-module="hero-homepage"] {
+	border-radius: 10px;
+}
+
+main#main-content #heroslider .carousel-control {
+	z-index: 3;
+}
+
+@media (min-width: 768px) {
+	main#main-content #heroslider .item > .first-slide,
+	main#main-content #heroslider .item > .home-hero-media {
+		aspect-ratio: 125 / 46;
+	}
+
+	main#main-content #heroslider .item > .first-slide,
+	main#main-content #heroslider .item > .home-hero-media .first-slide {
+		object-fit: cover;
+	}
+
+	main#main-content #heroslider .item > .home-hero-media {
+		overflow: hidden;
+	}
+
+	main#main-content #heroslider .item > .home-hero-media .first-slide {
+		height: 100%;
+	}
+}
+
+@media (max-width: 1160px) {
+	main#main-content #heroslider .hero-slide-heading {
+		font-size: 40px;
+	}
+}
+
+@media (max-width: 768px) {
+	main#main-content #heroslider .hero-slide-heading {
+		font-size: 2em;
+	}
+}
+
+@media (max-width: 480px) {
+	main#main-content #heroslider .hero-slide-heading {
+		font-size: 1.2em;
+	}
+}
+
+@media (max-width: 767px) {
+	main#main-content #heroslider .carousel-inner {
+		display: grid;
+	}
+
+	main#main-content #heroslider .item {
+		display: grid;
+		grid-area: 1 / 1;
+		grid-template-columns: minmax(0, 1fr);
+		min-height: max(160px, calc(100vw * 46 / 125));
+		position: relative;
+		visibility: hidden;
+	}
+
+	main#main-content #heroslider .item.active,
+	main#main-content #heroslider .item.next,
+	main#main-content #heroslider .item.prev {
+		visibility: visible;
+	}
+
+	main#main-content #heroslider .item > .first-slide,
+	main#main-content #heroslider .item > .home-hero-media {
+		inset: 0;
+		position: absolute;
+		width: 100%;
+	}
+
+	main#main-content #heroslider .item > .first-slide,
+	main#main-content #heroslider .item > .home-hero-media,
+	main#main-content #heroslider .item > .home-hero-media .first-slide {
+		height: 100%;
+		object-fit: cover;
+	}
+
+	main#main-content #heroslider .item > .container {
+		grid-area: 1 / 1;
+		padding: 0;
+		position: relative;
+		width: 100%;
+		z-index: 1;
+	}
+
+	main#main-content #heroslider .cr-item-container {
+		margin: 20px 34px 60px;
+		position: relative;
+		top: auto;
+		width: auto;
+	}
+
+	main#main-content #heroslider .herotextbg-dark-opaque {
+		background: transparent;
+		padding: 0;
+	}
+
+	main#main-content #heroslider .hero-slide-heading {
+		margin: 0 0 12px;
+	}
+
+	main#main-content #heroslider [data-module="hero-homepage"] {
+		font-size: 14px;
+		line-height: 20px;
+		max-width: 100%;
+		min-height: 44px;
+		padding: 10px 16px;
+		white-space: normal;
+	}
+
+	main#main-content #heroslider .carousel-control {
+		bottom: 12px;
+		height: 44px;
+		top: auto;
+		width: 44px;
+	}
+
+	main#main-content #heroslider #indicators-container {
+		align-items: center;
+		bottom: 12px;
+		display: flex;
+		gap: 6px;
+		left: 50%;
+		min-height: 44px;
+		padding: 0 6px;
+	}
+
+	main#main-content #heroslider .carousel-indicators {
+		align-items: center;
+		display: flex;
+		gap: 4px;
+		margin: 0;
+		order: 0;
+		position: static;
+	}
+
+	main#main-content #heroslider #toggleCarousel {
+		float: none;
+		min-height: 44px;
+		min-width: 44px;
+		order: 1;
 	}
 }

@@ -48,7 +48,7 @@
 {%- set art = hero.default -%}
 {%- endif -%}
 {%- set hub = page.meta and page.meta.hub -%}
-{%- if page.is_homepage and hero.home %}
+{%- if (page.is_homepage or (not page.url and hero.home_only)) and hero.home %}
 {% include "partials/home-carousel.html" %}
 {%- else %}
 {%- set landing = found.section and navm.landing(found.section) and found.section.children[0] == page %}

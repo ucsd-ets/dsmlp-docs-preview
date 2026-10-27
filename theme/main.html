@@ -3,7 +3,12 @@
 <html class="no-js" lang="en-US">
 
 <head>
-	<title>{% if page.title and not page.is_homepage %}{{ page.title }} | {% endif %}{{ config.site_name }}</title>
+	{#- extra.home_title, where a site sets it, replaces the site name as the
+	    home page's title. Every other page keeps "Page | Site name". The home
+	    page is the one with an empty URL, as for home_template below:
+	    page.is_homepage is false on DSMLP, whose nav lists README.md under
+	    Documentation. #}
+	<title>{% if not page.url and config.extra.home_title %}{{ config.extra.home_title }}{% else %}{% if page.title and page.url %}{{ page.title }} | {% endif %}{{ config.site_name }}{% endif %}</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -55,7 +60,7 @@
 
 	<main class="layout-main" id="main-content" role="main">
 		{%- include "partials/preview-banner.html" %}
-		{%- if config.extra.hero %}
+		{%- if config.extra.hero and (not config.extra.hero.home_only or page.is_homepage or not page.url) %}
 		{%- include "partials/hero-banner.html" %}
 		{%- endif %}
 		{%- set home_template = config.extra.home_template if not page.url else '' %}
@@ -106,17 +111,6 @@
 					</noscript>
 					{%- endif %}
 
-					{#-
-					  CANVAS. Routes to the public repo's issue chooser, not to an
-					  edit link: the source lives in a private repository, and a
-					  commit made in the published snapshot is overwritten by the
-					  next publish. See CONTRIBUTING.md in the public repo.
-					-#}
-					{%- if config.repo_url %}
-					<p class="docs-edit-link">
-						<a href="{{ config.repo_url }}/issues/new/choose">Report a problem with this page</a>
-					</p>
-					{%- endif %}
 				</section>
 				{%- if not hub %}
 
